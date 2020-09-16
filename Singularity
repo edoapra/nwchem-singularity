@@ -76,6 +76,9 @@ cd nwchem-$nwchem_hash/src \
 
 #cd /data
 %environment
+export mpich=3.2.1
+export SINGULARITY_mpich=3.2.1
+export SINGULARITY_mpich_prefix=mpich-$mpich
 export MPICH_DIR=/opt/mpich
 export SINGULARITY_MPICH_DIR=$MPICH_DIR
 export SINGULARITYENV_APPEND_PATH=$MPICH_DIR/bin
