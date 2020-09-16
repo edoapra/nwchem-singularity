@@ -44,7 +44,7 @@ export LD_LIBRARY_PATH=$MPICH_DIR/lib:$LD_LIBRARY_PATH
 #get OpenBLAS and compile with 64-bit integers
 cd /opt
 export ARMCI_NETWORK=MPI-PR
-export NWCHEM_TOP=/opt/nwchem-$nwchem_hash"
+export NWCHEM_TOP=/opt/nwchem-$nwchem_hash
 export NWCHEM_TARGET=LINUX64
 export NWCHEM_MODULES="nwdft driver python"
 export BUILD_OPENBLAS=1
