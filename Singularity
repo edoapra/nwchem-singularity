@@ -15,9 +15,9 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 export DEBIAN_FRONTEND=noninteractive
 export nwchem_hash=a47c6fdba472b95c5929fffc62af2200207c3fb7
 export SINGULARITY_nwchem_hash=75f3db2a2074e9158d605516009964d1a363e71f
-export SINGULARITY_mpich=3.2
+export SINGULARITY_mpich=3.2.1
 export SINGULARITY_mpich_prefix=mpich-$mpich
-export mpich=3.2
+export mpich=3.2.1
 export mpich_prefix=mpich-$mpich
 export MPICH_DIR=/opt/mpich
 apt-get update 
@@ -46,7 +46,7 @@ cd /opt
 export ARMCI_NETWORK=MPI-PR
 export NWCHEM_TOP=/opt/nwchem-$nwchem_hash
 export NWCHEM_TARGET=LINUX64
-export NWCHEM_MODULES="nwdft driver python"
+export NWCHEM_MODULES="all python"
 export BUILD_OPENBLAS=1
 export BUILD_SCALAPACK=1
 export BLAS_SIZE=8
@@ -92,5 +92,7 @@ export SPCE=${NWCHEM_TOP}/src/data/solvents/spce.rst
 export CHARMM_S=$NWCHEM_TOP/src/data/charmm_s/
 export CHARMM_X=$NWCHEM_TOP/src/data/charmm_x/
 export PATH=$PATH:$NWCHEM_TOP/bin/LINUX64
+export PATH=$MPICH_DIR/bin:$PATH
+export LD_LIBRARY_PATH=$MPICH_DIR/lib:$LD_LIBRARY_PATH
 #%runscript
 #exec /bin/bash "$@"
