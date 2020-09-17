@@ -19,9 +19,10 @@ mpirun  singularity exec ./nwchem.simg nwchem "input file"
 Instead of building on cascade, you can pull the image from the Singularity Library with two options
 ### option \#1
 ```
+export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
 module load mpich/3.2.1
-mpirun  singularity exec library://edoapra/default/nwchem701.ivybridge.mpich321.mpipr:latest "input file"
+mpirun  singularity exec library://edoapra/default/nwchem701.ivybridge.mpich321.mpipr:sha256.03560327f67283ba0622594293bd35c61b4dc1e00228561b6cb5bd484ae205bc "input file"
 ```
 
 ### option \#2
