@@ -15,3 +15,7 @@ module purge
 module load mpich/3.2.1
 mpirun  singularity exec ./nwchem.simg nwchem "input file"
 ```
+## pull image from the Singularity Library
+```
+singularity pull library://edoapra/default/nwchem701.ivybridge.mpich321.mpipr:latest 
+```
