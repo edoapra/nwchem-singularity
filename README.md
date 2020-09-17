@@ -54,5 +54,5 @@ The name of the downloaded image is `nwchem701.ivybridge.mpich321.mpipr_latest.s
 ```
 module purge
 module load mpich/3.2.1
-mpirun  singularity exec ./nwchem701.ivybridge.mpich321.mpipr_latest.sif nwchem "input file"
+mpirun singularity exec ./nwchem701.ivybridge.mpich321.mpipr_latest.sif nwchem "input file"
 ```
