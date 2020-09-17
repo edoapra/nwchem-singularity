@@ -20,3 +20,10 @@ Instead of building on cascade, you can pull the image from the Singularity Libr
 ```
 singularity pull library://edoapra/default/nwchem701.ivybridge.mpich321.mpipr:latest 
 ```
+The name of the downloaded image is `nwchem701.ivybridge.mpich321.mpipr_latest.sif`, therefore the commands to run it on cascade will change to
+
+```
+module purge
+module load mpich/3.2.1
+mpirun  singularity exec .nwchem701.ivybridge.mpich321.mpipr_latest.sif nwchem "input file"
+```
