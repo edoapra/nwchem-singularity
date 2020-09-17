@@ -39,7 +39,6 @@ This is an example of a Slurm batch script
 #SBATCH -J singularity_library
 #SBATCH --export ALL
 source /etc/profile.d/modules.sh
-module purge
 export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
 module load mpich/3.2.1
