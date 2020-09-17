@@ -4,7 +4,7 @@ Singularity recipe for NWChem to use on EMSL cascade with mpich 3.2.1
 
 ## how to build on cascade
 ```
-curl -LJO https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/Singularity
+curl -LJO https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-701.mpich321.ivybridge/Singularity
 singularity build --fakeroot nwchem.simg  Singularity
 ```
 ## how to run on cascade
