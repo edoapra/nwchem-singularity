@@ -15,8 +15,16 @@ module purge
 module load mpich/3.2.1
 mpirun  singularity exec ./nwchem.simg nwchem "input file"
 ```
-## pull image from the Singularity Library
-Instead of building on cascade, you can pull the image from the Singularity Library with the command
+## Using image from the Singularity Library on EMSL cascade
+Instead of building on cascade, you can pull the image from the Singularity Library with two options
+### option \#1
+```
+module purge
+module load mpich/3.2.1
+mpirun  singularity exec library://edoapra/default/nwchem701.ivybridge.mpich321.mpipr:latest "input file"
+```
+
+### option \#2
 ```
 singularity pull library://edoapra/default/nwchem701.ivybridge.mpich321.mpipr:latest 
 ```
@@ -25,5 +33,5 @@ The name of the downloaded image is `nwchem701.ivybridge.mpich321.mpipr_latest.s
 ```
 module purge
 module load mpich/3.2.1
-mpirun  singularity exec .nwchem701.ivybridge.mpich321.mpipr_latest.sif nwchem "input file"
+mpirun  singularity exec ./nwchem701.ivybridge.mpich321.mpipr_latest.sif nwchem "input file"
 ```
