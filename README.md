@@ -16,6 +16,7 @@ module load mpich/3.2.1
 mpirun  singularity exec ./nwchem.simg nwchem "input file"
 ```
 ## pull image from the Singularity Library
+Instead of building on cascade, you can pull the image from the Singularity Library with the command
 ```
 singularity pull library://edoapra/default/nwchem701.ivybridge.mpich321.mpipr:latest 
 ```
