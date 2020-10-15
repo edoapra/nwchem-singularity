@@ -29,7 +29,7 @@ Once the the image has been downloaded, there are two options for using it
 ```
 export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
-module load mpich/3.2.1
+module load openmpi/3.1.3
 mpirun singularity exec library://edoapra/default/nwchem-702.ompi313.ivybridge:sha256.cf4e2661f224ae6e5822756b4204f76e51c4eaaca71f7ac96a3a3a464d0b68d7 nwchem "input file"
 ```
 
