@@ -16,8 +16,16 @@ module load openmpi/3.1.3
 mpirun  singularity exec ./nwchem.simg nwchem "input file"
 ```
 ## Using image from the Singularity Library on EMSL cascade
-Instead of building on cascade, you can pull the image from the Singularity Library with two options
-### option \#1 Interactive shell
+Instead of building on cascade, you can pull the image from the Singularity Library with the command
+
+```
+singularity pull library://edoapra/default/nwchem-702.ompi313.ivybridge:sha256.cf4e2661f224ae6e5822756b4204f76e51c4eaaca71f7ac96a3a3a464d0b68d7
+```
+Once the the image has been downloaded, there are two options for using it
+
+### option \#1 Use the Singularity library name
+
+#### Interactive session
 ```
 export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
@@ -45,11 +53,8 @@ singularity pull library://edoapra/default/nwchem-702.ompi313.ivybridge:sha256.c
 mpirun singularity exec library://edoapra/default/nwchem701.ivybridge.ompi313.mpipr.sif:sha256.cf4e2661f224ae6e5822756b4204f76e51c4eaaca71f7ac96a3a3a464d0b68d7 nwchem siosi3.nw
 ```
 
-P.S. This might require to execute the following command to cache the image prior to submit the script with `sbatch`
-```
-singularity pull library://edoapra/default/nwchem-702.ompi313.ivybridge:sha256.cf4e2661f224ae6e5822756b4204f76e51c4eaaca71f7ac96a3a3a464d0b68d7
-```
-### option \#2
+
+### option \#2 Use the name of the downloaded image
 ```
 singularity pull library://edoapra/default/nwchem-702.ompi313.ivybridge:sha256.cf4e2661f224ae6e5822756b4204f76e51c4eaaca71f7ac96a3a3a464d0b68d7
 ```
