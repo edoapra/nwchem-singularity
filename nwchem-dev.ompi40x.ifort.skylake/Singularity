@@ -42,7 +42,7 @@ sed -i -e 's/archive.ubuntu.com/mirror.pnl.gov/'  /etc/apt/sources.list \
 && echo "deb https://apt.repos.intel.com/oneapi all main" | tee /etc/apt/sources.list.d/oneAPI.list \
 && add-apt-repository "deb https://apt.repos.intel.com/oneapi all main" \
 && apt-get update \
-&& apt install -y intel-oneapi-ifort intel-oneapi-mpi intel-oneapi-mpi-devel intel-oneapi-mkl \
+&& apt install -y intel-oneapi-ifort  intel-oneapi-mkl \
 intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic \
 && apt-get clean \
 && wget ${D_OFED_URL_PATH} \
@@ -60,7 +60,8 @@ intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic \
  MLNX_OFED_LINUX-${D_OFED_VERSION}-${D_OS}-${D_ARCH}/DEBS/UPSTREAM_LIBS/sharp*_amd64.deb \
 && rm -rf MLNX_OFED_LINUX-${D_OFED_VERSION}-${D_OS}-${D_ARCH} ${D_OFED_TARBALL_NAME} 
 
-bash -c "source /opt/intel/oneapi/setvars.sh;  \
+bash -c "source /opt/intel/oneapi/mkl/latest/env/vars.sh ; \
+source /opt/intel/oneapi/compiler/latest/env/vars.sh ; \
  ifort -V \
 && rm -rf ucx* ompi* openmpi* \
 && wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
@@ -81,7 +82,7 @@ bash -c "source /opt/intel/oneapi/setvars.sh;  \
 --disable-mpi-java --enable-dlopen --without-cuda --without-verbs \
  --with-hcoll=/opt/mellanox/hcoll  \
 --disable-mpi-cxx --disable-cxx-exceptions  \
- F77=pgf77 FC=ifort \
+ FC=ifort \
 && make -j 6       \
 && make install    \
 && make clean      \
@@ -90,17 +91,19 @@ bash -c "source /opt/intel/oneapi/setvars.sh;  \
 && rm -rf /usr/share/man/"
 export PATH=$OMPI_DIR/bin:$PATH
 export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
+mpif90 -show
 export ARMCI_NETWORK=MPI-PR
 export NWCHEM_TOP=/opt/nwchem-$nwchem_hash
 export NWCHEM_TARGET=LINUX64
-export NWCHEM_MODULES="all python"
-export BLAS_SIZE=8
-export SCALAPACK_SIZE=8
-export BLASOPT=" -lmkl_intel_ilp64 -lmkl_sequential -lmkl_core  -lpthread -lm -ldl"
-export LAPACK_LIB="-lmkl_intel_ilp64 -lmkl_sequential -lmkl_core  -lpthread -lm -ldl"
-export SCALAPACK_LIB=" -lmkl_scalapack_ilp64 -lmkl_blacs_intelmpi_ilp64 -lpthread -lm -ldl" 
+#export NWCHEM_MODULES="all python"
+export NWCHEM_MODULES="nwdft driver solvation"
+export MKLROOT=/opt/intel/oneapi/mkl/latest/
+export LD_LIBRARY_PATH=/opt/intel/oneapi/mkl/latest/lib/intel64/:$LD_LIBRARY_PATH
+export BLASOPT="-L${MKLROOT}/lib/intel64 -lmkl_intel_ilp64 -lmkl_sequential -lmkl_core  -lpthread -lm -ldl"
+export LAPACK_LIB="-L${MKLROOT}/lib/intel64 -lmkl_intel_ilp64 -lmkl_sequential -lmkl_core  -lpthread -lm -ldl"
+#export SCALAPACK_LIB="-L${MKLROOT}/lib/intel64 -lmkl_scalapack_ilp64 -lmkl_blacs_intelmpi_ilp64 -lpthread -lm -ldl" 
 export BLAS_SIZE=8 
-export SCALAPACK_SIZE=8 
+#export SCALAPACK_SIZE=8 
 export USE_MPI=y
 export USE_MPIF=y
 export USE_MPIF4=y
@@ -108,9 +111,27 @@ export USE_FPICF=y
 #ENV         MRCC_METHODS=y
 #ENV         CCSDTQ=y
 #ENV         CCSDTLR=y
-
-bash -c "source /opt/intel/oneapi/setvars.sh;  \
-cd /opt; curl -SL     https://github.com/nwchemgit/nwchem/archive/$nwchem_hash.tar.gz | tar xzf -  \
+export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH  
+export PATH=$OMPI_DIR/bin:$PATH 
+ rm -rf /opt/intel/oneapi/mpi || true 
+ rm -rf /opt/intel/oneapi/tbb || true 
+ rm -rf /opt/intel/oneapi/dev-utilities || true 
+ rm -rf /opt/intel/oneapi/conda_channel || true 
+export MKLROOT=/opt/intel/oneapi/mkl/latest/
+export LD_LIBRARY_PATH=/opt/intel/oneapi/mkl/latest/lib/intel64/:$LD_LIBRARY_PATH
+#export LD_LIBRARY_PATH=/opt/intel/oneapi/mkl/latest/lib/intel64/:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:$LD_LIBRARY_PATH
+bash -c "source /opt/intel/oneapi/compiler/latest/env/vars.sh ; \
+ ifort -V \
+&& rm -f testi.f ;\
+echo '       program main' >> testi.f
+echo '       a=sqrt(2d0)' >> testi.f
+echo '       write(6,*) a' >> testi.f
+echo '       stop ' >> testi.f
+echo '       end '>> testi.f
+ifort testi.f && ./a.out \
+&& which mpif90 \
+&& mpif90 -show \
+&& cd /opt; curl -SL     https://github.com/nwchemgit/nwchem/archive/$nwchem_hash.tar.gz | tar xzf -  \
 && cd nwchem-$nwchem_hash/src \
 && sed -i 's|-march=native||' config/makefile.h \
 && sed -i 's|-mtune=native|-mtune=generic|' config/makefile.h \
@@ -120,7 +141,17 @@ cd /opt; curl -SL     https://github.com/nwchemgit/nwchem/archive/$nwchem_hash.t
 && rm -rf tce tools nwdft NWints geom symmetry util nwxc ddscf lapack blas rism argos peigs rmdft gradients symmetry property smd lucia dplot propery hessian ccsd mp2_grad moints cafe analyz dimqm /opt/nwchem/lib \
 && apt-get -y purge  make curl wget  unzip cmake perl gnupg2 software-properties-common \
 intel-oneapi-ifort intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic \
-&& apt-get clean "
+&& apt-get clean \
+&& dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n   \
+&& cp -ax /opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin/*.* /opt/intel/oneapi/mkl/latest/lib/intel64/. \
+&& ls -lrt /opt/intel/oneapi/mkl/latest/lib/intel64/ \
+&& du -sk /opt/intel/oneapi/* |sort -n \
+&& rm -rf /opt/intel/oneapi/mpi || true \
+&& rm -rf /opt/intel/oneapi/tbb || true \
+&& rm -rf /opt/intel/oneapi/dev-utilities || true \
+&& rm -rf /opt/intel/oneapi/compiler || true \
+&& rm -rf /opt/intel/oneapi/advisor || true \
+&& rm -rf /opt/intel/oneapi/intelpython || true "
 #apt-get -y purge curl wget tar  cmake  unzip zip perl automake libtool autoconf flex  \
 #&&  apt-get -y autoremove && apt-get clean
 
@@ -132,7 +163,7 @@ export SINGULARITY_ompi_prefix=ompi-$ompi
 export OMPI_DIR=/opt/ompi
 export SINGULARITY_OMPI_DIR=$OMPI_DIR
 export SINGULARITYENV_APPEND_PATH=$OMPI_DIR/bin
-export SINGULARITYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib
+export SINGULARITYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib:/opt/intel/oneapi/mkl/latest/lib/intel64
 
 export nwchem_hash=77ba3a6e1dd6f9ba26879d0416bb93b302f1f4f7
 export NWCHEM_TOP=/opt/nwchem-$nwchem_hash
@@ -146,13 +177,14 @@ export CHARMM_S=$NWCHEM_TOP/src/data/charmm_s/
 export CHARMM_X=$NWCHEM_TOP/src/data/charmm_x/
 export PATH=$PATH:$NWCHEM_TOP/bin/LINUX64
 export PATH=$OMPI_DIR/bin:$PATH
+export LD_LIBRARY_PATH=/opt/intel/oneapi/mkl/latest/lib/intel64/:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
-export PATH=$PATH:$NWCHEM_TOP/bin/LINUX64:/opt/intel/oneapi/mpi/latest//libfabric/bin:/opt/intel/oneapi/mpi/latest//bin
-export I_MPI_ROOT=/opt/intel/oneapi/mpi/latest
-export FI_PROVIDER_PATH=/opt/intel/oneapi/mpi/latest/libfabric/lib/prov
-export LIBRARY_PATH=/opt/intel/oneapi/mpi/latest//libfabric/lib:/opt/intel/oneapi/mpi/latest//lib/release:/opt/intel/oneapi/mpi/latest/lib
-export CLASSPATH=/opt/intel/oneapi/mpi/latest//lib/mpi.jar
-export LD_LIBRARY_PATH=opt/intel/oneapi/mpi/latest/lib:/opt/intel/oneapi/mpi/latest/lib/release:/opt/intel/oneapi/mkl/latest/lib/intel64/:/opt/intel/oneapi/mpi/latest/libfabric/lib:/opt/intel/oneapi/mpi/latest/lib/
-export CPATH=/opt/intel/oneapi/mpi/latest//include
+export PATH=$PATH:$NWCHEM_TOP/bin/LINUX64
+#export PATH=$PATH:$NWCHEM_TOP/bin/LINUX64:/opt/intel/oneapi/mpi/latest//libfabric/bin:/opt/intel/oneapi/mpi/latest//bin
+#export I_MPI_ROOT=/opt/intel/oneapi/mpi/latest
+#export FI_PROVIDER_PATH=/opt/intel/oneapi/mpi/latest/libfabric/lib/prov
+#export LIBRARY_PATH=/opt/intel/oneapi/mpi/latest//libfabric/lib:/opt/intel/oneapi/mpi/latest//lib/release:/opt/intel/oneapi/mpi/latest/lib
+#export CLASSPATH=/opt/intel/oneapi/mpi/latest//lib/mpi.jar
+#export LD_LIBRARY_PATH=/opt/intel/oneapi/mpi/latest/lib:/opt/intel/oneapi/mpi/latest/lib/release:/opt/intel/oneapi/mkl/latest/lib/intel64/:/opt/intel/oneapi/mpi/latest/libfabric/lib:/opt/intel/oneapi/mpi/latest/lib/
 #%runscript
 #exec /bin/bash "$@"
