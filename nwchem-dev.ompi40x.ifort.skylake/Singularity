@@ -29,8 +29,8 @@ which bash
 pwd
 sed -i -e 's/archive.ubuntu.com/mirror.pnl.gov/'  /etc/apt/sources.list \
 && apt-get update \
-&& apt install -y tzdata \
-&& apt install -y curl wget gnupg2 software-properties-common tar \
+&& apt-get install -y tzdata \
+&& apt-get install -y curl wget gnupg2 software-properties-common tar \
  libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
  g++ gfortran   make ssh patch curl  unzip perl  file \
  python3 python3-dev cmake   automake libtool autoconf flex  \
@@ -42,8 +42,7 @@ sed -i -e 's/archive.ubuntu.com/mirror.pnl.gov/'  /etc/apt/sources.list \
 && echo "deb https://apt.repos.intel.com/oneapi all main" | tee /etc/apt/sources.list.d/oneAPI.list \
 && add-apt-repository "deb https://apt.repos.intel.com/oneapi all main" \
 && apt-get update \
-&& apt install -y intel-oneapi-ifort  intel-oneapi-mkl \
-intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic \
+&& apt-get install -y intel-oneapi-ifort  intel-oneapi-mkl \
 && apt-get clean \
 && wget ${D_OFED_URL_PATH} \
 && tar -xf ${D_OFED_TARBALL_NAME} \
@@ -80,13 +79,15 @@ source /opt/intel/oneapi/compiler/latest/env/vars.sh ; \
 --without-tm --without-lsf  \
  --without-sge --without-alps --without-lustre --disable-memchecker \
 --disable-mpi-java --enable-dlopen --without-cuda --without-verbs \
+--disable-oshmem --enable-mpi-ext=affinity,pcollreq --disable-io-romio \
+--without-psm --without-psm2 --without-pvfs2 --without-portals4 \
  --with-hcoll=/opt/mellanox/hcoll  \
 --disable-mpi-cxx --disable-cxx-exceptions  \
  FC=ifort \
 && make -j 6       \
 && make install    \
-&& make clean      \
 && cd /tmp  \
+&& rm -rf ompi*  ${D_OFED_TARBALL_NAME} MLNX_OFED_LINUX-${D_OFED_VERSION}-${D_OS}-${D_ARCH} || true \
 && rm -rf /usr/share/doc/  \
 && rm -rf /usr/share/man/"
 export PATH=$OMPI_DIR/bin:$PATH
@@ -102,8 +103,9 @@ export LD_LIBRARY_PATH=/opt/intel/oneapi/mkl/latest/lib/intel64/:$LD_LIBRARY_PAT
 export BLASOPT="-L${MKLROOT}/lib/intel64 -lmkl_intel_ilp64 -lmkl_sequential -lmkl_core  -lpthread -lm -ldl"
 export LAPACK_LIB="-L${MKLROOT}/lib/intel64 -lmkl_intel_ilp64 -lmkl_sequential -lmkl_core  -lpthread -lm -ldl"
 #export SCALAPACK_LIB="-L${MKLROOT}/lib/intel64 -lmkl_scalapack_ilp64 -lmkl_blacs_intelmpi_ilp64 -lpthread -lm -ldl" 
-export BLAS_SIZE=8 
-#export SCALAPACK_SIZE=8 
+export BLAS_SIZE=8
+export BUILD_SCALAPACK=y
+export SCALAPACK_SIZE=8 
 export USE_MPI=y
 export USE_MPIF=y
 export USE_MPIF4=y
@@ -119,18 +121,8 @@ export PATH=$OMPI_DIR/bin:$PATH
  rm -rf /opt/intel/oneapi/conda_channel || true 
 export MKLROOT=/opt/intel/oneapi/mkl/latest/
 export LD_LIBRARY_PATH=/opt/intel/oneapi/mkl/latest/lib/intel64/:$LD_LIBRARY_PATH
-#export LD_LIBRARY_PATH=/opt/intel/oneapi/mkl/latest/lib/intel64/:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:$LD_LIBRARY_PATH
 bash -c "source /opt/intel/oneapi/compiler/latest/env/vars.sh ; \
- ifort -V \
-&& rm -f testi.f ;\
-echo '       program main' >> testi.f
-echo '       a=sqrt(2d0)' >> testi.f
-echo '       write(6,*) a' >> testi.f
-echo '       stop ' >> testi.f
-echo '       end '>> testi.f
-ifort testi.f && ./a.out \
-&& which mpif90 \
-&& mpif90 -show \
+ mpif90 -show \
 && cd /opt; curl -SL     https://github.com/nwchemgit/nwchem/archive/$nwchem_hash.tar.gz | tar xzf -  \
 && cd nwchem-$nwchem_hash/src \
 && sed -i 's|-march=native||' config/makefile.h \
@@ -140,7 +132,8 @@ ifort testi.f && ./a.out \
 && make nwchem_config && make -j6 FC=ifort  \
 && rm -rf tce tools nwdft NWints geom symmetry util nwxc ddscf lapack blas rism argos peigs rmdft gradients symmetry property smd lucia dplot propery hessian ccsd mp2_grad moints cafe analyz dimqm /opt/nwchem/lib \
 && apt-get -y purge  make curl wget  unzip cmake perl gnupg2 software-properties-common \
-intel-oneapi-ifort intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic \
+intel-oneapi-ifort \
+&& cd && rm -rf QA contrib web examples \
 && apt-get clean \
 && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n   \
 && cp -ax /opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin/*.* /opt/intel/oneapi/mkl/latest/lib/intel64/. \
