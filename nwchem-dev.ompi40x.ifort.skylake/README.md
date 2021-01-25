@@ -30,7 +30,7 @@ Once the the image has been downloaded, there are two options for using it
 export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
 module load openmpi/3.1.3
-srun singularity exec library://edoapra/default/nwchem-dev.ompi40x.skylake:sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b
+srun singularity exec library://edoapra/default/nwchem-dev.ompi40x.skylake:sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b nwchem "input file name"
 ```
 
 #### Slurm batch script
@@ -50,7 +50,9 @@ export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
 module load openmpi
 pdsh -w "$SLURM_JOB_NODELIST" singularity pull library://edoapra/default/nwchem-dev.ompi40x.ifort.skylake:sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b
-srun singularity exec library://edoapra/default/nwchem-dev.ompi40x.skylake:sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b
+srun singularity exec \
+ library://edoapra/default/nwchem-dev.ompi40x.skylake:sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b\
+ nwchem "input file name"
 ```
 
 
@@ -63,5 +65,7 @@ The name of the downloaded image is `library://edoapra/default/nwchem-dev.ompi40
 ```
 module purge
 module load openmpi
-srun singularity exec ./library://edoapra/default/nwchem-dev.ompi40x.skylake:sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b nwchem "input file"
+srun singularity exec \
+ library://edoapra/default/nwchem-dev.ompi40x.skylake:sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b\
+  nwchem "input file"
 ```
