@@ -111,6 +111,7 @@ export USE_MPI=y
 export USE_MPIF=y
 export USE_MPIF4=y
 export USE_FPICF=y
+export USE_NOIO=1
 #ENV         MRCC_METHODS=y
 #ENV         CCSDTQ=y
 #ENV         CCSDTLR=y
