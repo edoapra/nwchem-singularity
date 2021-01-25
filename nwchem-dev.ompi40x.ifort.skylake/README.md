@@ -19,7 +19,7 @@ srun  singularity exec ./nwchem.simg nwchem "input file"
 Instead of building on cascade, you can pull the image from the Singularity Library with the command
 
 ```
-singularity pull library://edoapra/default/nwchem-dev.ompi40x.skylake:sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b
+singularity pull library://edoapra/default/nwchem-dev.ompi40x.ifort.skylake:latest
 ```
 Once the the image has been downloaded, there are two options for using it
 
@@ -30,7 +30,7 @@ Once the the image has been downloaded, there are two options for using it
 export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
 module load openmpi/3.1.3
-srun singularity exec library://edoapra/default/nwchem-dev.ompi40x.skylake:sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b
+srun singularity exec library://edoapra/default/nwchem-dev.ompi40x.ifort.skylake:latest
 ```
 
 #### Slurm batch script
@@ -41,6 +41,7 @@ This is an example of a Slurm batch script
 #SBATCH -N 2
 #SBATCH -t 00:29:00
 #SBATCH -A allocation_name
+#SBATCH --ntasks-per-node 18
 #SBATCH -o singularity_library.output.%j
 #SBATCH -e ./singularity_library.err.%j
 #SBATCH -J singularity_library
@@ -49,19 +50,19 @@ source /etc/profile.d/modules.sh
 export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
 module load openmpi
-pdsh -w "$SLURM_JOB_NODELIST" singularity pull library://edoapra/default/nwchem-dev.ompi40x.ifort.skylake:sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b
-srun singularity exec library://edoapra/default/nwchem-dev.ompi40x.skylake:sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b
+pdsh -w "$SLURM_JOB_NODELIST" singularity pull library://edoapra/default/nwchem-dev.ompi40x.ifort.skylake:latest
+srun singularity exec library://edoapra/default/nwchem-dev.ompi40x.skylake:latest
 ```
 
 
 ### option \#2 Use the name of the downloaded image
 ```
-singularity pull library://edoapra/default/nwchem-dev.ompi40x.skylake:sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b
+singularity pull library://edoapra/default/nwchem-dev.ompi40x.ifort.skylake:latest
 ```
-The name of the downloaded image is `library://edoapra/default/nwchem-dev.ompi40x.sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b`, therefore the commands to run it on tahoma will change to
+The name of the downloaded image is `library://edoapra/default/nwchem-dev.ompi40x.ifort.skylake:latest`, therefore the commands to run it on tahoma will change to
 
 ```
 module purge
 module load openmpi
-srun singularity exec ./library://edoapra/default/nwchem-dev.ompi40x.skylake:sha256.2f861d26d2424e979090d67ce83500df640c96a192b2942fc7f6c89f8e4f0b8b nwchem "input file"
+singularity exec library://edoapra/default/nwchem-dev.ompi40x.ifort.skylake:latest nwchem "input file"
 ```
