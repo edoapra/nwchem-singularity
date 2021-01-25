@@ -30,7 +30,7 @@ Once the the image has been downloaded, there are two options for using it
 export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
 module load openmpi/3.1.3
-srun singularity exec library://edoapra/default/nwchem-dev.ompi40x.ifort.skylake:latest
+srun singularity exec library://edoapra/default/nwchem-dev.ompi40x.ifort.skylake:latest nwchem "input file"
 ```
 
 #### Slurm batch script
@@ -51,7 +51,7 @@ export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
 module load openmpi
 pdsh -w "$SLURM_JOB_NODELIST" singularity pull library://edoapra/default/nwchem-dev.ompi40x.ifort.skylake:latest
-srun singularity exec library://edoapra/default/nwchem-dev.ompi40x.skylake:latest
+srun singularity exec library://edoapra/default/nwchem-dev.ompi40x.skylake:latest nwchem "input file"
 ```
 
 
