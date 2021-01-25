@@ -50,8 +50,10 @@ source /etc/profile.d/modules.sh
 export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
 module load openmpi
-pdsh -w "$SLURM_JOB_NODELIST" singularity pull library://edoapra/default/nwchem-dev.ompi40x.ifort.skylake:latest
-srun singularity exec library://edoapra/default/nwchem-dev.ompi40x.skylake:latest nwchem "input file"
+singularity pull --name /fast_scratch/nwchems_`id -u`.img pull library://edoapra/default/nwchem-dev.ompi40x.if\
+ort.skylake:latest
+sbcast -F2 -v /fast_scratch/nwchems_`id -u`.img /big_scratch/nwchems.img
+srun singularity exec /big_scratch/nwchems.img nwchem "input file"
 ```
 
 
