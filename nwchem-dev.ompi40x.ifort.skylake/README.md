@@ -52,7 +52,7 @@ module purge
 module load openmpi
 singularity pull --name /fast_scratch/nwchems_`id -u`.img pull library://edoapra/default/nwchem-dev.ompi40x.if\
 ort.skylake:latest
-sbcast -F2 -v /fast_scratch/nwchems_`id -u`.img /big_scratch/nwchems.img
+srun -N $SLURM_NNODES -n $SLURM_NNODES cp /fast_scratch/nwchems_`id -u`.img /big_scratch/nwchems.img
 srun singularity exec /big_scratch/nwchems.img nwchem "input file"
 ```
 
