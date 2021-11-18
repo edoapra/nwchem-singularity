@@ -11,7 +11,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     echo '@@ ls -l Singularity'
     ls -lart Singularity
     echo SINGULARITY_ROOTFS is ${SINGULARITY_ROOTFS}
-    if [[ ! -z "${GITHUB_WORKSPACE}" ]]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem; rsync -av ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ;fi
+    bash -c "if [[ ! -z "${GITHUB_WORKSPACE}" ]]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem; rsync -av ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ;fi"
     echo '@@@ ls -l SINGULARITY_ROOTFS'
     ls -l ${SINGULARITY_ROOTFS}
 
@@ -38,8 +38,8 @@ pwd \
 && ls -lart  \
 && echo '@@ ls on /opt' \
 && ls -lart /opt \
-&& if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi 
-apt-get -y install -y curl wget tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
+&& bash -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi " \
+&& apt-get -y install -y curl wget tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
  g++ gfortran   make ssh patch curl  wget unzip perl-base file \
  python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
  libnuma-dev libslurm-dev libpmi2-0-dev libpmi0-dev  libnl-3-dev libnl-route-3-dev udev \
@@ -87,7 +87,7 @@ export USE_HWOPT=n
 #ENV         CCSDTQ=y
 #ENV         CCSDTLR=y
 ls -l nwchem* || true \
-&& if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi \
+&& bash -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
 && cd nwchem \
 && export NWCHEM_TOP=`pwd` \
 && ls -lrt
