@@ -18,7 +18,7 @@ jobs:
         matrix:
           folder:
             - nwchem-701.mpich321.ivybridge
-  steps:
+    steps:
     - uses: actions/checkout@v2
     - uses: eWaterCycle/setup-singularity@v7
       with:
