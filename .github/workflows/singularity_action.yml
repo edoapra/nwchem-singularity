@@ -36,5 +36,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.folder }}/${{ matrix.folder }}.simg
-        path: nwchem_${{ matrix.folder }}.simg
+        name: ${{ matrix.folder }}
+        path: ${{ matrix.folder }}/${{ matrix.folder }}.simg
