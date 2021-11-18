@@ -28,7 +28,7 @@ jobs:
         cd ${{ matrix.folder }}
         singularity build --fakeroot nwchem_${{ matrix.folder }}.simg  Singularity
     - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: nwchem_${{ matrix.folder }}
-          path: nwchem_${{ matrix.folder }}.simg
+      uses: actions/upload-artifact@v2
+      with:
+        name: nwchem_${{ matrix.folder }}
+        path: nwchem_${{ matrix.folder }}.simg
