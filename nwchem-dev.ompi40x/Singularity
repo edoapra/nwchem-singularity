@@ -2,6 +2,18 @@ Bootstrap: docker
 From: ubuntu:20.04
 %labels
 MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
+
+%setup
+    echo 'pwd is `pwd`'
+    echo '@@ ls -l '
+    ls -lart
+    echo SINGULARITY_ROOTFS is ${SINGULARITY_ROOTFS}
+    echo '@@@ ls -l SINGULARITY_ROOTFS'
+    echo  ls -l ${SINGULARITY_ROOTFS} '
+
+%files
+    nwchem nwchem
+
 %post
 #
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
@@ -18,7 +30,7 @@ pwd \
 && apt-get -y update \
 && apt-get -y install -y tzdata git \
 && pwd \
-&& ls -lart \
+&& ls -Rlart \
 && echo '@@ ls on /opt' \
 && ls -lart /opt \
 && if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi 
