@@ -23,7 +23,12 @@ jobs:
     - uses: eWaterCycle/setup-singularity@v7
       with:
         singularity-version: 3.8.3
-    - name: Run a singularity container
+    - name: build a singularity container
       run: |
         cd ${{ matrix.folder }}
-        singularity build --fakeroot nwchem.simg  Singularity
+        singularity build --fakeroot nwchem_${{ matrix.folder }}.simg  Singularity
+    - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: nwchem_${{ matrix.folder }}
+          path: nwchem_${{ matrix.folder }}.simg
