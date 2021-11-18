@@ -39,7 +39,8 @@ pwd \
 && apt-get -y update \
 && apt-get -y install -y tzdata git \
 && pwd \
-&& ls -Rlart \
+&& echo '@@ ls -lart ' \
+&& ls -lart  \
 && echo '@@ ls on /opt' \
 && ls -lart /opt \
 && if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi 
