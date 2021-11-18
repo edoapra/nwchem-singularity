@@ -50,12 +50,12 @@ jobs:
       run: |
         cd ${{ matrix.folder }}
         singularity build --fakeroot ${{ matrix.folder }}.simg  Singularity
-      - name: store cache
-        run: |
-          mkdir -p ~/cache || true
-          [ -d "/opt/ompi" ] && rsync -av /opt/ompi  ~/cache/. || true
-          echo "cache stored"
-          ls -Rla ~/cache
+    - name: store cache
+      run: |
+        mkdir -p ~/cache || true
+        [ -d "/opt/ompi" ] && rsync -av /opt/ompi  ~/cache/. || true
+        echo "cache stored"
+        ls -Rla ~/cache
     - name: find image file
       run: |
         cd ${{ matrix.folder }}
