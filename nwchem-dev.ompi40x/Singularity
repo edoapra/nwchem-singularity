@@ -14,14 +14,16 @@ export OMPI_DIR=/opt/ompi
 #export SINGULARITY_nwchem_hash=77ba3a6e1dd6f9ba26879d0416bb93b302f1f4f7
 export SINGULARITY_ompi=4.0.5
 export SINGULARITY_ompi_prefix=ompi-$ompi
-pwd
-apt-get update \
+pwd \
+&& apt-get -y update \
 && apt-get -y install -y tzdata git \
 && pwd \
-& ls -lart \
-&& if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi \
-&& apt-get -y install -y curl wget tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
- g++ gfortran   make ssh patch curl  wget unzip perl file \
+&& ls -lart \
+&& echo '@@ ls on /opt \
+&& ls -lart /opt \
+&& if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi 
+apt-get -y install -y curl wget tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
+ g++ gfortran   make ssh patch curl  wget unzip perl-base file \
  python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
  libnuma-dev libslurm-dev libpmi2-0-dev libpmi0-dev  libnl-3-dev libnl-route-3-dev udev \
 && apt-get clean \
@@ -67,7 +69,7 @@ export USE_HWOPT=n
 #ENV         MRCC_METHODS=y
 #ENV         CCSDTQ=y
 #ENV         CCSDTLR=y
-ls -l nwchem* \
+ls -l nwchem* || true \
 #cd /opt; git clone --depth 1  https://github.com/nwchemgit/nwchem.git  \
 && if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi \
 && cd nwchem/src \
