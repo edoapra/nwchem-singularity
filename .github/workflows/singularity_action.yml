@@ -26,9 +26,15 @@ jobs:
     - name: build a singularity container
       run: |
         cd ${{ matrix.folder }}
-        singularity build --fakeroot nwchem_${{ matrix.folder }}.simg  Singularity
+        singularity build --fakeroot ${{ matrix.folder }}.simg  Singularity
+    - name: find image file
+      run: |
+        cd ${{ matrix.folder }}
+        find . -name ${{ matrix.folder }}.simg
+        cd ..
+        find . -name ${{ matrix.folder }}.simg
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: nwchem_${{ matrix.folder }}
+        name: ${{ matrix.folder }}/${{ matrix.folder }}.simg
         path: nwchem_${{ matrix.folder }}.simg
