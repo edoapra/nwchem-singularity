@@ -17,7 +17,8 @@ jobs:
         fail-fast: false
         matrix:
           folder:
-            - nwchem-701.mpich321.ivybridge
+            - nwchem-dev.ompi40x
+#            - nwchem-701.mpich321.ivybridge
     steps:
     - uses: actions/checkout@v2
     - uses: eWaterCycle/setup-singularity@v7
