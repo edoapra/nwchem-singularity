@@ -1,0 +1,29 @@
+name: nwchem_singularity
+
+on:
+  push:
+  pull_request:
+  release:
+  schedule:
+    - cron: '59 15 * * FRI'
+  repository_dispatch:
+    types: [backend_automation]
+  workflow_dispatch:
+
+jobs:
+  build_image:
+    runs-on: ubuntu
+    strategy:
+        fail-fast: false
+        matrix:
+          folder:
+            - nwchem-701.mpich321.ivybridge
+  steps:
+    - uses: actions/checkout@v2
+    - uses: eWaterCycle/setup-singularity@v7
+      with:
+        singularity-version: 3.8.3
+    - name: Run a singularity container
+      run: |
+        cd ${{ matrix.folder }}
+        singularity build --fakeroot nwchem.simg  Singularity
