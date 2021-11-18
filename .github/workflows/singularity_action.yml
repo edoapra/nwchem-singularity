@@ -20,14 +20,42 @@ jobs:
             - nwchem-dev.ompi40x
 #            - nwchem-701.mpich321.ivybridge
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout nwchem-singularity source
+      uses: actions/checkout@v2
+    - name: Setup cache
+      id: setup-cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/cache
+          key: ${{ matrix.folder}}-nwchemcache-v000
+      - name: fetch cache
+        if: steps.setup-cache.outputs.cache-hit == 'true'
+        run: |
+          if [[ -f ~/cache/ompi/lib/libmpi.so ]]; then \
+          echo "ompi cache present" ; \
+          mkdir -p /opt || true ; \
+          [ -d ~/cache/ompi ] && rsync -av ~/cache/ompi /opt/. ; \
+          echo "cache fetched" ; \
+          fi
     - uses: eWaterCycle/setup-singularity@v7
       with:
         singularity-version: 3.8.3
+    - name: Checkout nwchem source
+      uses: actions/checkout@v2
+      with:
+        repository: nwchemgit/nwchem
+        fetch-depth: 1
     - name: build a singularity container
       run: |
         cd ${{ matrix.folder }}
         singularity build --fakeroot ${{ matrix.folder }}.simg  Singularity
+      - name: store cache
+        run: |
+          mkdir -p ~/cache || true
+          [ -d "/opt/ompi" ] && rsync -av /opt/ompi  ~/cache/. || true
+          echo "cache stored"
+          ls -Rla ~/cache
     - name: find image file
       run: |
         cd ${{ matrix.folder }}

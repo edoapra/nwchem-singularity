@@ -14,7 +14,6 @@ export OMPI_DIR=/opt/ompi
 #export SINGULARITY_nwchem_hash=77ba3a6e1dd6f9ba26879d0416bb93b302f1f4f7
 export SINGULARITY_ompi=4.0.5
 export SINGULARITY_ompi_prefix=ompi-$ompi
-cd /tmp
 pwd
 apt-get update \
 && apt-get -y install -y tzdata  \
@@ -43,13 +42,14 @@ cd $ompi_prefix                                                        && \
 make -j 6                                                               && \
 make install                                                            && \
 make clean                                                              && \
-cd /tmp && \
-rm -rf /usr/share/doc/ && \
-rm -rf /usr/share/man/
+#cd /tmp && \
+#rm -rf /usr/share/doc/ && \
+#rm -rf /usr/share/man/
+cd ..
 export PATH=$OMPI_DIR/bin:$PATH
 export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
 export ARMCI_NETWORK=MPI-PR
-export NWCHEM_TOP=/opt/nwchem
+#export NWCHEM_TOP=/opt/nwchem
 export NWCHEM_TARGET=LINUX64
 export NWCHEM_MODULES="all python"
 export BUILD_OPENBLAS=1
@@ -64,20 +64,22 @@ export USE_HWOPT=n
 #ENV         MRCC_METHODS=y
 #ENV         CCSDTQ=y
 #ENV         CCSDTLR=y
-cd /opt; git clone --depth 1  https://github.com/nwchemgit/nwchem.git  \
+ls -l nwchem* \
+#cd /opt; git clone --depth 1  https://github.com/nwchemgit/nwchem.git  \
+&& if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi \
 && cd nwchem/src \
 && make nwchem_config && make -j6  \
-            && rm -rf tce tools nwdft NWints geom symmetry util nwxc ddscf lapack blas rism argos peigs rmdft gradients symmetry property smd lucia dplot propery hessian ccsd mp2_grad moints cafe analyz dimqm libext /opt/nwchem/lib /opt/nwchem/QA ../contrib ../examples ../.git ../travis ../web nwpw/nwpwlib/nwpwxc rdmft ../doc \
-#clean unnecessary packages
-            && DEBIAN_FRONTEND=noninteractive apt-get -y install localepurge \
-	    && echo MANDELETE >  /etc/locale.nopurge \
-	    && echo DONTBOTHERNEWLOCALE >> /etc/locale.nopurge \
-	    && echo en_US.UTF-8 >> /etc/locale.nopurge \
-	    && localepurge \
-	    && rm -rf /usr/share/doc \
-	   && du -sh /opt/nwchem \
-	   && du -sk /opt/nwchem/*|sort -n \
-	   && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
+&& make install INSTALL_PREFIX=/opt/nwchem \
+&& rm -rf tce tools nwdft NWints geom symmetry util nwxc ddscf lapack blas rism argos peigs rmdft gradients symmetry property smd lucia dplot propery hessian ccsd mp2_grad moints cafe analyz dimqm libext /opt/nwchem/lib /opt/nwchem/QA ../contrib ../examples ../.git ../travis ../web nwpw/nwpwlib/nwpwxc rdmft ../doc \
+&& DEBIAN_FRONTEND=noninteractive apt-get -y install localepurge \
+&& echo MANDELETE >  /etc/locale.nopurge \
+&& echo DONTBOTHERNEWLOCALE >> /etc/locale.nopurge \
+&& echo en_US.UTF-8 >> /etc/locale.nopurge \
+&& localepurge \
+&& rm -rf /usr/share/doc  /usr/share/man \
+&& du -sh /opt/nwchem \
+&& du -sk /opt/nwchem/*|sort -n \
+&& dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
 
 
 #clean unnecessary packages
@@ -104,7 +106,7 @@ export AMBER_4=$NWCHEM_TOP/src/data/amber_u/
 export SPCE=${NWCHEM_TOP}/src/data/solvents/spce.rst
 export CHARMM_S=$NWCHEM_TOP/src/data/charmm_s/
 export CHARMM_X=$NWCHEM_TOP/src/data/charmm_x/
-export PATH=$PATH:$NWCHEM_TOP/bin/LINUX64
+export PATH=$PATH:/opt/nwchem/bin/
 export PATH=$OMPI_DIR/bin:$PATH
 export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
 #%runscript
