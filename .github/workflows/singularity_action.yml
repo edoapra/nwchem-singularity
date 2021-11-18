@@ -45,7 +45,14 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: nwchemgit/nwchem
+        clean: false
         fetch-depth: 1
+    - name: lsls
+      run: |
+        pwd ;\
+        ls -la ;\
+        ls -lart /home/runner/work/ ;\
+        ls -lart /home/runner/work/nwchem-singularity
     - name: build a singularity container
       run: |
         cd ${{ matrix.folder }}

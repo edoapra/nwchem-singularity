@@ -97,7 +97,7 @@ export SINGULARITYENV_APPEND_PATH=$OMPI_DIR/bin
 export SINGULARITYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib
 
 #export nwchem_hash=77ba3a6e1dd6f9ba26879d0416bb93b302f1f4f7
-export NWCHEM_TOP=/opt/nwchem
+#export NWCHEM_TOP=/opt/nwchem
 export FFIELD=amber
 export AMBER_1=$NWCHEM_TOP/src/data/amber_s/
 export AMBER_2=$NWCHEM_TOP/src/data/amber_q/
