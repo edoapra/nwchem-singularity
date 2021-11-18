@@ -4,12 +4,15 @@ From: ubuntu:20.04
 MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 
 %setup
-    echo 'pwd is `pwd`'
+    echo 'pwd is '
+    pwd
     echo '@@ ls -l '
     ls -lart
+    echo '@@ ls -l Singularity'
+    ls -lart Singularity
     echo SINGULARITY_ROOTFS is ${SINGULARITY_ROOTFS}
     echo '@@@ ls -l SINGULARITY_ROOTFS'
-    echo  ls -l ${SINGULARITY_ROOTFS} '
+    ls -l ${SINGULARITY_ROOTFS}
 
 %files
     nwchem nwchem
@@ -82,7 +85,6 @@ export USE_HWOPT=n
 #ENV         CCSDTQ=y
 #ENV         CCSDTLR=y
 ls -l nwchem* || true \
-#cd /opt; git clone --depth 1  https://github.com/nwchemgit/nwchem.git  \
 && if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi \
 && cd nwchem/src \
 && make nwchem_config && make -j6  \
