@@ -22,6 +22,15 @@ jobs:
     steps:
     - name: Checkout nwchem-singularity source
       uses: actions/checkout@v2
+    - name: lsls1
+      run: |
+        pwd ;\
+        echo '@@@@ ls -la ';
+        ls -la ;\
+        echo '@@@@ ls -lart /home/runner/work/' ;\
+        ls -lart /home/runner/work/ ;\
+        echo '@@@@ ls -lart /home/runner/work/nwchem-singularity' ;\
+        ls -lart /home/runner/work/nwchem-singularity
     - name: Setup cache
       id: setup-cache
       uses: actions/cache@v2
@@ -47,11 +56,14 @@ jobs:
         repository: nwchemgit/nwchem
         clean: false
         fetch-depth: 1
-    - name: lsls
+    - name: lsls2
       run: |
         pwd ;\
+        echo '@@@@ ls -la ';
         ls -la ;\
+        echo '@@@@ ls -lart /home/runner/work/' ;\
         ls -lart /home/runner/work/ ;\
+        echo '@@@@ ls -lart /home/runner/work/nwchem-singularity' ;\
         ls -lart /home/runner/work/nwchem-singularity
     - name: build a singularity container
       run: |
