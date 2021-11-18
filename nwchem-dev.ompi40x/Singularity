@@ -12,6 +12,8 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     ls -lart
     echo '@@ ls -l /home/runner/work/nwchem-singularity/'
     ls -l /home/runner/work/nwchem-singularity/
+    echo '@@ ls -l /home/runner/work/nwchem-singularity/nwchem-singularity'
+    ls -l /home/runner/work/nwchem-singularity/nwchem-singularity
     echo '@@ ls -l Singularity'
     ls -lart Singularity
     echo SINGULARITY_ROOTFS is ${SINGULARITY_ROOTFS}
@@ -19,7 +21,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     ls -l ${SINGULARITY_ROOTFS}
 
 %files
-    nwchem nwchem
+    /home/runner/work/nwchem-singularity/nwchem-singularity/nwchem nwchem
 
 %post
 #
