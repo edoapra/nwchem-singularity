@@ -4,10 +4,14 @@ From: ubuntu:20.04
 MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 
 %setup
+    env
+    env|grep runner
     echo 'pwd is '
     pwd
     echo '@@ ls -l '
     ls -lart
+    echo '@@ ls -l /home/runner/work/nwchem-singularity/'
+    ls -l /home/runner/work/nwchem-singularity/
     echo '@@ ls -l Singularity'
     ls -lart Singularity
     echo SINGULARITY_ROOTFS is ${SINGULARITY_ROOTFS}
