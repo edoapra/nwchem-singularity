@@ -12,7 +12,7 @@ on:
 
 jobs:
   build_image:
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     strategy:
         fail-fast: false
         matrix:
