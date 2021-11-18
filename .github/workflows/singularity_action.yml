@@ -55,6 +55,7 @@ jobs:
       with:
         repository: nwchemgit/nwchem
         clean: false
+        path: nwchem
         fetch-depth: 1
     - name: lsls2
       run: |
