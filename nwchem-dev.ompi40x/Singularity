@@ -11,7 +11,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     echo '@@ ls -l Singularity'
     ls -lart Singularity
     echo SINGULARITY_ROOTFS is ${SINGULARITY_ROOTFS}
-    bash -c "if [[ ! -z "${GITHUB_WORKSPACE}" ]]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem; rsync -av ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ;fi"
+    bash -c "if [[ ! -z "${GITHUB_WORKSPACE}" ]]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ;fi"
     echo '@@@ ls -l SINGULARITY_ROOTFS'
     ls -l ${SINGULARITY_ROOTFS}
 
@@ -22,12 +22,10 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 #
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
 export DEBIAN_FRONTEND=noninteractive
-#export nwchem_hash=77ba3a6e1dd6f9ba26879d0416bb93b302f1f4f7
 export ompi=4.0.5
 export ompi_prefix=ompi-$ompi
 export ucx=1.8.1
 export OMPI_DIR=/opt/ompi
-#export SINGULARITY_nwchem_hash=77ba3a6e1dd6f9ba26879d0416bb93b302f1f4f7
 export SINGULARITY_ompi=4.0.5
 export SINGULARITY_ompi_prefix=ompi-$ompi
 pwd \
@@ -90,11 +88,10 @@ ls -l nwchem* || true \
 && bash -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
 && cd nwchem \
 && export NWCHEM_TOP=`pwd` \
-&& ls -lrt
+&& ls -lrt \
 && cd src \
 && make nwchem_config && make -j6  \
 && make install INSTALL_PREFIX=/opt/nwchem \
-&& rm -rf tce tools nwdft NWints geom symmetry util nwxc ddscf lapack blas rism argos peigs rmdft gradients symmetry property smd lucia dplot propery hessian ccsd mp2_grad moints cafe analyz dimqm libext /opt/nwchem/lib /opt/nwchem/QA ../contrib ../examples ../.git ../travis ../web nwpw/nwpwlib/nwpwxc rdmft ../doc \
 && DEBIAN_FRONTEND=noninteractive apt-get -y install localepurge \
 && echo MANDELETE >  /etc/locale.nopurge \
 && echo DONTBOTHERNEWLOCALE >> /etc/locale.nopurge \
