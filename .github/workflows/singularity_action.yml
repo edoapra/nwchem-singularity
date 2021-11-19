@@ -73,6 +73,7 @@ jobs:
     - name: store cache
       run: |
         mkdir -p ~/cache || true
+        cd ${{ matrix.folder }}
         singularity exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
         echo "cache stored"
         ls -Rla ~/cache
