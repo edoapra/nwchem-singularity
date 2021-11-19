@@ -34,9 +34,11 @@ jobs:
       run: |
         if [[ -f ~/cache/ompi/lib/libmpi.so ]]; then \
         echo "ompi cache present" ; \
-        mkdir -p /opt || true ; \
-        [ -d ~/cache/ompi ] && rsync -av ~/cache/ompi /opt/. ; \
-        ls -l /opt/ompi/lib/libmpi.so* ; \
+        mkdir -p opt || true ; \
+        [ -d ~/cache/ompi ] && rsync -av ~/cache/ompi opt/. ; \
+        ls -l opt/ompi/lib/libmpi.so* ; \
+        pwd ; \
+        ls -l `pwd`/opt/ompi/lib/libmpi.so* ; \
         echo "cache fetched" ; \
         fi
     - uses: eWaterCycle/setup-singularity@v7

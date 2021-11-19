@@ -7,11 +7,10 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     echo '@@@@'
     ls -l "${GITHUB_WORKSPACE}" || true
     ls -la "/" || true
-    ls -la "/opt" || true
-    ls -la "/opt/ompi" || true
+    ls -la "${GITHUB_WORKSPACE}/opt/ompi" || true
     echo '@@@@'
     bash -c "if [[ ! -z "${GITHUB_WORKSPACE}" ]]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ;fi"
-    bash -c "if [[ ! -z /opt/ompi ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a /opt/ompi ${SINGULARITY_ROOTFS}/opt/. ;fi"
+    bash -c "if [[ ! -z "${GITHUB_WORKSPACE}/opt/ompi" ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${GITHUB_WORKSPACE}/opt/ompi ${SINGULARITY_ROOTFS}/opt/. ;fi"
     echo '@@@ ls -l SINGULARITY_ROOTFS'
     ls -l ${SINGULARITY_ROOTFS}
 
