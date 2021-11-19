@@ -28,7 +28,7 @@ jobs:
       with:
         path: |
           ~/cache
-        key: ${{ matrix.folder}}-nwchemcache-v001
+        key: ${{ matrix.folder}}-nwchemcache-v002
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
@@ -67,6 +67,7 @@ jobs:
         mkdir -p ~/cache || true
         cd ${{ matrix.folder }}
         singularity exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
+        singularity exec ${{ matrix.folder }}.simg cp -r nwchem/src/libext ~/cache/. ||true
         echo "cache stored"
         ls -Rla ~/cache
     - name: find image file
