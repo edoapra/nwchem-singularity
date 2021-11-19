@@ -73,7 +73,7 @@ jobs:
     - name: store cache
       run: |
         mkdir -p ~/cache || true
-        [ -d "/opt/ompi" ] && rsync -av /opt/ompi  ~/cache/. || true
+        singularity exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
         echo "cache stored"
         ls -Rla ~/cache
     - name: find image file
