@@ -22,22 +22,13 @@ jobs:
     steps:
     - name: Checkout nwchem-singularity source
       uses: actions/checkout@v2
-    - name: lsls1
-      run: |
-        pwd ;\
-        echo '@@@@ ls -la ';
-        ls -la ;\
-        echo '@@@@ ls -lart /home/runner/work/' ;\
-        ls -lart /home/runner/work/ ;\
-        echo '@@@@ ls -lart /home/runner/work/nwchem-singularity' ;\
-        ls -lart /home/runner/work/nwchem-singularity
     - name: Setup cache
       id: setup-cache
       uses: actions/cache@v2
       with:
         path: |
           ~/cache
-        key: ${{ matrix.folder}}-nwchemcache-v000
+        key: ${{ matrix.folder}}-nwchemcache-v001
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
@@ -45,6 +36,7 @@ jobs:
         echo "ompi cache present" ; \
         mkdir -p /opt || true ; \
         [ -d ~/cache/ompi ] && rsync -av ~/cache/ompi /opt/. ; \
+        ls -l /opt/ompi/lib/libmpi.so* ; \
         echo "cache fetched" ; \
         fi
     - uses: eWaterCycle/setup-singularity@v7
@@ -57,15 +49,6 @@ jobs:
         clean: false
         path: nwchem
         fetch-depth: 1
-    - name: lsls2
-      run: |
-        pwd ;\
-        echo '@@@@ ls -la ';
-        ls -la ;\
-        echo '@@@@ ls -lart /home/runner/work/' ;\
-        ls -lart /home/runner/work/ ;\
-        echo '@@@@ ls -lart /home/runner/work/nwchem-singularity' ;\
-        ls -lart /home/runner/work/nwchem-singularity
     - name: build a singularity container
       run: |
         cd ${{ matrix.folder }}
