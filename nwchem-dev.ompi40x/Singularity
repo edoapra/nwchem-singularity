@@ -4,12 +4,9 @@ From: ubuntu:20.04
 MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 
 %setup
-    echo '@@@@'
-    ls -l "${GITHUB_WORKSPACE}" || true
-    ls -la "${GITHUB_WORKSPACE}/opt/ompi/lib/" || true
-    echo '@@@@'
     bash -c "if [[ ! -z "${GITHUB_WORKSPACE}" ]]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ;fi"
     bash -c "if [[  -f ${GITHUB_WORKSPACE}/opt/ompi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${GITHUB_WORKSPACE}/opt/ompi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"
+    bash -c "if [[  -f ${GITHUB_WORKSPACE}/libext/lib/libnwc_openblas.a ]]; then rsync -a ${GITHUB_WORKSPACE}/libext/* ${SINGULARITY_ROOTFS}/nwchem/src/libext/. ; echo libext cache fetched ;fi"
     echo '@@@ ls -l SINGULARITY_ROOTFS'
     ls -l ${SINGULARITY_ROOTFS}
 
@@ -80,6 +77,8 @@ export USE_MPI=y
 export USE_MPIF=y
 export USE_MPIF4=y
 export USE_HWOPT=n
+export USE_LIBXC=y
+export USE_SIMINT=y
 #ENV         MRCC_METHODS=y
 #ENV         CCSDTQ=y
 #ENV         CCSDTLR=y
@@ -89,6 +88,7 @@ ls -l nwchem* || true \
 && export NWCHEM_TOP=`pwd` \
 && ls -lrt \
 && cd src \
+&& ls -lrt libext/lib || true \
 && make nwchem_config && make -j6  \
 && make install INSTALL_PREFIX=/opt/nwchem \
 && DEBIAN_FRONTEND=noninteractive apt-get -y install localepurge \

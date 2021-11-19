@@ -39,7 +39,14 @@ jobs:
         ls -l opt/ompi/lib/libmpi.so* ; \
         pwd ; \
         ls -l `pwd`/opt/ompi/lib/libmpi.so* ; \
-        echo "cache fetched" ; \
+        echo "ompi cache fetched" ; \
+        fi
+        if [[ -f ~/cache/libext/lib/libnwc_openblas.a ]]; then \
+        echo "libext cache present" ; \
+        mkdir -p libext || true ; \
+        [ -d ~/cache/libext ] && rsync -av ~/cache/libext/* libext/. ; \
+        ls -l libext/lib ; \
+        echo "libext cache fetched" ; \
         fi
     - uses: eWaterCycle/setup-singularity@v7
       with:
