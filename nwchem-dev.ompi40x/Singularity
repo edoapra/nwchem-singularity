@@ -99,6 +99,9 @@ ls -l nwchem* || true \
 && rm -rf /usr/share/doc  /usr/share/man \
 && du -sh /opt/nwchem \
 && du -sk /opt/nwchem/*|sort -n \
+&& du -sk *|sort -n  || true\
+&& cd .. \
+&& du -sk *|sort -n || true \
 && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
 
 
