@@ -6,11 +6,10 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 %setup
     echo '@@@@'
     ls -l "${GITHUB_WORKSPACE}" || true
-    ls -la "/" || true
-    ls -la "${GITHUB_WORKSPACE}/opt/ompi" || true
+    ls -la "${GITHUB_WORKSPACE}/opt/ompi/lib/" || true
     echo '@@@@'
     bash -c "if [[ ! -z "${GITHUB_WORKSPACE}" ]]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ;fi"
-    bash -c "if [[ ! -z "${GITHUB_WORKSPACE}/opt/ompi" ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${GITHUB_WORKSPACE}/opt/ompi ${SINGULARITY_ROOTFS}/opt/. ;fi"
+    bash -c "if [[  -f ${GITHUB_WORKSPACE}/opt/ompi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${GITHUB_WORKSPACE}/opt/ompi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"
     echo '@@@ ls -l SINGULARITY_ROOTFS'
     ls -l ${SINGULARITY_ROOTFS}
 
