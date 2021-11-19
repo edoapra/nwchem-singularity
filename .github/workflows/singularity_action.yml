@@ -84,4 +84,4 @@ jobs:
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
         singularity remote list
-        singularity push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ gitub.repository }}:last
+        singularity push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}:last
