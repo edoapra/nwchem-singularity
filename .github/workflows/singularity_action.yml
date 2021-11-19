@@ -28,7 +28,7 @@ jobs:
       with:
         path: |
           ~/cache
-        key: ${{ matrix.folder}}-nwchemcache-v002
+        key: ${{ matrix.folder}}-nwchemcache-v003
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
@@ -67,7 +67,8 @@ jobs:
         mkdir -p ~/cache || true
         cd ${{ matrix.folder }}
         singularity exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
-        singularity exec ${{ matrix.folder }}.simg cp -r nwchem/src/libext ~/cache/. ||true
+        singularity exec ${{ matrix.folder }}.simg cp -r /nwchem/src/libext ~/cache/. ||true
+        ls -l /nwchem/src/libext ||true
         echo "cache stored"
         ls -Rla ~/cache
     - name: find image file
@@ -85,4 +86,4 @@ jobs:
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
         singularity remote list
-        singularity push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}:last
+        singularity push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:last
