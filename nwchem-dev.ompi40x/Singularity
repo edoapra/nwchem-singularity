@@ -43,7 +43,7 @@ wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
 && cd ucx-$ucx \
 && mkdir build && cd build \
 && ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
-&& make -j4 && make install INSTALL_PREFIX=/opt/nwchem \
+&& make -j4 && make install \
 && cd ../.. \
 && wget https://github.com/open-mpi/ompi/archive/v$ompi.tar.gz -O $ompi_prefix.tar.gz && \
 tar xzf $ompi_prefix.tar.gz                                           && \

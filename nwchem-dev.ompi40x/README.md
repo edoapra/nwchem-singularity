@@ -12,14 +12,14 @@ singularity build --fakeroot nwchem.simg  Singularity
 From a Slurm script or inside an interactive Slurm session
 ```
 module purge
-module load openmpi
+module load openmpi/4.0.5
 srun  singularity exec ./nwchem.simg nwchem "input file"
 ```
 ## Using image from the Singularity Library on EMSL tahoma
 Instead of building on cascade, you can pull the image from the Singularity Library with the command
 
 ```
-singularity pull library://edoapra/default/nwchem-dev.ompi40x:latest
+singularity pull oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi40x:latest
 ```
 Once the the image has been downloaded, there are two options for using it
 
@@ -29,8 +29,8 @@ Once the the image has been downloaded, there are two options for using it
 ```
 export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
-module load openmpi/3.1.3
-srun singularity exec library://edoapra/default/nwchem-dev.ompi40x:latest nwchem "input file"
+module load openmpi/4.0.5
+srun singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi40x:latest nwchem "input file"
 ```
 
 #### Slurm batch script
@@ -49,7 +49,7 @@ This is an example of a Slurm batch script
 source /etc/profile.d/modules.sh
 export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
-module load openmpi
+module load openmpi/4.0.5
 singularity pull --name ~/nwchem_`id -u`.img pull library://edoapra/default/nwchem-dev.ompi40x:latest
 srun -N $SLURM_NNODES -n $SLURM_NNODES cp ~/nwchem_`id -u`.img /big_scratch/nwchem.img
 srun singularity exec /big_scratch/nwchem.img nwchem "input file"
@@ -60,10 +60,10 @@ srun singularity exec /big_scratch/nwchem.img nwchem "input file"
 ```
 singularity pull library://edoapra/default/nwchem-dev.ompi40x:latest
 ```
-The name of the downloaded image is `library://edoapra/default/nwchem-dev.ompi40x:latest`, therefore the commands to run it on tahoma will change to
+The name of the downloaded image is `oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi40x:latest`, therefore the commands to run it on tahoma will change to
 
 ```
 module purge
-module load openmpi
-singularity exec library://edoapra/default/nwchem-dev.ompi40x.ifort:latest nwchem "input file"
+module load openmpi/4.0.5
+singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi40x:latest nwchem "input file"
 ```
