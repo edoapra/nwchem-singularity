@@ -28,7 +28,7 @@ jobs:
       with:
         path: |
           ~/cache
-        key: ${{ matrix.folder}}-nwchemcache-v003
+        key: ${{ matrix.folder}}-nwchemcache-v004
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
@@ -47,6 +47,12 @@ jobs:
         [ -d ~/cache/libext ] && rsync -av ~/cache/libext/* libext/. ; \
         ls -l libext/lib ; \
         echo "libext cache fetched" ; \
+        fi
+        if [[ -f ~/cache/simint_install/lib/libnwc_simint.a ]]; then \
+        echo "simint cache present" ; \
+        [ -d ~/cache/simint_install ] && rsync -av ~/cache/simint_install NWints/simint/libsimint_source/. ; \
+        ls -l NWints/simint/libsimint_source/simint_install ; \
+        echo "simint cache fetched" ; \
         fi
     - uses: eWaterCycle/setup-singularity@v7
       with:
@@ -68,9 +74,9 @@ jobs:
         cd ${{ matrix.folder }}
         singularity exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
         singularity exec ${{ matrix.folder }}.simg cp -r /nwchem/src/libext ~/cache/. ||true
-        ls -l /nwchem/src/libext ||true
+        singularity exec ${{ matrix.folder }}.simg cp -r /nwchem/src/NWints/simint/libsimint_source/simint_install ~/cache/. ||true
         echo "cache stored"
-        ls -Rla ~/cache
+        ls -R ~/cache
     - name: find image file
       run: |
         cd ${{ matrix.folder }}
@@ -86,4 +92,4 @@ jobs:
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
         singularity remote list
-        singularity push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:last
+        singularity push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:latest
