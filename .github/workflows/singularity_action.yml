@@ -73,8 +73,9 @@ jobs:
         mkdir -p ~/cache || true
         cd ${{ matrix.folder }}
         singularity exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
-        singularity exec ${{ matrix.folder }}.simg cp -r /nwchem/src/libext ~/cache/. ||true
-        singularity exec ${{ matrix.folder }}.simg cp -r /nwchem/src/NWints/simint/libsimint_source/simint_install ~/cache/. ||true
+        singularity exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
+        ls -l /nwchem/src/NWints/simint/libsimint_source/ || true
+        singularity exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint_install ~/cache/. ||true
         echo "cache stored"
         ls -R ~/cache
     - name: find image file
@@ -98,16 +99,17 @@ jobs:
         export OMPI_VERSION=4.0.7
         pwd
         ls -la
-        wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-$OMPI_VERSION.tar.bz2
-        tar xjf openmpi-$OMPI_VERSION.tar.bz2
-        cd openmpi-$OMPI_VERSION
-        ./configure --prefix=~/ompi --enable-mpi1-compatibility
-        make -j3
-        make install
+#        wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-$OMPI_VERSION.tar.bz2
+#        tar xjf openmpi-$OMPI_VERSION.tar.bz2
+#        cd openmpi-$OMPI_VERSION
+#        ./configure --prefix=~/ompi --enable-mpi1-compatibility
+#        make -j3
+#        make install
         singularity pull ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:latest
-        cd ../nwchem/QA
-        ls -l ~/ompi/bin/mpirun || true
-        export MPIRUN_PATH=~/ompi/bin/mpirun
+        cd nwchem/QA
+        ls -l ~/cache/ompi/bin/mpirun || true
+        ls -l ~/opt/ompi/bin/mpirun || true
+        export MPIRUN_PATH=~/opt/ompi/bin/mpirun
         export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi40x:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
