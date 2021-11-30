@@ -74,7 +74,11 @@ jobs:
         cd ${{ matrix.folder }}
         singularity exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
         singularity exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
-        ls -l /nwchem/src/NWints/simint/libsimint_source/ || true
+        echo sim1
+        singularity exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/simint/libsimint_source/ || true
+        singularity exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/simint || true
+        singularity exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/ || true
+        echo sim2
         singularity exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint_install ~/cache/. ||true
         echo "cache stored"
         ls -R ~/cache
@@ -99,6 +103,7 @@ jobs:
         export OMPI_VERSION=4.0.7
         pwd
         ls -la
+        rm -f */*simg
         singularity pull ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:latest
         cd nwchem/QA
         ls -l ~/cache/ompi/bin/mpirun || true
