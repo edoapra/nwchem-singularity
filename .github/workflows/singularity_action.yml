@@ -99,12 +99,6 @@ jobs:
         export OMPI_VERSION=4.0.7
         pwd
         ls -la
-#        wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-$OMPI_VERSION.tar.bz2
-#        tar xjf openmpi-$OMPI_VERSION.tar.bz2
-#        cd openmpi-$OMPI_VERSION
-#        ./configure --prefix=~/ompi --enable-mpi1-compatibility
-#        make -j3
-#        make install
         singularity pull ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:latest
         cd nwchem/QA
         ls -l ~/cache/ompi/bin/mpirun || true
