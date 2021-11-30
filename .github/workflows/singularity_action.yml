@@ -50,8 +50,8 @@ jobs:
         fi
         if [[ -f ~/cache/simint_install/lib/libnwc_simint.a ]]; then \
         echo "simint cache present" ; \
-        [ -d ~/cache/simint_install ] && rsync -av ~/cache/simint_install NWints/simint/libsimint_source/. ; \
-        ls -l NWints/simint/libsimint_source/simint_install ; \
+        [ -d ~/cache/simint_install ] && rsync -av ~/cache/sim* NWints/simint/libsimint_source/. ; \
+        ls -l NWints/simint/libsimint_source/ ; \
         echo "simint cache fetched" ; \
         fi
     - uses: eWaterCycle/setup-singularity@v7
@@ -79,8 +79,10 @@ jobs:
         singularity exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/simint || true
         singularity exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/ || true
         echo sim2
-        singularity exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint_install ~/cache/. ||true
+        singularity exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l?_p?_d?.install ~/cache/. ||true
+        ln -sf ~/cache/simint.l?_p?_d?.install  ~/cache/simint_install
         echo "cache stored"
+        ls -l ~/cache
         ls -R ~/cache
     - name: find image file
       run: |
@@ -108,7 +110,7 @@ jobs:
         cd nwchem/QA
         ls -l ~/cache/ompi/bin/mpirun || true
         ls -l ~/opt/ompi/bin/mpirun || true
-        export MPIRUN_PATH=~/opt/ompi/bin/mpirun
+        export MPIRUN_PATH=~/opt/ompi/bin/orterun
         export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi40x:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
