@@ -50,7 +50,8 @@ source /etc/profile.d/modules.sh
 export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
 module load openmpi/4.0.5
-singularity pull --name ~/nwchem_`id -u`.img pull library://edoapra/default/nwchem-dev.ompi40x:latest
+rm -f ~/nwchem_`id -u`.img
+singularity pull --name ~/nwchem_`id -u`.img  oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi40x:latest
 srun -N $SLURM_NNODES -n $SLURM_NNODES cp ~/nwchem_`id -u`.img /big_scratch/nwchem.img
 srun singularity exec /big_scratch/nwchem.img nwchem "input file"
 ```
