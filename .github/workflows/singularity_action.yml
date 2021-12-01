@@ -50,6 +50,7 @@ jobs:
         fi
         if [[ -f ~/cache/simint_install/lib/libnwc_simint.a ]]; then \
         echo "simint cache present" ; \
+        mkdir -p NWints/simint/libsimint_source || true ; \
         [ -d ~/cache/simint_install ] && rsync -av ~/cache/sim* NWints/simint/libsimint_source/. ; \
         ls -l NWints/simint/libsimint_source/ ; \
         echo "simint cache fetched" ; \
