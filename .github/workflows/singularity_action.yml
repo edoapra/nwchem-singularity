@@ -116,7 +116,10 @@ jobs:
         rm -f */*simg
         singularity pull ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:latest
         cd nwchem/QA
+        export UCX_TLS=tcp,self
+        export UCX_POSIX_USE_PROC_LINK=n
         export PATH=$GITHUB_WORKSPACE/ompi407/bin:$PATH
+        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
         export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/ompi407/bin:$LD_LIBRARY_PATH
         which mpirun
         export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi40x:latest nwchem"
