@@ -106,13 +106,18 @@ jobs:
         export OMPI_VERSION=4.0.7
         pwd
         ls -la
+        wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-$OMPI_VERSION.tar.bz2
+        tar xjf openmpi-$OMPI_VERSION.tar.bz2
+        cd openmpi-$OMPI_VERSION
+        /configure --prefix=~/ompi407 --enable-mpi1-compatibility
+        make -j3
+        make -j3 install
         rm -f */*simg
         singularity pull ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:latest
         cd nwchem/QA
-        ls -l ~/cache/ompi/bin/mpirun || true
-        ls -l ~/cache/ompi/bin/orterun || true
-        export LD_LIBRARY_PATH=~/cache/ompi/lib:$LD_LIBRARY_PATH
-        export MPIRUN_PATH=~/cache/ompi/bin/orterun
+        export PATH=~/ompi407/bin:$PATH
+        export LD_LIBRARY_PATH=~/ompi407/bin:$LD_LIBRARY_PATH
+        which mpirun
         export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi40x:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
