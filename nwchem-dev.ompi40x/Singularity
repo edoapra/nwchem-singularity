@@ -7,7 +7,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     bash -c "if [[ ! -z "${GITHUB_WORKSPACE}" ]]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ;fi"
     bash -c "if [[  -f ${GITHUB_WORKSPACE}/opt/ompi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${GITHUB_WORKSPACE}/opt/ompi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"
     bash -c "if [[  -f ${GITHUB_WORKSPACE}/libext/lib/libnwc_openblas.a ]]; then rsync -a ${GITHUB_WORKSPACE}/libext/* ${SINGULARITY_ROOTFS}/nwchem/src/libext/. ; echo libext cache fetched ;fi"
-    bash -c "if [[  -f ${GITHUB_WORKSPACE}/simint_install/lib/lib_nwcsimint.a ]]; then rsync -a ${GITHUB_WORKSPACE}/simint_install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; echo libext cache fetched ;fi"
+    bash -c "if [[  -f ${GITHUB_WORKSPACE}/simint/simint_install/lib/lib_nwcsimint.a ]]; then rsync -av ${GITHUB_WORKSPACE}/simint/* ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; echo libext cache fetched ;fi"
     echo '@@@ ls -l SINGULARITY_ROOTFS'
     ls -l ${SINGULARITY_ROOTFS}
 
