@@ -32,13 +32,14 @@ jobs:
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
+        ls -lart ~/cache
         if [[ -f ~/cache/ompi/lib/libmpi.so ]]; then \
         echo "ompi cache present" ; \
         fi
         if [[ -f ~/cache/libext/lib/libnwc_openblas.a ]]; then \
         echo "libext cache present" ; \
         fi
-        if [[ -f ~/cache/simint.l*.install/lib/libnwc_simint.a ]]; then \
+        if [[ -f ~/cache/simint.l5_p5_d1.install/lib/libnwc_simint.a ]]; then \
         echo "simint cache present" ; \
         fi
     - uses: eWaterCycle/setup-singularity@v7
