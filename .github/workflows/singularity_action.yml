@@ -32,28 +32,15 @@ jobs:
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
+        ls -lart ~/cache
         if [[ -f ~/cache/ompi/lib/libmpi.so ]]; then \
         echo "ompi cache present" ; \
-        mkdir -p opt || true ; \
-        [ -d ~/cache/ompi ] && rsync -av ~/cache/ompi opt/. ; \
-        ls -l opt/ompi/lib/libmpi.so* ; \
-        pwd ; \
-        ls -l `pwd`/opt/ompi/lib/libmpi.so* ; \
-        echo "ompi cache fetched" ; \
         fi
         if [[ -f ~/cache/libext/lib/libnwc_openblas.a ]]; then \
         echo "libext cache present" ; \
-        mkdir -p libext || true ; \
-        [ -d ~/cache/libext ] && rsync -av ~/cache/libext/* libext/. ; \
-        ls -l libext/lib ; \
-        echo "libext cache fetched" ; \
         fi
-        if [[ -f ~/cache/simint_install/lib/libnwc_simint.a ]]; then \
+        if [[ -f ~/cache/simint.l5_p5_d1.install/lib/libnwc_simint.a ]]; then \
         echo "simint cache present" ; \
-        mkdir -p simint || true ; \
-        [ -d ~/cache/simint_install ] && rsync -av ~/cache/sim* simint/. ; \
-        ls -l simint/ ; \
-        echo "simint cache fetched" ; \
         fi
     - uses: eWaterCycle/setup-singularity@v7
       with:
@@ -75,14 +62,11 @@ jobs:
         cd ${{ matrix.folder }}
         singularity exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
         singularity exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
-        echo sim1
         singularity exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install || true
         singularity exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/simint/libsimint_source/ || true
         singularity exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/simint || true
         singularity exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/ || true
-        echo sim2
         singularity exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
-        ln -sf ~/cache/simint.l5_p5_d1.install  ~/cache/simint_install
         echo "cache stored"
         ls -l ~/cache
         ls -R ~/cache
