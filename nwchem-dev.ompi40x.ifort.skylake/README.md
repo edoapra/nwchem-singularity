@@ -50,10 +50,14 @@ source /etc/profile.d/modules.sh
 export https_proxy=http://proxy.emsl.pnl.gov:3128
 module purge
 module load openmpi
-singularity pull --name /fast_scratch/nwchems_`id -u`.img pull library://edoapra/default/nwchem-dev.ompi40x.if\
-ort.skylake:latest
-srun -N $SLURM_NNODES -n $SLURM_NNODES cp /fast_scratch/nwchems_`id -u`.img /big_scratch/nwchems.img
-srun singularity exec /big_scratch/nwchems.img nwchem "input file"
+# remove old images
+rm -f ./nwchems_`id -u`.img
+# pull new image to the current directory
+singularity pull --name ./nwchems_`id -u`.img pull library://edoapra/default/nwchem-dev.ompi40x.ifort.skylake:latest
+# copy image from current directory to local /big_scratch/ on compute nodes
+srun -N $SLURM_NNODES -n $SLURM_NNODES cp ./nwchems_`id -u`.img /big_scratch/nwchems.img
+# run
+srun singularity exec /big_scratch/nwchems.img nwchem  "file name"
 ```
 
 
