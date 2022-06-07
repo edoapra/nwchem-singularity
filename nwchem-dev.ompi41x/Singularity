@@ -6,7 +6,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 %setup
     ls -la  ${GITHUB_WORKSPACE}
     export CACHEDIR=${GITHUB_WORKSPACE}/../../../cache
-    ls -lrt ${CACHEDIR}
+    ls -lrt ${CACHEDIR} || true
     ls -la  ${CACHEDIR}/ || true
     ls -la  ${CACHEDIR}/ompi || true
     ls -la  ${CACHEDIR}/ompi/lib || true
