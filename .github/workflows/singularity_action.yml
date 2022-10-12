@@ -5,7 +5,7 @@ on:
   pull_request:
   release:
   schedule:
-    - cron: '59 15 * * FRI'
+    - cron: '0 0 * * SUN'
   repository_dispatch:
     types: [backend_automation]
   workflow_dispatch:
@@ -76,7 +76,7 @@ jobs:
         cd ..
         find . -name ${{ matrix.folder }}.simg
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.folder }}
         path: ${{ matrix.folder }}/${{ matrix.folder }}.simg
