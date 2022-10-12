@@ -1,9 +1,6 @@
 name: nwchem_apptainer
 
 on:
-  push:
-  pull_request:
-  release:
   schedule:
     - cron: '0 0 * * SUN'
   repository_dispatch:
