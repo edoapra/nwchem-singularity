@@ -1,0 +1,115 @@
+name: nwchem_apptainer
+
+on:
+  push:
+  pull_request:
+  release:
+  schedule:
+    - cron: '0 0 * * SUN'
+  repository_dispatch:
+    types: [backend_automation]
+  workflow_dispatch:
+
+jobs:
+  build_image:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          folder:
+            - nwchem-dev.ompi41x.apptainer
+    steps:
+    - name: Checkout nwchem-singularity source
+      uses: actions/checkout@v3
+    - name: Setup cache
+      id: setup-cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/cache
+        key: ${{ matrix.folder}}-nwchemcache-apptainer-v000
+    - name: fetch cache
+      if: steps.setup-cache.outputs.cache-hit == 'true'
+      run: |
+        ls -lart ~/cache
+        if [[ -f ~/cache/ompi/lib/libmpi.so ]]; then \
+        echo "ompi cache present" ; \
+        fi
+        if [[ -f ~/cache/libext/lib/libnwc_openblas.a ]]; then \
+        echo "libext cache present" ; \
+        fi
+        if [[ -f ~/cache/simint.l5_p5_d1.install/lib/libnwc_simint.a ]]; then \
+        echo "simint cache present" ; \
+        fi
+    - uses: eWaterCycle/setup-apptainer@v1
+      with:
+        apptainer-version: 1.0.3
+    - name: Checkout nwchem source
+      uses: actions/checkout@v3
+      with:
+        repository: nwchemgit/nwchem
+        clean: false
+        path: nwchem
+    - name: build a apptainer container
+      run: |
+        cd ${{ matrix.folder }}
+        apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+    - name: store cache
+      run: |
+        mkdir -p ~/cache || true
+        cd ${{ matrix.folder }}
+        apptainer exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
+        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
+        apptainer exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install || true
+        apptainer exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/simint/libsimint_source/ || true
+        apptainer exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/simint || true
+        apptainer exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/ || true
+        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
+        echo "cache stored"
+        ls -l ~/cache
+        ls -R ~/cache
+    - name: find image file
+      run: |
+        cd ${{ matrix.folder }}
+        find . -name ${{ matrix.folder }}.simg
+        cd ..
+        find . -name ${{ matrix.folder }}.simg
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.folder }}
+        path: ${{ matrix.folder }}/${{ matrix.folder }}.simg
+    - name: builddate
+      id: build-date
+      run: |
+        echo "::set-output name=date::$(TZ=America/Los_Angeles date +%Y%m%d_%H%M%S)"
+    - name: push to ghcr.io
+      run: |
+        echo ${{ secrets.GITHUB_TOKEN }} | apptainer remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
+        apptainer remote list
+        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:${{ steps.build-date.outputs.date }}
+        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:latest
+    - name: testimage
+      run: |
+        export OMPI_VERSION=4.1.4
+        pwd
+        ls -la
+        wget https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-$OMPI_VERSION.tar.bz2
+        tar xjf openmpi-$OMPI_VERSION.tar.bz2
+        cd openmpi-$OMPI_VERSION
+        ./configure --prefix=$GITHUB_WORKSPACE/ompi414 --enable-mpi1-compatibility
+        make -j3
+        make -j3 install
+        cd ..
+        rm -f */*simg
+        apptainer pull ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:${{ steps.build-date.outputs.date }}
+        cd nwchem/QA
+        export UCX_TLS=tcp,self
+        export UCX_POSIX_USE_PROC_LINK=n
+        export PATH=$GITHUB_WORKSPACE/ompi414/bin:$PATH
+        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
+        export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/ompi414/bin:$LD_LIBRARY_PATH
+        which mpirun
+        export NWCHEM_EXECUTABLE="apptainer exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x:latest nwchem"
+        ./runtests.mpi.unix procs 2 dft_he2+
+        ./runtests.mpi.unix procs 2 h2o_opt
