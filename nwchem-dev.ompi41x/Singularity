@@ -60,9 +60,9 @@ wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
 && make -j4 && make install \
 && cd ../.. \
 && echo 'check ucx version ' \
-&& echo " which ucx_info `which	ucx_info ||true` " \
-&& echo " ucx_info -v `	ucx_info -v ||true` " \
-&& echo " $OMPI_DIR/bin/ucx_info -v `	$OMPI_DIR/bin/ucx_info -v ||true` " \
+&& echo " which ucx_info" `which	ucx_info ||true`  \
+&& echo " ucx_info -v "  `ucx_info -v ||true`  \
+&& echo " $OMPI_DIR/bin/ucx_info -v" `	$OMPI_DIR/bin/ucx_info -v ||true`  \
 && wget https://github.com/open-mpi/ompi/archive/v$ompi.tar.gz -O $ompi_prefix.tar.gz && \
 tar xzf $ompi_prefix.tar.gz                                           && \
 cd $ompi_prefix                                                        && \
