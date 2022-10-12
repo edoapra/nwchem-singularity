@@ -21,10 +21,10 @@ jobs:
 #            - nwchem-701.mpich321.ivybridge
     steps:
     - name: Checkout nwchem-singularity source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Setup cache
       id: setup-cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           ~/cache
@@ -46,12 +46,11 @@ jobs:
       with:
         singularity-version: 3.8.3
     - name: Checkout nwchem source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: nwchemgit/nwchem
         clean: false
         path: nwchem
-        fetch-depth: 1
     - name: build a singularity container
       run: |
         cd ${{ matrix.folder }}
