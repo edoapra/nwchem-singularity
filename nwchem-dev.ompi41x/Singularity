@@ -54,12 +54,12 @@ wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
 && ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
 && make -j4 && make install \
 && cd ../.. \
-&& wget https://github.com/open-mpi/ompi/archive/v$ompi.tar.gz -O $ompi_prefix.tar.gz && \
 && echo ' check ucx' \
 && echo ' which ucx_info ' `which ucx_info|| true` \
 && echo ' ucx_info -v ' `ucx_info -v|| true` \
 && echo ' /opt/ompi/bin/ucx_info -v ' `/opt/ompi/bin/ucx_info -v|| true` \
 && echo '111111' \
+&& wget https://github.com/open-mpi/ompi/archive/v$ompi.tar.gz -O $ompi_prefix.tar.gz && \
 tar xzf $ompi_prefix.tar.gz                                           && \
 cd $ompi_prefix                                                        && \
 ./autogen.pl                                                           && \
