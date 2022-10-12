@@ -76,14 +76,15 @@ echo ' check ucx' \
 && echo ' ucx_info -v ' `ucx_info -v|| true` \
 && echo ' /opt/ompi/bin/ucx_info -v ' `/opt/ompi/bin/ucx_info -v|| true` \
 && echo '  ucx pkg ' `dpkg-query -l |grep  ucx  `  \
-&& echo '111111' \
-&& exit 1
+&& echo '*****' 
 export PATH=$OMPI_DIR/bin:$PATH
 export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
 export ARMCI_NETWORK=MPI-PR
 #export NWCHEM_TOP=/opt/nwchem
 export NWCHEM_TARGET=LINUX64
-export NWCHEM_MODULES="all python"
+export NWCHEM_MODULES="all python gw"
+export BUILD_PLUMED=1
+export USE_LIBXC=1
 export BUILD_OPENBLAS=1
 export BUILD_SCALAPACK=1
 export BLAS_SIZE=8
