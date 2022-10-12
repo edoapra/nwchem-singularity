@@ -65,6 +65,7 @@ cd $ompi_prefix                                                        && \
  --without-hcoll --disable-static  \
 --disable-mpi-java --enable-dlopen --without-cuda --without-verbs \
 --disable-mpi-cxx --disable-cxx-exceptions && \
+echo 'UCX version from ompi/config.log' `grep 'UCX version config.log'`  && \
 make -j 6                                                               && \
 make install                                                            && \
 make clean                                                              && \
@@ -77,6 +78,7 @@ echo ' check ucx' \
 && echo ' ucx_info -v ' `ucx_info -v|| true` \
 && echo ' /opt/ompi/bin/ucx_info -v ' `/opt/ompi/bin/ucx_info -v|| true` \
 && echo '  ucx pkg ' `dpkg-query -l |grep  ucx  `  \
+&& echo ' ucx Transports' `/opt/ompi/bin/ucx_info  -d |grep Transport || true` \
 && echo '*****' 
 export PATH=$OMPI_DIR/bin:$PATH
 export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
@@ -103,6 +105,7 @@ export SIMINT_MAXAM=5
 #ENV         CCSDTQ=y
 #ENV         CCSDTLR=y
 ls -l nwchem* || true \
+&& env|egrep BUILD_ \
 && bash -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
 && cd nwchem \
 && export NWCHEM_TOP=`pwd` \
@@ -154,8 +157,8 @@ export CHARMM_S=$NWCHEM_TOP/src/data/charmm_s/
 export CHARMM_X=$NWCHEM_TOP/src/data/charmm_x/
 export PATH=$PATH:/opt/nwchem/bin/
 export PATH=$OMPI_DIR/bin:$PATH
-export NWCHEM_BASIS_LIBRARY=/opt/share/libraries/
-export NWCHEM_NWPW_LIBRARY=/opt/share/libraryps/
+export NWCHEM_BASIS_LIBRARY=/opt/nwchem/share/libraries/
+export NWCHEM_NWPW_LIBRARY=/opt/nwchem/share/libraryps/
 export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
 #%runscript
 #exec /bin/bash "$@"
