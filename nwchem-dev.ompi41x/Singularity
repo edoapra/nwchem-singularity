@@ -46,11 +46,6 @@ pwd \
  python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
  libnuma-dev libslurm-dev libpmi2-0-dev libpmi0-dev  libnl-3-dev libnl-route-3-dev udev \
 && apt-get clean \
-&& echo " check ucx pkg " \
-&& echo `dpkg-query -l |grep ucx ||true` \
-&& echo " check openmpi pkg " \
-&& echo `dpkg-query -l |grep openmpi || true` \
-&& echo " ******************** " \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
 && tar xzf  ucx-$ucx.tar.gz \
