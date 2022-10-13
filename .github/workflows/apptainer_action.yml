@@ -107,16 +107,16 @@ jobs:
         ./runtests.mpi.unix procs 2 h2o_opt
     - name: Install Singularity Dependencies
       run: |
-        apt-get update && apt-get install -y \
+        sudo apt-get update && sudo apt-get install -y \
         libgpgme11-dev squashfs-tools libseccomp-dev \
         pkg-config cryptsetup-bin libseccomp2 runc libglib2.0-0 || true
     - name: Install Singularity CE
       env:
         SG_VER: 3.10.3
       run: |
-        apt-get install -y wget || true
+        sudo apt-get install -y wget || true
         wget https://github.com/sylabs/singularity/releases/download/v${SG_VER}/singularity-ce_${SG_VER}-focal_amd64.deb
-        dpkg -i singularity-ce_${SG_VER}-focal_amd64.deb
+        sudo dpkg -i singularity-ce_${SG_VER}-focal_amd64.deb
         which singularity
         singularity version
     - name: test image with singularity
