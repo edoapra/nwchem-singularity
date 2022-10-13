@@ -4,7 +4,10 @@ Singularity recipe for NWChem to use on EMSL tahoma with OpenMPI 4.0.5, UCX 1.8.
 
 ## how to build on tahoma
 ```
-curl -LJO https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi40x/Singularity
+curl -LJO https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x/Singularity
+module purge
+module load gcc/9.3.0
+module load openmpi/4.1.4
 singularity build --fakeroot nwchem.simg  Singularity
 ```
 ## how to run on tahoma
@@ -12,7 +15,8 @@ singularity build --fakeroot nwchem.simg  Singularity
 From a Slurm script or inside an interactive Slurm session
 ```
 module purge
-module load openmpi/4.0.5
+module load gcc/9.3.0
+module load openmpi/4.1.4
 srun  singularity exec ./nwchem.simg nwchem "input file"
 ```
 ## Using image from the Singularity Library on EMSL tahoma
