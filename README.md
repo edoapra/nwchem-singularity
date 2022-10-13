@@ -4,4 +4,6 @@
 Singularity recipes for NWChem 
 
 
-See https://github.com/edoapra/nwchem-singularity/tree/master/nwchem-dev.ompi40x
+See https://github.com/edoapra/nwchem-singularity/tree/master/nwchem-dev.ompi41x   
+and    
+https://nwchemgit.github.io/Containers.html#instruction-for-running-on-emsl-tahoma
