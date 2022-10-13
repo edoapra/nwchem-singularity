@@ -42,11 +42,9 @@ jobs:
       env:
         APP_VER: 1.1.2
       run: |
-        wget  https://github.com/apptainer/apptainer/releases/download/v${APP_VER}/apptainer_${APP_VER}_amd64.deb
+        wget -q  https://github.com/apptainer/apptainer/releases/download/v${APP_VER}/apptainer_${APP_VER}_amd64.deb
         ls -lrt *deb
         sudo apt-get install -y  libfuse2 libseccomp2 zlib1g uidmap squashfs-tools squashfuse fuse2fs fuse-overlayfs fakeroot
-        echo "dpkg-query -l |grep squas " `dpkg-query -l |grep squas `
-        echo "
         sudo dpkg -i singularity-ce_${APP_VER}-focal_amd64.deb
         which apptainer
         apptainer version
