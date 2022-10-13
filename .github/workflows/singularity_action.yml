@@ -95,22 +95,13 @@ jobs:
         export OMPI_VERSION=4.1.4
         pwd
         ls -la
-#        wget https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-$OMPI_VERSION.tar.bz2
-#        tar xjf openmpi-$OMPI_VERSION.tar.bz2
-#        cd openmpi-$OMPI_VERSION
-#        ./configure --prefix=$GITHUB_WORKSPACE/ompi414 --enable-mpi1-compatibility
-#        make -j3
-#        make -j3 install
-#        cd ..
         rm -f */*simg
         singularity pull ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:${{ steps.build-date.outputs.date }}
         cd nwchem/QA
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
-#        export PATH=$GITHUB_WORKSPACE/ompi414/bin:$PATH
         export PATH=~/cache/ompi/bin:$PATH
         export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
-#        export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/ompi414/bin:$LD_LIBRARY_PATH
         export LD_LIBRARY_PATH=~/cache/ompi/bin:$LD_LIBRARY_PATH
         which mpirun
         export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x:latest nwchem"
