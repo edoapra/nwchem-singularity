@@ -9,7 +9,7 @@ on:
 
 jobs:
   build_image:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
         fail-fast: false
         matrix:
@@ -86,27 +86,52 @@ jobs:
         apptainer remote list
         apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:${{ steps.build-date.outputs.date }}
         apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:latest
-    - name: testimage
+    - name: test image with apptainer
       run: |
-        export OMPI_VERSION=4.1.4
         pwd
         ls -la
-        wget https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-$OMPI_VERSION.tar.bz2
-        tar xjf openmpi-$OMPI_VERSION.tar.bz2
-        cd openmpi-$OMPI_VERSION
-        ./configure --prefix=$GITHUB_WORKSPACE/ompi414 --enable-mpi1-compatibility
-        make -j3
-        make -j3 install
-        cd ..
         rm -f */*simg
-        apptainer pull ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:${{ steps.build-date.outputs.date }}
+        apptainer pull -F ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:${{ steps.build-date.outputs.date }}
         cd nwchem/QA
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
-        export PATH=$GITHUB_WORKSPACE/ompi414/bin:$PATH
+        export PATH=/opt/ompi/bin:$PATH
         export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
-        export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/ompi414/bin:$LD_LIBRARY_PATH
+        export LD_LIBRARY_PATH=/opt/ompi/lib:$LD_LIBRARY_PATH
+        mkdir -p /opt || true
+        rsync -a ~/cache/ompi /opt/.
         which mpirun
+        ldd `which mpirun`
         export NWCHEM_EXECUTABLE="apptainer exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x.apptainer:latest nwchem"
+        ./runtests.mpi.unix procs 2 dft_he2+
+        ./runtests.mpi.unix procs 2 h2o_opt
+
+    - name: Install Singularity Dependencies
+      run: |
+        apt-get update && apt-get install -y \
+        libgpgme11-dev squashfs-tools libseccomp-dev \
+        pkg-config cryptsetup-bin libseccomp2 runc libglib2.0-0 || true
+    - name: Install Singularity CE
+        env:
+          SG_VER: 3.10.3
+        run: |
+          apt-get install -y wget || true
+          wget https://github.com/sylabs/singularity/releases/download/v${SG_VER}/singularity-ce_${SG_VER}-focal_amd64.deb
+          dpkg -i singularity-ce_${SG_VER}-focal_amd64.deb
+          which singularity
+          singularity version
+    - name: test image with singularity
+      run: |
+        pwd
+        ls -la
+        rm -f */*simg
+        singularity pull -F ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:${{ steps.build-date.outputs.date }}
+        cd nwchem/QA
+        export UCX_TLS=tcp,self
+        export UCX_POSIX_USE_PROC_LINK=n
+        export PATH=/opt/ompi/bin:$PATH
+        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
+        export LD_LIBRARY_PATH=/opt/ompi/lib:$LD_LIBRARY_PATH
+        export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x.apptainer:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
