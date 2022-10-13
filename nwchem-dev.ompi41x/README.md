@@ -65,7 +65,7 @@ srun singularity exec /big_scratch/nwchem.img nwchem "input file"
 ```
 singularity pull library://edoapra/default/nwchem-dev.ompi41x:latest
 ```
-The name of the downloaded image is `oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi40x:latest`, therefore the commands to run it on tahoma will change to
+The name of the downloaded image is `oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x:latest`, therefore the commands to run it on tahoma will change to
 
 ```
 module purge
