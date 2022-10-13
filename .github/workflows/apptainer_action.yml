@@ -14,7 +14,7 @@ jobs:
         fail-fast: false
         matrix:
           folder:
-            - nwchem-dev.ompi41x.apptainer
+            - nwchem-dev.ompi41x
     steps:
     - name: Checkout nwchem-singularity source
       uses: actions/checkout@v3
@@ -42,9 +42,8 @@ jobs:
       env:
         APP_VER: 1.1.2
       run: |
-        wget -q  https://github.com/apptainer/apptainer/releases/download/v${APP_VER}/apptainer_${APP_VER}_amd64.deb
-        ls -lrt *deb
         sudo apt-get install -y  libfuse2 libseccomp2 zlib1g uidmap squashfs-tools squashfuse fuse2fs fuse-overlayfs fakeroot
+        wget -q  https://github.com/apptainer/apptainer/releases/download/v${APP_VER}/apptainer_${APP_VER}_amd64.deb 
         sudo dpkg -i apptainer_${APP_VER}_amd64.deb
         which apptainer
         apptainer version
@@ -64,20 +63,9 @@ jobs:
         cd ${{ matrix.folder }}
         apptainer exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
-        apptainer exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install || true
-        apptainer exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/simint/libsimint_source/ || true
-        apptainer exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/simint || true
-        apptainer exec ${{ matrix.folder }}.simg ls -la /nwchem/src/NWints/ || true
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
         echo "cache stored"
         ls -l ~/cache
-        ls -R ~/cache
-    - name: find image file
-      run: |
-        cd ${{ matrix.folder }}
-        find . -name ${{ matrix.folder }}.simg
-        cd ..
-        find . -name ${{ matrix.folder }}.simg
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
@@ -97,7 +85,6 @@ jobs:
       run: |
         pwd
         ls -la
-        rm -f */*simg
         apptainer pull -F ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:${{ steps.build-date.outputs.date }}
         cd nwchem/QA
         export UCX_TLS=tcp,self
@@ -109,28 +96,22 @@ jobs:
         rsync -a ~/cache/ompi /opt/.
         which mpirun
         ldd `which mpirun`
-        export NWCHEM_EXECUTABLE="apptainer exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x.apptainer:latest nwchem"
+        export NWCHEM_EXECUTABLE="apptainer exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
-    - name: Install Singularity Dependencies
-      run: |
-        sudo apt-get purge -y apptainer
-        sudo apt-get update && sudo apt-get install -y \
-        libgpgme11-dev squashfs-tools libseccomp-dev \
-        pkg-config cryptsetup-bin libseccomp2 runc libglib2.0-0 || true
-    - name: Install Singularity CE
+    - name: Install Singularity CR
       env:
         SG_VER: 3.10.3
       run: |
+        sudo apt-get purge -y apptainer
+        sudo apt-get update && sudo apt-get install -y \
+        squashfs-tools pkg-config cryptsetup-bin libseccomp2 runc libglib2.0-0 || true
         wget -q https://github.com/sylabs/singularity/releases/download/v${SG_VER}/singularity-ce_${SG_VER}-focal_amd64.deb
         sudo dpkg -i singularity-ce_${SG_VER}-focal_amd64.deb
         which singularity
         singularity version
     - name: test image with singularity
       run: |
-        pwd
-        ls -la
-        rm -f */*simg
         singularity pull -F ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:${{ steps.build-date.outputs.date }}
         cd nwchem/QA
         export UCX_TLS=tcp,self
@@ -138,6 +119,6 @@ jobs:
         export PATH=/opt/ompi/bin:$PATH
         export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
         export LD_LIBRARY_PATH=/opt/ompi/lib:$LD_LIBRARY_PATH
-        export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x.apptainer:latest nwchem"
+        export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
