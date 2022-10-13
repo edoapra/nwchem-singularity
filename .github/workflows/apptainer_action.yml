@@ -38,9 +38,16 @@ jobs:
         if [[ -f ~/cache/simint.l5_p5_d1.install/lib/libnwc_simint.a ]]; then \
         echo "simint cache present" ; \
         fi
-    - uses: eWaterCycle/setup-apptainer@v1
-      with:
-        apptainer-version: 1.0.3
+    - name: Install apptainer
+      env:
+        APP_VER: 1.1.2
+      run: |
+        sudo apt-get install -y wget || true
+        wget -q https://github.com/apptainer/apptainer/releases/download/${APP_VER}/apptainer_${APP_VER}_amd64.deb
+        sudo apt-get install -y  libfuse2 libseccomp2 zlib1g uidmap squashfs-tools squashfuse fuse2fs fuse-overlayfs fakeroot
+        sudo dpkg -i singularity-ce_${SG_VER}-focal_amd64.deb
+        which apptainer
+        apptainer version
     - name: Checkout nwchem source
       uses: actions/checkout@v3
       with:
@@ -107,6 +114,7 @@ jobs:
         ./runtests.mpi.unix procs 2 h2o_opt
     - name: Install Singularity Dependencies
       run: |
+        sudo apt-get purge -y apptainer
         sudo apt-get update && sudo apt-get install -y \
         libgpgme11-dev squashfs-tools libseccomp-dev \
         pkg-config cryptsetup-bin libseccomp2 runc libglib2.0-0 || true
@@ -114,8 +122,7 @@ jobs:
       env:
         SG_VER: 3.10.3
       run: |
-        sudo apt-get install -y wget || true
-        wget https://github.com/sylabs/singularity/releases/download/v${SG_VER}/singularity-ce_${SG_VER}-focal_amd64.deb
+        wget -q https://github.com/sylabs/singularity/releases/download/v${SG_VER}/singularity-ce_${SG_VER}-focal_amd64.deb
         sudo dpkg -i singularity-ce_${SG_VER}-focal_amd64.deb
         which singularity
         singularity version
