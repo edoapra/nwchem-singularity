@@ -100,9 +100,11 @@ jobs:
         cd nwchem/QA
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
-        export PATH=~/cache/ompi/bin:$PATH
+        mkdir -p /opt
+        rsync -av ~/cache/ompi /opt/.
+        export PATH=/opt/ompi/bin:$PATH
         export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
-        export LD_LIBRARY_PATH=~/cache/ompi/lib:$LD_LIBRARY_PATH
+        export LD_LIBRARY_PATH=/opt/ompi/lib:$LD_LIBRARY_PATH
         which mpirun
         ldd `which mpirun`
         export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x:latest nwchem"
