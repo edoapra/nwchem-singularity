@@ -62,7 +62,7 @@ pwd \
 && echo TTTTT \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 source ~/apps/oneapi/setvars.sh \
-&& ifx -v \
+&& $FC -v \
 && wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
 && tar xzf  ucx-$ucx.tar.gz \
 && cd ucx-$ucx \
@@ -122,7 +122,7 @@ export SIMINT_MAXAM=5
 #ENV         CCSDTQ=y
 #ENV         CCSDTLR=y
 ls -l nwchem* || true \
-&& env|egrep BUILD_ \
+&& /usr/bin/env|egrep BUILD_ \
 && bash -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
 && cd nwchem \
 && export NWCHEM_TOP=`pwd` \
@@ -132,10 +132,14 @@ ls -l nwchem* || true \
 && make nwchem_config \
 && bash -c " \
 source ~/apps/oneapi/setvars.sh \
-&& ifx -v \
 && export PATH=$OMPI_DIR/bin:$PATH \
 && export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH \
+&& /usr/bin/env | grep PATH
 && mpif90 -show \
+&& echo FC is $FC \
+&& echo 'which FC is' `which $FC` || true \
+&& echo 'ldd FC is' `ldd $FC` || true \
+&& $FC -v \
 && make FC=$FC -j6  \
 && FC=$FC ../contrib/getmem.nwchem 2000  || true \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
