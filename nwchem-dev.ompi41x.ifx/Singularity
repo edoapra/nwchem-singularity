@@ -134,7 +134,7 @@ ls -l nwchem* || true \
 source ~/apps/oneapi/setvars.sh \
 && export PATH=$OMPI_DIR/bin:$PATH \
 && export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH \
-&& /usr/bin/env | grep PATH
+&& /usr/bin/env | grep PATH \
 && mpif90 -show \
 && echo FC is $FC \
 && echo 'which FC is' `which $FC` || true \
