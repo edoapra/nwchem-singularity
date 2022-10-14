@@ -34,7 +34,7 @@ export SINGULARITY_ompi=4.1.4
 export SINGULARITY_ompi_prefix=ompi-$ompi
 pwd \
 && apt-get -y update \
-&& apt-get -y install -y tzdata git \
+&& apt-get -y install -y tzdata git moreutils \
 && pwd \
 && echo '@@ ls -lart ' \
 && ls -lart  \
