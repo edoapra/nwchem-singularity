@@ -60,6 +60,8 @@ pwd \
 && echo TTTTT \
 &&  ./nwchem/travis/build_env.sh \
 && echo TTTTT \
+&& . ~/apps/oneapi/setvars.sh \
+&& ifx -v \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
 && tar xzf  ucx-$ucx.tar.gz \
