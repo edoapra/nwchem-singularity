@@ -1,4 +1,4 @@
-name: nwchem_apptainer
+name: nwchemifx_apptainer
 
 on:
   schedule:
