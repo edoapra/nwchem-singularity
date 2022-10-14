@@ -61,7 +61,7 @@ pwd \
 &&  ./nwchem/travis/build_env.sh \
 && echo TTTTT \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
-&& source ~/apps/oneapi/setvars.sh \
+source ~/apps/oneapi/setvars.sh \
 && ifx -v \
 && wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
 && tar xzf  ucx-$ucx.tar.gz \
@@ -126,14 +126,17 @@ ls -l nwchem* || true \
 && bash -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
 && cd nwchem \
 && export NWCHEM_TOP=`pwd` \
-&& source ~/apps/oneapi/setvars.sh \
-&& ifx -v \
 && ls -lrt \
 && cd src \
 && ls -lrt libext/lib || true \
-&& make nwchem_config && make FC=$FC -j6  \
-&& ../contrib/getmem.nwchem 2000  || true \
-&& make install INSTALL_PREFIX=/opt/nwchem \
+&& make nwchem_config \
+&& bash -c " \
+source ~/apps/oneapi/setvars.sh \
+&& ifx -v \
+&& make FC=$FC -j6  \
+&& FC=$FC ../contrib/getmem.nwchem 2000  || true \
+&& make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
+" \
 && DEBIAN_FRONTEND=noninteractive apt-get -y install localepurge \
 && echo MANDELETE >  /etc/locale.nopurge \
 && echo DONTBOTHERNEWLOCALE >> /etc/locale.nopurge \
