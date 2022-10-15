@@ -154,9 +154,13 @@ a&& du -sh /opt/nwchem \
 && du -sh ~/apps \
 && rm -rf ~/apps \
 && sudo du -sk /var/* \
+&& sudo ls -lart /var/ \
+&& echo vaaaaaaaaaaaaaaaar \
 && sudo du -sk /tmp/* \
 && sudo ls -lart /tmp \
+&& echo rooooooooooot \
 && sudo du -sk /root/* \
+&& sudo ls -lart /root \
 && echo rmrmrmrmrrm \
 && sudo rm -rf /var/intel || true\
 && sudo du -sh /var \
