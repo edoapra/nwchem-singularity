@@ -41,7 +41,7 @@ echo FC is $FC
 export MPI_IMPL is $MPI_IMPL
 pwd \
 && apt-get -y update \
-&& apt-get -y install -y tzdata git moreutils sudo wget curl \
+&& apt-get -y install -y tzdata git moreutils sudo wget curl rsync \
 && pwd \
 && echo '@@ ls -lart ' \
 && ls -lart  \
