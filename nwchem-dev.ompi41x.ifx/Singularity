@@ -18,16 +18,12 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     bash -c "if [[  -f ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint.l5_p5_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
     echo '@@@ ls -l $SINGULARITY_ROOTFS'
     ls -l ${SINGULARITY_ROOTFS}
-    rm -f ${SINGULARITY_ROOTFS}/fc.txt
+    rm -f ${SINGULARITY_ROOTFS}/*.txt
     echo "FC=$FC " >> ${SINGULARITY_ROOTFS}/fc.txt
-    chmod +x ${SINGULARITY_ROOTFS}/fc.txt
+    echo "MPI_IMPL=$MPI_IMPL " >> ${SINGULARITY_ROOTFS}/mpi_impl.txt
 
 ##%files
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
-
-%environment
-export SINGULARITY_FC=$FC
-export SINGULARITYENV_FC=$FC
 
 %post
 #
@@ -39,9 +35,10 @@ export ucx=1.12.1
 export OMPI_DIR=/opt/ompi
 export SINGULARITY_ompi=4.1.4
 export SINGULARITY_ompi_prefix=ompi-$ompi
-cat ./fc.txt
 export `cat ./fc.txt`
+export `cat ./impl_impl.txt`
 echo FC is $FC
+export MPI_IMPL is $MPI_IMPL
 pwd \
 && apt-get -y update \
 && apt-get -y install -y tzdata git moreutils sudo wget curl \
@@ -103,7 +100,9 @@ export ARMCI_NETWORK=MPI-PR
 export NWCHEM_TARGET=LINUX64
 export NWCHEM_MODULES="all python gwmol"
 #export NWCHEM_MODULES="nwdft driver solvation"
-export BUILD_PLUMED=1
+if [ $FC != "ifx" ]; then
+   export BUILD_PLUMED=1
+fi	  
 export USE_LIBXC=1
 export BUILD_OPENBLAS=1
 export BUILD_SCALAPACK=1
