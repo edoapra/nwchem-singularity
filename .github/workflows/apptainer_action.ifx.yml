@@ -56,7 +56,7 @@ jobs:
     - name: build a apptainer container
       run: |
         cd ${{ matrix.folder }}
-        FC=ifx apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+        FC=ifx MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: store cache
       run: |
         mkdir -p ~/cache || true
@@ -66,11 +66,6 @@ jobs:
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
         echo "cache stored"
         ls -l ~/cache
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ matrix.folder }}
-        path: ${{ matrix.folder }}/${{ matrix.folder }}.simg
     - name: builddate
       id: build-date
       run: |
@@ -96,7 +91,7 @@ jobs:
         rsync -a ~/cache/ompi /opt/.
         which mpirun
         ldd `which mpirun`
-        export NWCHEM_EXECUTABLE="apptainer exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x:latest nwchem"
+        export NWCHEM_EXECUTABLE="apptainer exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x.ifx:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
     - name: Install Singularity CR
@@ -119,6 +114,6 @@ jobs:
         export PATH=/opt/ompi/bin:$PATH
         export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
         export LD_LIBRARY_PATH=/opt/ompi/lib:$LD_LIBRARY_PATH
-        export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x:latest nwchem"
+        export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x.ifx:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt

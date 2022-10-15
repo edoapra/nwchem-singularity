@@ -77,8 +77,6 @@ cd $ompi_prefix                                                        && \
  --without-hcoll --disable-static  \
 --disable-mpi-java --enable-dlopen --without-cuda --without-verbs \
 --disable-mpi-cxx --disable-cxx-exceptions FC=$FC && \
-echo 'UCX version from ompi/config.log' `grep 'UCX version' config.log`  && \
-echo '************' && \
 make FC=$FC -j 6                                                               && \
 make install                                                            && \
 make clean                                                              && \
@@ -87,10 +85,7 @@ make clean                                                              && \
 #rm -rf /usr/share/man/
 cd .. ; fi "
 echo ' check ucx' \
-&& echo ' which ucx_info ' `which ucx_info|| true` \
-&& echo ' ucx_info -v ' `ucx_info -v|| true` \
 && echo ' /opt/ompi/bin/ucx_info -v ' `/opt/ompi/bin/ucx_info -v|| true` \
-&& echo '  ucx pkg ' `dpkg-query -l |grep  ucx  `  \
 && echo ' ucx Transports' `/opt/ompi/bin/ucx_info  -d |grep Transport |cut -c 19- || true` \
 && echo '********' 
 export PATH=$OMPI_DIR/bin:$PATH
@@ -141,6 +136,9 @@ export PATH=$OMPI_DIR/bin:$PATH \
 && $FC -v \
 && make FC=$FC -j6  \
 && FC=$FC ../contrib/getmem.nwchem 2000  || true \
+&& ldd  ../bin/LINUX64/nwchem  \
+&& du -sh ~/apps \
+a&& ls -lrth  ../../  \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
 " \
 && DEBIAN_FRONTEND=noninteractive apt-get -y install localepurge \
