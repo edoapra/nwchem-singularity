@@ -155,9 +155,13 @@ a&& du -sh /opt/nwchem \
 && rm -rf ~/apps \
 && sudo du -sk /var/* \
 && sudo du -sk /tmp/* \
+&& sudo ls -lart /tmp \
 && sudo du -sk /root/* \
+&& echo rmrmrmrmrrm \
 && sudo rm -rf /var/intel || true\
-&&  ldd  /opt/nwchem/bin/LINUX64/nwchem  \
+&& sudo du -sh /var \
+&& sudo du -sh /tmp \
+&&  ldd  /opt/nwchem/bin/nwchem  \
 &&  rm *tar*gz \
 && rm l_*sh \
 && ls -lrth    \
