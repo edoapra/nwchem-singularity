@@ -146,16 +146,18 @@ export PATH=$OMPI_DIR/bin:$PATH \
 && echo en_US.UTF-8 >> /etc/locale.nopurge \
 && localepurge \
 && rm -rf /usr/share/doc  /usr/share/man \
-&& du -sh /opt/nwchem \
+a&& du -sh /opt/nwchem \
 && du -sk /opt/nwchem/*|sort -n \
 && cd ../.. \
 && rm -rf nwchem \
 && du -sk *|sort -n  || true\
 && du -sh ~/apps \
 && rm -rf ~/apps \
-&& du -sk /var/* \
-&& rm -rf /var/intel || true\
-&&  ldd  ../bin/LINUX64/nwchem  \
+&& sudo du -sk /var/* \
+&& sudo du -sk /tmp/* \
+&& sudo du -sk /root/* \
+&& sudo rm -rf /var/intel || true\
+&&  ldd  /opt/nwchem/bin/LINUX64/nwchem  \
 &&  rm *tar*gz \
 && rm l_*sh \
 && ls -lrth    \
