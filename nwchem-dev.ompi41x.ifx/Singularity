@@ -155,24 +155,24 @@ a&& du -sh /opt/nwchem \
 && du -sk *|sort -n  \
 && du -sh ~/apps \
 && rm -rf ~/apps \
-&&  du -sk /var/* \
-&&  ls -lart /var/ \
+&&  du -sk /var/intel  \
 && echo "vaaaaaaaaaaaaaaaar" \
-&&  du -sk /tmp/* \
-&&  ls -lart /tmp \
 && echo "rooooooooooot" \
 &&  du -sk /root/* \
 &&  ls -lart /root \
 && echo "rmrmrmrmrrm" \
 &&  rm -rf /var/intel \
-&&  du -sh /var \
-&&  du -sh /tmp \
 &&  ldd  /opt/nwchem/bin/nwchem  \
 &&  rm *tar*gz \
 && rm l_*sh \
 && ls -lrth    \
 && du -sk *|sort -n \
-&& dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
+&& echo "dddddddddddd"  \
+&& dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100 \
+&& echo "dddddddddddd" \
+&&  du -sk /tmp/* || true \
+&&  ls -lart /tmp ||true
+
 
 
 #clean unnecessary packages
