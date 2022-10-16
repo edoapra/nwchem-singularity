@@ -41,7 +41,7 @@ echo FC is $FC
 export MPI_IMPL is $MPI_IMPL
 pwd \
 && apt-get -y update \
-&& apt-get -y install -y tzdata git moreutils sudo wget curl rsync \
+&& apt-get -y install -y tzdata git moreutils  wget curl rsync \
 && pwd \
 && echo '@@ ls -lart ' \
 && ls -lart  \
@@ -153,18 +153,18 @@ a&& du -sh /opt/nwchem \
 && du -sk *|sort -n  || true\
 && du -sh ~/apps \
 && rm -rf ~/apps \
-&& sudo du -sk /var/* \
-&& sudo ls -lart /var/ \
+&&  du -sk /var/* \
+&&  ls -lart /var/ \
 && echo vaaaaaaaaaaaaaaaar \
-&& sudo du -sk /tmp/* \
-&& sudo ls -lart /tmp \
+&&  du -sk /tmp/* \
+&&  ls -lart /tmp \
 && echo rooooooooooot \
-&& sudo du -sk /root/* \
-&& sudo ls -lart /root \
+&&  du -sk /root/* \
+&&  ls -lart /root \
 && echo rmrmrmrmrrm \
-&& sudo rm -rf /var/intel || true\
-&& sudo du -sh /var \
-&& sudo du -sh /tmp \
+&&  rm -rf /var/intel || true\
+&&  du -sh /var \
+&&  du -sh /tmp \
 &&  ldd  /opt/nwchem/bin/nwchem  \
 &&  rm *tar*gz \
 && rm l_*sh \
