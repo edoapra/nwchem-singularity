@@ -83,7 +83,7 @@ make clean                                                              && \
 #cd /tmp && \
 #rm -rf /usr/share/doc/ && \
 #rm -rf /usr/share/man/
-cd .. ; fi "
+cd .. ; rm -f *tar*gz $ompi-prefix ucx-$ucx ;fi "
 echo ' check ucx' \
 && echo ' /opt/ompi/bin/ucx_info -v ' `/opt/ompi/bin/ucx_info -v|| true` \
 && echo ' ucx Transports' `/opt/ompi/bin/ucx_info  -d |grep Transport |cut -c 19- || true` \
@@ -153,17 +153,12 @@ a&& du -sh /opt/nwchem \
 && cd ../.. \
 && du -sh nwchem \
 && du -sk *|sort -n  \
-&& du -sh ~/apps \
 && rm -rf ~/apps \
 &&  du -sk /var/intel  \
 && echo "vaaaaaaaaaaaaaaaar" \
-&& echo "rooooooooooot" \
-&&  du -sk /root/* \
-&&  ls -lart /root \
-&& echo "rmrmrmrmrrm" \
 &&  rm -rf /var/intel \
+&& echo "rmrmrmrmrrm" \
 &&  ldd  /opt/nwchem/bin/nwchem  \
-&&  rm *tar*gz \
 && rm l_*sh \
 && ls -lrth    \
 && du -sk *|sort -n \
