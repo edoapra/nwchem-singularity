@@ -83,7 +83,7 @@ make clean                                                              && \
 #cd /tmp && \
 #rm -rf /usr/share/doc/ && \
 #rm -rf /usr/share/man/
-cd .. ; rm -f *tar*gz $ompi-prefix ucx-$ucx ;fi "
+cd .. ; rm -rf *tar*gz $ompi-prefix ucx-$ucx ;fi "
 echo ' check ucx' \
 && echo ' /opt/ompi/bin/ucx_info -v ' `/opt/ompi/bin/ucx_info -v|| true` \
 && echo ' ucx Transports' `/opt/ompi/bin/ucx_info  -d |grep Transport |cut -c 19- || true` \
