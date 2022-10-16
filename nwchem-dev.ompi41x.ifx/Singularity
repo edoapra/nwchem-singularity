@@ -148,28 +148,30 @@ export PATH=$OMPI_DIR/bin:$PATH \
 && rm -rf /usr/share/doc  /usr/share/man \
 a&& du -sh /opt/nwchem \
 && du -sk /opt/nwchem/*|sort -n \
+&& rm -rf tce tools nwdft NWints/simint/libsimint_source/simint.l?_p?_d? geom symmetry util nwxc ddscf lapack blas rism argos peigs rmdft gradients symmetry property smd lucia dplot propery hessian ccsd mp2_grad moints cafe analyz dimqm   develop libext/scalapack libext/openblas libext/libxc/libxc* libext/plumed* libext/libext_utils   ../lib \
+&& du -sh * |sort -n \
 && cd ../.. \
-&& rm -rf nwchem \
-&& du -sk *|sort -n  || true\
+&& du -sh nwchem \
+&& du -sk *|sort -n  \
 && du -sh ~/apps \
 && rm -rf ~/apps \
 &&  du -sk /var/* \
 &&  ls -lart /var/ \
-&& echo vaaaaaaaaaaaaaaaar \
+&& echo "vaaaaaaaaaaaaaaaar" \
 &&  du -sk /tmp/* \
 &&  ls -lart /tmp \
-&& echo rooooooooooot \
+&& echo "rooooooooooot" \
 &&  du -sk /root/* \
 &&  ls -lart /root \
-&& echo rmrmrmrmrrm \
-&&  rm -rf /var/intel || true\
+&& echo "rmrmrmrmrrm" \
+&&  rm -rf /var/intel \
 &&  du -sh /var \
 &&  du -sh /tmp \
 &&  ldd  /opt/nwchem/bin/nwchem  \
 &&  rm *tar*gz \
 && rm l_*sh \
 && ls -lrth    \
-&& du -sk *|sort -n || true \
+&& du -sk *|sort -n \
 && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
 
 
