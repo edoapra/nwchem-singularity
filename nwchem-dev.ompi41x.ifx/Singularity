@@ -166,11 +166,15 @@ a&& du -sh /opt/nwchem \
 && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100 \
 && echo "dddddddddddd" \
 &&  du -sk /tmp/* || true \
-&&  ls -lart /tmp ||true
+&&  ls -lart /tmp ||true \
+&&  apt-get  -y purge cmake git  gcc-9  g++-9  gfortran-9  libstdc++-9-dev  libgcc-9-dev git \
+&& apt-get -y install libgcc-s1  \
+apt-get -y autoremove && apt-get clean
 
 
 
 #clean unnecessary packages
+
 #apt-get -y purge curl wget tar  cmake  unzip zip perl automake libtool autoconf flex  \
 #&&  apt-get -y autoremove && apt-get clean
 
