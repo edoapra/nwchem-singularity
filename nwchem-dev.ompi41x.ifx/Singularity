@@ -169,7 +169,7 @@ a&& du -sh /opt/nwchem \
 &&  ls -lart /tmp ||true \
 &&  apt-get  -y purge cmake git  gcc-9  g++-9  gfortran-9  libstdc++-9-dev  libgcc-9-dev git \
 && apt-get -y install libgcc-s1  \
-apt-get -y autoremove && apt-get clean
+&& apt-get -y autoremove && apt-get clean
 
 
 
