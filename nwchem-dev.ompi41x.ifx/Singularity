@@ -60,8 +60,7 @@ pwd \
 && bash -c "if [[ $FC == 'ifx' ]] ||  [[ $FC == 'ifort' ]]; then  \
 source ~/apps/oneapi/compiler/latest/env/vars.sh ; fi" \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
-source ~/apps/oneapi/compiler/latest/env/vars.sh \
-&& $FC -v \
+$FC -v \
 && wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
 && tar xzf  ucx-$ucx.tar.gz \
 && cd ucx-$ucx \
