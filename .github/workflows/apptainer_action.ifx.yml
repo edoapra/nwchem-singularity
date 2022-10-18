@@ -15,6 +15,12 @@ jobs:
         matrix:
           folder:
             - nwchem-dev.ompi41x.ifx
+          fc:
+            - ifx
+            - ifort
+            - gfortran
+    env:
+        FC: ${{ matrix.fc }}
     steps:
     - name: Checkout nwchem-singularity source
       uses: actions/checkout@v3
@@ -24,7 +30,7 @@ jobs:
       with:
         path: |
           ~/cache
-        key: ${{ matrix.folder}}-nwchemcache-ifx-v001
+        key: ${{ matrix.folder}}-nwchemcache-${{ matrix.fc}}-v001
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
@@ -56,7 +62,7 @@ jobs:
     - name: build a apptainer container
       run: |
         cd ${{ matrix.folder }}
-        FC=ifx MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+        FC=${{ matrix.fc }} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: store cache
       run: |
         mkdir -p ~/cache || true
@@ -91,7 +97,7 @@ jobs:
         rsync -a ~/cache/ompi /opt/.
         which mpirun
         ldd `which mpirun`
-        export NWCHEM_EXECUTABLE="apptainer exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x.ifx:latest nwchem"
+        export NWCHEM_EXECUTABLE="apptainer exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x.${{ matrix.fc }}:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
     - name: Install Singularity CR
@@ -114,6 +120,6 @@ jobs:
         export PATH=/opt/ompi/bin:$PATH
         export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
         export LD_LIBRARY_PATH=/opt/ompi/lib:$LD_LIBRARY_PATH
-        export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x.ifx:latest nwchem"
+        export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x.${{ matrix.folder }}:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
