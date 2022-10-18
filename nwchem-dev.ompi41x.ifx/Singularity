@@ -57,6 +57,8 @@ pwd \
 && echo TTTTT \
 &&  ./nwchem/travis/build_env.sh \
 && echo TTTTT \
+&& bash -c "if [[ $FC == 'ifx' ]] ||  [[ $FC == 'ifort' ]]; then  \
+source ~/apps/oneapi/compiler/latest/env/vars.sh ; fi" \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 source ~/apps/oneapi/compiler/latest/env/vars.sh \
 && $FC -v \
@@ -127,7 +129,9 @@ ls -l nwchem* || true \
 && bash -c " \
 export PATH=$OMPI_DIR/bin:$PATH \
 && export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH \
-&& source ~/apps/oneapi/compiler/latest/env/vars.sh --force \
+&& if [[ $FC == 'ifx' ]] || [[ $FC  == 'ifort' ]]; then \
+source ~/apps/oneapi/compiler/latest/env/vars.sh --force    \
+&& rsync -av ~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin/lib*.so* $OMPI_DIR/lib/. ; fi \
 && /usr/bin/env | grep PATH \
 && mpif90 -show \
 && echo FC is $FC \
@@ -137,7 +141,6 @@ export PATH=$OMPI_DIR/bin:$PATH \
 && make FC=$FC -j6  \
 && FC=$FC ../contrib/getmem.nwchem 2000  || true \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
-&& rsync -av ~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin/lib*.so* $OMPI_DIR/lib/.  \
 && ldd  ../bin/LINUX64/nwchem  \
 " \
 && DEBIAN_FRONTEND=noninteractive apt-get -y install localepurge \
@@ -153,14 +156,11 @@ a&& du -sh /opt/nwchem \
 && cd ../.. \
 && du -sh nwchem \
 && du -sk *|sort -n  \
-&& rm -rf ~/apps \
-&&  du -sk /var/intel  \
-&& echo "vaaaaaaaaaaaaaaaar" \
-&&  rm -rf /var/intel \
-&& echo "rmrmrmrmrrm" \
-&&  ldd  /opt/nwchem/bin/nwchem  \
-&& rm l_*sh \
+&& bash -c " \
+if [[ $FC == 'ifx' ]] || [[ $FC  == 'ifort' ]]; then \
+rm -rf ~/apps  /var/intel  l_*sh ; fi "  \
 && ls -lrth    \
+&&  ldd  /opt/nwchem/bin/nwchem  \
 && du -sk *|sort -n \
 && echo "dddddddddddd"  \
 && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100 \
