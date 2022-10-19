@@ -68,7 +68,7 @@ pwd \
 && echo ' ls -lart  ~/apps' `ls -lart  ~/apps` \
 && echo ' ls /root/apps/oneapi/compiler/latest/linux/bin/intel64 ' `ls -lart /root/apps/oneapi/compiler/latest/linux/bin/intel64` \
 && echo FFFFF \
-&& echo 'trying ifort ' `/root/apps/oneapi/compiler/latest/linux/bin/intel64/ifort -v`
+&& echo 'trying ifort ' `/root/apps/oneapi/compiler/latest/linux/bin/intel64/ifort -v` || true \
 && echo 'FC -v ' `$FC -v` \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
