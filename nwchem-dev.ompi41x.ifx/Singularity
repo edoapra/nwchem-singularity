@@ -57,12 +57,10 @@ pwd \
 && echo TTTTT \
 &&  ./nwchem/travis/build_env.sh \
 && echo TTTTT \
-&& if [ -f ~/apps/oneapi/compiler/latest/env/vars.sh ]; then  \
-. ~/apps/oneapi/compiler/latest/env/vars.sh ; fi  \
-&& $FC  -v \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
-
-$FC -v \
+if [ -f ~/apps/oneapi/compiler/latest/env/vars.sh ]; then  \
+. ~/apps/oneapi/compiler/latest/env/vars.sh ; fi  \
+&& $FC -v \
 && wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
 && tar xzf  ucx-$ucx.tar.gz \
 && cd ucx-$ucx \
@@ -128,7 +126,9 @@ ls -l nwchem* || true \
 && ls -lrt libext/lib || true \
 && make nwchem_config \
 && bash -c " \
-export PATH=$OMPI_DIR/bin:$PATH \
+if [ -f ~/apps/oneapi/compiler/latest/env/vars.sh ]; then  \
+. ~/apps/oneapi/compiler/latest/env/vars.sh ; fi  \
+&& export PATH=$OMPI_DIR/bin:$PATH \
 && export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH \
 && /usr/bin/env | grep PATH \
 && mpif90 -show \
