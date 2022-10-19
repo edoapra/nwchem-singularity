@@ -57,8 +57,9 @@ pwd \
 && echo TTTTT \
 &&  ./nwchem/travis/build_env.sh \
 && echo TTTTT \
-&& bash -c "if [[ $FC == 'ifx' ]] ||  [[ $FC == 'ifort' ]]; then  \
-source ~/apps/oneapi/compiler/latest/env/vars.sh ; fi"  \
+&& if [ -f ~/apps/oneapi/compiler/latest/env/vars.sh ]; then  \
+. ~/apps/oneapi/compiler/latest/env/vars.sh ; fi  \
+&& $FC  -v \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 
 $FC -v \
@@ -140,9 +141,8 @@ export PATH=$OMPI_DIR/bin:$PATH \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
 && ldd  ../bin/LINUX64/nwchem  \
 " \
-&& bash -c "if [[ $FC == 'ifx' ]] || [[ $FC  == 'ifort' ]]; then \
-source ~/apps/oneapi/compiler/latest/env/vars.sh --force    \
-&& rsync -av ~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin/lib*.so* $OMPI_DIR/lib/. ; fi" \
+&& if [ -f ~/apps/oneapi/compiler/latest/env/vars.sh ]; then  \
+rsync -av ~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin/lib*.so* $OMPI_DIR/lib/. ; fi \
 && DEBIAN_FRONTEND=noninteractive apt-get -y install localepurge \
 && echo MANDELETE >  /etc/locale.nopurge \
 && echo DONTBOTHERNEWLOCALE >> /etc/locale.nopurge \
