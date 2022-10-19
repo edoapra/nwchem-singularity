@@ -127,13 +127,14 @@ ls -l nwchem* || true \
 && make nwchem_config \
 && bash -c " \
 echo 'ls ~/' `ls -lrt ~/` \
-echo 'ls ~/apps' `ls -lrt ~/apps` || true \
-echo 'ls ~/apps/oneapi/compiler/latest/env/vars.sh' `ls -lrt ~/apps/oneapi/compiler/latest/env/vars.sh` || true \
+&& echo 'ls ~/apps' `ls -lrt ~/apps` || true \
+&& echo 'ls ~/apps/oneapi/compiler/latest/env/vars.sh' `ls -lrt ~/apps/oneapi/compiler/latest/env/vars.sh` || true \
+&& export PATH=$OMPI_DIR/bin:$PATH \
+&& export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH \
+&& echo '000 PATH is ' `/usr/bin/env | grep PATH` \
 && if [ -f ~/apps/oneapi/compiler/latest/env/vars.sh ]; then  \
 source ~/apps/oneapi/compiler/latest/env/vars.sh ; fi  \
 && echo '111 which FC ' `which $FC` || true \
-&& export PATH=$OMPI_DIR/bin:$PATH \
-&& export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH \
 && echo '222 PATH is ' `/usr/bin/env | grep PATH` \
 && echo '333 which FC ' `which $FC` || true \
 && mpif90 -show \
