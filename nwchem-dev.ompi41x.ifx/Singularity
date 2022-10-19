@@ -35,6 +35,9 @@ export ucx=1.12.1
 export OMPI_DIR=/opt/ompi
 export SINGULARITY_ompi=4.1.4
 export SINGULARITY_ompi_prefix=ompi-$ompi
+export PATH=$OMPI_DIR/bin:~/apps/oneapi/compiler/latest/linux/bin/intel64:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+export LD_LIBRARY_PATH=$OMPI_DIR/lib:~/apps/oneapi/compiler/latest/linux/lib:~/apps/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
+export LIBRARY_PATH=~/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:~/oneapi/compiler/latest/linux/lib 
 export `cat ./fc.txt`
 export `cat ./impl_impl.txt`
 echo FC is $FC
@@ -58,8 +61,6 @@ pwd \
 &&  ./nwchem/travis/build_env.sh \
 && echo TTTTT \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
-if [ -f ~/apps/oneapi/compiler/latest/env/vars.sh ]; then  \
-. ~/apps/oneapi/compiler/latest/env/vars.sh ; fi  \
 && $FC -v \
 && wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
 && tar xzf  ucx-$ucx.tar.gz \
@@ -128,15 +129,8 @@ ls -l nwchem* || true \
 && bash -c " \
 echo 'ls ~/' `ls -lrt ~/` \
 && echo 'ls ~/apps' `ls -lrt ~/apps` || true \
-&& echo 'ls ~/apps/oneapi/compiler/latest/env/vars.sh' `ls -lrt ~/apps/oneapi/compiler/latest/env/vars.sh` || true \
-&& export PATH=$OMPI_DIR/bin:$PATH \
-&& export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH \
-&& echo '000 PATH is ' `/usr/bin/env | grep PATH` \
-&& export PATH=$OMPI_DIR/bin:~/apps/oneapi/compiler/latest/linux/bin/intel64:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
-&& export LD_LIBRARY_PATH=$OMPI_DIR/lib:~/apps/oneapi/compiler/latest/linux/lib:~/apps/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin \
-&& export LIBRARY_PATH=~/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:~/oneapi/compiler/latest/linux/lib \
-&& echo '111 which FC ' `which $FC` || true \
 && echo '222 PATH is ' `/usr/bin/env | grep PATH` \
+&& echo '111 which FC ' `which $FC` || true \
 && echo '333 which FC ' `which $FC` || true \
 && mpif90 -show \
 && echo FC is $FC \
