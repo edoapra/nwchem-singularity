@@ -132,14 +132,14 @@ echo 'ls ~/' `ls -lrt ~/` \
 && export PATH=$OMPI_DIR/bin:$PATH \
 && export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH \
 && echo '000 PATH is ' `/usr/bin/env | grep PATH` \
-&& if [ -f ~/apps/oneapi/compiler/latest/env/vars.sh ]; then  \
-source ~/apps/oneapi/compiler/latest/env/vars.sh ; fi  \
+&& export PATH=$OMPI_DIR/bin:~/apps/oneapi/compiler/latest/linux/bin/intel64:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+&& export LD_LIBRARY_PATH=$OMPI_DIR/lib:~/apps/oneapi/compiler/latest/linux/lib:~/apps/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin \
+&& export LIBRARY_PATH=~/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:~/oneapi/compiler/latest/linux/lib \
 && echo '111 which FC ' `which $FC` || true \
 && echo '222 PATH is ' `/usr/bin/env | grep PATH` \
 && echo '333 which FC ' `which $FC` || true \
 && mpif90 -show \
 && echo FC is $FC \
-&& echo 'ldd FC is' `ldd $FC` || true \
 && $FC -v \
 && make FC=$FC -j6  \
 && FC=$FC ../contrib/getmem.nwchem 2000  || true \
