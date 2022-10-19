@@ -65,6 +65,9 @@ pwd \
 && echo TTTTT \
 && echo "PATH" $PATH \
 && echo "LD_LIBRARY_PATH" $LD_LIBRARY_PATH \
+&& echo ' ls -lart  ~/apps' `ls -lart  ~/apps` \
+&& echo ' ls ~/apps/oneapi/compiler/latest/linux/bin/intel64 ' `ls -lart ~/apps/oneapi/compiler/latest/linux/bin/intel64` \
+&& echo 'FC -v ' `$FC -v` \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
 && wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
