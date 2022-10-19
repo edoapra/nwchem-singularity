@@ -61,7 +61,7 @@ pwd \
 &&  ./nwchem/travis/build_env.sh \
 && echo TTTTT \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
-&& $FC -v \
+$FC -v \
 && wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
 && tar xzf  ucx-$ucx.tar.gz \
 && cd ucx-$ucx \
