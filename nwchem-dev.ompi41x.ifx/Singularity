@@ -126,7 +126,10 @@ ls -l nwchem* || true \
 && ls -lrt libext/lib || true \
 && make nwchem_config \
 && bash -c " \
-if [ -f ~/apps/oneapi/compiler/latest/env/vars.sh ]; then  \
+echo 'ls ~/' `ls -lrt ~/` \
+echo 'ls ~/apps' `ls -lrt ~/apps` || true \
+echo 'ls ~/apps/oneapi/compiler/latest/env/vars.sh' `ls -lrt ~/apps/oneapi/compiler/latest/env/vars.sh` || true \
+&& if [ -f ~/apps/oneapi/compiler/latest/env/vars.sh ]; then  \
 source ~/apps/oneapi/compiler/latest/env/vars.sh ; fi  \
 && echo '111 which FC ' `which $FC` || true \
 && export PATH=$OMPI_DIR/bin:$PATH \
