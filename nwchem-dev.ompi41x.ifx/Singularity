@@ -38,6 +38,9 @@ export SINGULARITY_ompi_prefix=ompi-$ompi
 export PATH=$OMPI_DIR/bin:~/apps/oneapi/compiler/latest/linux/bin/intel64:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
 export LD_LIBRARY_PATH=$OMPI_DIR/lib:~/apps/oneapi/compiler/latest/linux/lib:~/apps/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
 export LIBRARY_PATH=~/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:~/oneapi/compiler/latest/linux/lib 
+export SINGULARITY_PATH=$OMPI_DIR/bin:~/apps/oneapi/compiler/latest/linux/bin/intel64:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+export SINGULARITY_LD_LIBRARY_PATH=$OMPI_DIR/lib:~/apps/oneapi/compiler/latest/linux/lib:~/apps/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
+export SINGULARITY_LIBRARY_PATH=~/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:~/oneapi/compiler/latest/linux/lib 
 export `cat ./fc.txt`
 export `cat ./impl_impl.txt`
 echo FC is $FC
@@ -60,6 +63,8 @@ pwd \
 && echo TTTTT \
 &&  ./nwchem/travis/build_env.sh \
 && echo TTTTT \
+&& echo "PATH" $PATH \
+&& echo "LD_LIBRARY_PATH" $LD_LIBRARY_PATH \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
 && wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
