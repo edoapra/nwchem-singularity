@@ -57,7 +57,7 @@ pwd \
 && echo TTTTT \
 &&  ./nwchem/travis/build_env.sh \
 && echo TTTTT \
-&& bash -cc "if [[ $FC == 'ifx' ]] ||  [[ $FC == 'ifort' ]]; then  \
+&& bash -c "if [[ $FC == 'ifx' ]] ||  [[ $FC == 'ifort' ]]; then  \
 source ~/apps/oneapi/compiler/latest/env/vars.sh ; fi"  \
 && bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 
