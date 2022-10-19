@@ -59,7 +59,7 @@ jobs:
         repository: nwchemgit/nwchem
         clean: false
         path: nwchem
-    - name: build a apptainer container
+    - name: build an apptainer container
       run: |
         cd ${{ matrix.folder }}
         FC=${{ matrix.fc }} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
@@ -75,18 +75,18 @@ jobs:
     - name: builddate
       id: build-date
       run: |
-        echo "::set-output name=date::$(TZ=America/Los_Angeles date +%Y%m%d_%H%M%S)"
+        echo "date=$(TZ=America/Los_Angeles date +%Y%m%d_%H%M%S)" >> $GITHUB_ENV
     - name: push to ghcr.io
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | apptainer remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
         apptainer remote list
-        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:${{ steps.build-date.outputs.date }}
-        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:latest
+        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x.${{ matrix.fc }}:${{ env.date }}
+        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x.${{ matrix.fc }}::latest
     - name: test image with apptainer
       run: |
         pwd
         ls -la
-        apptainer pull -F ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:${{ steps.build-date.outputs.date }}
+        apptainer pull -F ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x.${{ matrix.fc }}:${{ env.date }}
         cd nwchem/QA
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
@@ -113,7 +113,7 @@ jobs:
         singularity version
     - name: test image with singularity
       run: |
-        singularity pull -F ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/${{ matrix.folder }}:${{ steps.build-date.outputs.date }}
+        singularity pull -F ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x.${{ matrix.fc }}:${{ steps.build-date.outputs.date }}
         cd nwchem/QA
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
