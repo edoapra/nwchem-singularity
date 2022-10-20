@@ -90,7 +90,7 @@ jobs:
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | apptainer remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
         apptainer remote list
-        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:{{ env.date }}
+        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:${{ env.date }}
         apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:latest
     - name: test image with apptainer
       run: |
