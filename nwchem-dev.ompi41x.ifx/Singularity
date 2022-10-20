@@ -105,7 +105,7 @@ export ARMCI_NETWORK=MPI-PR
 export NWCHEM_TARGET=LINUX64
 export NWCHEM_MODULES="all python gwmol"
 #export NWCHEM_MODULES="nwdft driver solvation"
-if [ $FC != "ifx" ]; then
+if [ $FC == "gfortran" ]; then
    export BUILD_PLUMED=1
 fi	  
 export USE_LIBXC=1
