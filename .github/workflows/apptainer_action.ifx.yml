@@ -22,6 +22,14 @@ jobs:
     env:
         FC: ${{ matrix.fc }}
     steps:
+    - name: tag
+      id: tag
+      run: |
+        if [[ $FC == gfortran ]]; then
+        echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x" >> $GITHUB_ENV 
+        else
+        echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x.${{ matrix.fc }}" >> $GITHUB_ENV
+        fi
     - name: Checkout nwchem-singularity source
       uses: actions/checkout@v3
     - name: Setup cache
@@ -76,14 +84,6 @@ jobs:
       id: build-date
       run: |
         echo "date=$(TZ=America/Los_Angeles date +%Y%m%d_%H%M%S)" >> $GITHUB_ENV
-    - name: tag
-      id: tag
-      run: |
-        if [[ $FC == gfortran ]]; then \
-        echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x" >> $GITHUB_ENV ;\
-        else ;\
-        echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x.${{ matrix.fc }}" >> $GITHUB_ENV ;\
-        fi
     - name: push to ghcr.io
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | apptainer remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
