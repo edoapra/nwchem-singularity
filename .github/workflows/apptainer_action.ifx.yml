@@ -76,17 +76,25 @@ jobs:
       id: build-date
       run: |
         echo "date=$(TZ=America/Los_Angeles date +%Y%m%d_%H%M%S)" >> $GITHUB_ENV
+    - name: tag
+      id: tag
+      run: |
+        if [[ $FC == gfortran ]]; then \
+        echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x" >> $GITHUB_ENV ;\
+        else ;\
+        echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x.${{ matrix.fc }}" >> $GITHUB_ENV ;\
+        fi
     - name: push to ghcr.io
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | apptainer remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
         apptainer remote list
-        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x.${{ matrix.fc }}:${{ env.date }}
-        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x.${{ matrix.fc }}::latest
+        apptainer push ${{ env.tag }}:{{ env.date }}
+        apptainer push ${{ env.tag }}:latest
     - name: test image with apptainer
       run: |
         pwd
         ls -la
-        apptainer pull -F ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x.${{ matrix.fc }}:${{ env.date }}
+        apptainer pull -F ${{ env.tag }}:${{ env.date }}
         cd nwchem/QA
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
@@ -97,7 +105,7 @@ jobs:
         rsync -a ~/cache/ompi /opt/.
         which mpirun
         ldd `which mpirun`
-        export NWCHEM_EXECUTABLE="apptainer exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x.${{ matrix.fc }}:latest nwchem"
+        export NWCHEM_EXECUTABLE="apptainer exec ${{ env.tag }}:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
     - name: Install Singularity CR
@@ -113,13 +121,13 @@ jobs:
         singularity version
     - name: test image with singularity
       run: |
-        singularity pull -F ${{ matrix.folder }}/${{ matrix.folder }}.simg oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x.${{ matrix.fc }}:${{ steps.build-date.outputs.date }}
+        singularity pull -F ${{ env.tag }}:${{ env.date }}
         cd nwchem/QA
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
         export PATH=/opt/ompi/bin:$PATH
         export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
         export LD_LIBRARY_PATH=/opt/ompi/lib:$LD_LIBRARY_PATH
-        export NWCHEM_EXECUTABLE="singularity exec oras://ghcr.io/edoapra/nwchem-singularity/nwchem-dev.ompi41x.${{ matrix.folder }}:latest nwchem"
+        export NWCHEM_EXECUTABLE="singularity exec ${{ env.tag }}:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
