@@ -23,14 +23,15 @@ jobs:
         FC: ${{ matrix.fc }}
     steps:
     - name: tag
-      id: tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
         echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x" >> $GITHUB_ENV 
         else
         echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x.${{ matrix.fc }}" >> $GITHUB_ENV
         fi
-        echo ' the apptainer tag is ' ${{ env.tag }}
+    - name: echo-tag
+      run: |
+        echo ' the apptainer tag is ' "${{ env.tag }}"
     - name: Checkout nwchem-singularity source
       uses: actions/checkout@v3
     - name: Setup cache
