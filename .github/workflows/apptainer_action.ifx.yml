@@ -110,7 +110,7 @@ jobs:
         export NWCHEM_EXECUTABLE="apptainer exec ${{ env.tag }}:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
-    - name: Install Singularity CR
+    - name: Install Singularity CE
       env:
         SG_VER: 3.10.3
       run: |
