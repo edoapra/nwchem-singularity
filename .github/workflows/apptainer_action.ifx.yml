@@ -35,6 +35,7 @@ jobs:
         echo ' the apptainer tag is ' "${{ env.tag }}"
     - name: Checkout nwchem-singularity source
       uses: actions/checkout@v3
+      with:
         repository: edoapra/nwchem-singularity
         clean: false
         path: nwchem-singularity
