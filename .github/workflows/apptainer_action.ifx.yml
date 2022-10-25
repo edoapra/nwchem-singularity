@@ -38,7 +38,7 @@ jobs:
       with:
         repository: edoapra/nwchem-singularity
         clean: false
-        path: nwchem-singularity
+#        path: nwchem-singularity
     - name: Setup cache
       id: setup-cache
       uses: actions/cache@v3
