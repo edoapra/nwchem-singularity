@@ -27,19 +27,19 @@ jobs:
         FC: ${{ matrix.fc }}
     steps:
     - name: nwchem version tag
-        run: |
-          if [[ ${{ matrix.branch }} ==  master ]]; then
-            echo "nwversion=dev" >> $GITHUB_ENV
-          else
-            echo "nwversion=702" >> $GITHUB_ENV
-          fi
+      run: |
+        if [[ ${{ matrix.branch }} ==  master ]]; then
+          echo "nwversion=dev" >> $GITHUB_ENV
+        else
+          echo "nwversion=702" >> $GITHUB_ENV
+        fi
         shell: bash
     - name: tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-        echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.ompi41x" >> $GITHUB_ENV 
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.ompi41x" >> $GITHUB_ENV 
         else
-        echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.ompi41x.${{ matrix.fc }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.ompi41x.${{ matrix.fc }}" >> $GITHUB_ENV
         fi
     - name: echo-tag
       run: |
