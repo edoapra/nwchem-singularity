@@ -18,7 +18,7 @@ jobs:
             - nwchem-dev.ompi41x.ifx
           branch:
             - master
-            - v7.2.0-beta1
+            - release-7-2-0
           fc:
             - ifx
             - ifort
