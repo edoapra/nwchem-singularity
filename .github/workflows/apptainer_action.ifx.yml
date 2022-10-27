@@ -26,7 +26,7 @@ jobs:
     env:
         FC: ${{ matrix.fc }}
     steps:
-      - name: nwchem version tag
+    - name: nwchem version tag
         run: |
           if [[ ${{ matrix.branch }} ==  master ]]; then
             echo "nwversion=dev" >> $GITHUB_ENV
