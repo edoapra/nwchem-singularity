@@ -16,6 +16,9 @@ jobs:
         matrix:
           folder:
             - nwchem-dev.ompi41x.ifx
+          branch:
+            - master
+            - v7.2.0-beta1
           fc:
             - ifx
             - ifort
@@ -23,12 +26,20 @@ jobs:
     env:
         FC: ${{ matrix.fc }}
     steps:
+      - name: nwchem version tag
+        run: |
+          if [[ ${{ matrix.branch }} ==  master ]]; then
+            echo "nwversion=dev" >> $GITHUB_ENV
+          else
+            echo "nwversion=702" >> $GITHUB_ENV
+          fi
+        shell: bash
     - name: tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-        echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x" >> $GITHUB_ENV 
+        echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.ompi41x" >> $GITHUB_ENV 
         else
-        echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-dev.ompi41x.${{ matrix.fc }}" >> $GITHUB_ENV
+        echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.ompi41x.${{ matrix.fc }}" >> $GITHUB_ENV
         fi
     - name: echo-tag
       run: |
@@ -72,12 +83,13 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: nwchemgit/nwchem
+        ref: ${{ matrix.branch}}
         clean: false
         path: nwchem
     - name: build an apptainer container
       run: |
         cd ${{ matrix.folder }}
-        FC=${{ matrix.fc }} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+        FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: store cache
       run: |
         mkdir -p ~/cache || true
