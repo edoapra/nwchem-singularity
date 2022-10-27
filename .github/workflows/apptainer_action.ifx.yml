@@ -33,7 +33,6 @@ jobs:
         else
           echo "nwversion=702" >> $GITHUB_ENV
         fi
-        shell: bash
     - name: tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
