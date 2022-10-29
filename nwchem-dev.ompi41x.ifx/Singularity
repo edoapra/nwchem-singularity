@@ -117,7 +117,9 @@ export BUILD_SCALAPACK=1
 export BLAS_SIZE=8
 export SCALAPACK_SIZE=8
 #export USE_64TO32=y
-export USE_OPENMP=1
+if [ $BRANCH !=  "master" ]; then
+   export USE_OPENMP=1
+fi
 export USE_MPI=y
 export USE_MPIF=y
 export USE_MPIF4=y
