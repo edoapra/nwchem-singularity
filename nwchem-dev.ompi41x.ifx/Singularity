@@ -56,9 +56,9 @@ pwd \
 && ls -lart  \
 && echo '@@ ls on /opt' \
 && ls -lart /opt \
-&& bash -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi " \
-&& apt-get -y install -y curl wget tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
- g++ gfortran   make ssh patch curl  wget unzip perl-base file \
+&& bash -o  pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi " \
+&& apt-get -y install -y curl  tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
+ g++ gfortran   make ssh patch curl  unzip perl-base file \
  python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
  libnuma-dev libslurm-dev libpmi2-0-dev libpmi0-dev  libnl-3-dev libnl-route-3-dev udev \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers \
@@ -71,17 +71,15 @@ pwd \
 && echo ' ls -lart  ~/apps' `ls -lart  ~/apps` \
 && echo FFFFF \
 && echo 'FC -v ' `$FC -v` \
-&& bash -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
+&& bash -o pipefail -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
-&& wget https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz \
-&& tar xzf  ucx-$ucx.tar.gz \
+&& wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz -O - | tar xzf - \
 && cd ucx-$ucx \
 && mkdir build && cd build \
 && ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
 && make -j4 && make install \
 && cd ../.. \
-&& wget https://github.com/open-mpi/ompi/archive/v$ompi.tar.gz -O $ompi_prefix.tar.gz && \
-tar xzf $ompi_prefix.tar.gz                                           && \
+&& wget --progress=dot:giga https://github.com/open-mpi/ompi/archive/v$ompi.tar.gz -O - | tar xzf -   && \
 cd $ompi_prefix                                                        && \
 ./autogen.pl                                                           && \
 ./configure  --prefix=$OMPI_DIR --with-ucx=$OMPI_DIR --enable-mca-no-build=btl-uct   \
@@ -133,14 +131,14 @@ export SIMINT_MAXAM=5
 #ENV         CCSDTLR=y
 ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
-&& bash -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
+&& bash -o pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
 && cd nwchem \
 && export NWCHEM_TOP=`pwd` \
 && ls -lrt \
 && cd src \
 && ls -lrt libext/lib || true \
 && make nwchem_config \
-&& bash -c " \
+&& bash -o pipefail -c " \
 echo 'ls ~/' `ls -lrt ~/` \
 && echo 'ls ~/apps' `ls -lrt ~/apps` || true \
 && echo '222 PATH is ' `/usr/bin/env | grep PATH` \
@@ -169,7 +167,7 @@ a&& du -sh /opt/nwchem \
 && cd ../.. \
 && du -sh nwchem \
 && du -sk *|sort -n  \
-&& bash -c "if [[ $FC == 'ifx' ]] || [[ $FC  == 'ifort' ]]; then \
+&& bash -o pipefail -c "if [[ $FC == 'ifx' ]] || [[ $FC  == 'ifort' ]]; then \
 rm -rf ~/apps  /var/intel  l_*sh ; fi"   \
 && ls -lrth    \
 &&  ldd  /opt/nwchem/bin/nwchem  \
