@@ -51,7 +51,7 @@ echo MPI_IMPL is $MPI_IMPL
 echo BRANCH is $BRANCH
 pwd \
 && apt-get -y update \
-&& apt-get -y install -y tzdata git moreutils  wget curl rsync sudo \
+&& apt-get -y install -y tzdata git moreutils  wget curl rsync  \
 && pwd \
 && echo '@@ ls -lart ' \
 && ls -lart  \
