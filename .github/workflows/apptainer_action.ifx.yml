@@ -55,7 +55,7 @@ jobs:
       with:
         path: |
           ~/cache
-        key: ${{ matrix.folder}}-nwchemcache-${{ matrix.fc}}-v001
+        key: ${{ matrix.folder}}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
