@@ -136,8 +136,6 @@ ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
 && bash -o pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
 && cd nwchem \
-&& wget https://github.com/nwchemgit/nwchem/commit/058c1743ca366457d668cdfdedf64479ab7f0f5e.patch -O dftd3_c6cn.patch \
-&& patch -p1 -s -N  < dftd3_c6cn.patch \
 && export NWCHEM_TOP=`pwd` \
 && ls -lrt \
 && cd src \
