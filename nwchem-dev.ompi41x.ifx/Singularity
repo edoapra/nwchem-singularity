@@ -136,6 +136,8 @@ ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
 && bash -o pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
 && cd nwchem \
+&& curl -LJO https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/largebasis.patch \
+&& patch -p1 < largebasis.patch \
 && export NWCHEM_TOP=`pwd` \
 && ls -lrt \
 && cd src \
