@@ -155,7 +155,7 @@ echo 'ls ~/' `ls -lrt ~/` \
 && make FC=$FC -j6 || { echo "Compilation Failure"; exit 1; } \
 && FC=$FC ../contrib/getmem.nwchem 2000  || true \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
-&& ldd  ../bin/LINUX64/nwchem  \
+&& ldd  ../bin/LINUX64/nwchem  "\
 && if [ -f ~/apps/oneapi/compiler/latest/env/vars.sh ]; then  \
 rsync -av ~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin/lib*.so* $OMPI_DIR/lib/. ; fi \
 && DEBIAN_FRONTEND=noninteractive apt-get -y install localepurge \
