@@ -109,7 +109,7 @@ export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
 export ARMCI_NETWORK=MPI-PR
 #export NWCHEM_TOP=/opt/nwchem
 export NWCHEM_TARGET=LINUX64
-export NWCHEM_MODULES="all python gwmol"
+export NWCHEM_MODULES="all python gwmol xtb"
 #export NWCHEM_MODULES="nwdft driver solvation"
 if [[ "$FC" == "gfortran" ]]; then
    export BUILD_PLUMED=1
@@ -145,6 +145,7 @@ ls -l nwchem* || true \
 && cd src \
 && ls -lrt libext/lib || true \
 && make nwchem_config \
+&& export USE_TBLITE=1 \
 && bash -o pipefail -c " \
 echo 'ls ~/' `ls -lrt ~/` \
 && echo 'ls ~/apps' `ls -lrt ~/apps` || true \
