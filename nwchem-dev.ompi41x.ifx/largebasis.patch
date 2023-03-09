@@ -1,3 +1,16 @@
+diff --git a/src/NWints/texas/texas_face.F b/src/NWints/texas/texas_face.F
+index e8b52c0a39..8a457080e0 100644
+--- a/src/NWints/texas/texas_face.F
++++ b/src/NWints/texas/texas_face.F
+@@ -518,7 +518,7 @@ c=================================================================
+ c-----------------------------------------------------------------
+ c the common block /big/ bl(lcx) has been repleaced by pnl scratch 
+ c-----------------------------------------------------------------
+-      parameter(mxsh= 190 000)
++      parameter(mxsh= 300 000)
+ c------------------------------------
+       common /ctxs_index/ maxsh,ifp,inx(mxsh)
+       common /inde1/ inxx
 diff --git a/src/util/nwc_const.fh b/src/util/nwc_const.fh
 index b726362615..939fd5797a 100644
 --- a/src/util/nwc_const.fh
