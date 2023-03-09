@@ -69,7 +69,6 @@ pwd \
 && echo TTTTT \
 && echo "PATH" $PATH \
 && echo "LD_LIBRARY_PATH" $LD_LIBRARY_PATH \
-&& echo ' ls -lart  ~/apps' `ls -lart  ~/apps` \
 && echo FFFFF \
 && echo 'FC -v ' `$FC -v` \
 && rm -f ./cc.txt || true \
@@ -148,10 +147,8 @@ ls -l nwchem* || true \
 && make nwchem_config || { echo "config Failure"; exit 1; } \
 && bash -o pipefail -c " \
 echo 'ls ~/' `ls -lrt ~/` \
-&& echo 'ls ~/apps' `ls -lrt ~/apps` || true \
 && echo '222 PATH is ' `/usr/bin/env | grep PATH` \
 && echo '111 which FC ' `which $FC` || true \
-&& echo '333 which FC ' `which $FC` || true \
 && mpif90 -show \
 && echo FC is $FC \
 && $FC -v \
