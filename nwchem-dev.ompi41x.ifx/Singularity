@@ -110,7 +110,7 @@ export ARMCI_NETWORK=MPI-PR
 #export NWCHEM_TOP=/opt/nwchem
 export NWCHEM_TARGET=LINUX64
 export NWCHEM_MODULES="all python gwmol xtb"
-export USE_TBLITE=1 
+#export USE_TBLITE=1 
 #export NWCHEM_MODULES="nwdft driver solvation"
 if [[ "$FC" == "gfortran" ]]; then
    export BUILD_PLUMED=1
@@ -155,7 +155,7 @@ echo 'ls ~/' `ls -lrt ~/` \
 && mpif90 -show \
 && echo FC is $FC \
 && $FC -v \
-&& make FC=$FC -j6  \
+&& make FC=$FC -j6 || { echo "Failure"; exit 1; } \
 && FC=$FC ../contrib/getmem.nwchem 2000  || true \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
 && ldd  ../bin/LINUX64/nwchem  \
