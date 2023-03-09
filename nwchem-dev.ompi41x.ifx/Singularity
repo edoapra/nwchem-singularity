@@ -110,7 +110,7 @@ export ARMCI_NETWORK=MPI-PR
 #export NWCHEM_TOP=/opt/nwchem
 export NWCHEM_TARGET=LINUX64
 export NWCHEM_MODULES="all python gwmol xtb"
-#export USE_TBLITE=1 
+export USE_TBLITE=1 
 #export NWCHEM_MODULES="nwdft driver solvation"
 if [[ "$FC" == "gfortran" ]]; then
    export BUILD_PLUMED=1
