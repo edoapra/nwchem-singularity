@@ -113,6 +113,7 @@ export USE_TBLITE=1
 #export NWCHEM_MODULES="nwdft driver solvation"
 if [ "$FC" = "gfortran" ]; then
    export BUILD_PLUMED=1
+   export PYTHON_BIN=python3
 fi	  
 export USE_LIBXC=1
 export BUILD_OPENBLAS=1
