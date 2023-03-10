@@ -111,7 +111,7 @@ export NWCHEM_TARGET=LINUX64
 export NWCHEM_MODULES="all python gwmol xtb"
 export USE_TBLITE=1 
 #export NWCHEM_MODULES="nwdft driver solvation"
-if [[ "$FC" == "gfortran" ]]; then
+if [ "$FC" = "gfortran" ]; then
    export BUILD_PLUMED=1
 fi	  
 export USE_LIBXC=1
@@ -120,7 +120,7 @@ export BUILD_SCALAPACK=1
 export BLAS_SIZE=8
 export SCALAPACK_SIZE=8
 #export USE_64TO32=y
-if [[ "$BRANCH" !=  "master" ]]; then
+if [ "$BRANCH" !=  "master" ]; then
    export USE_OPENMP=1
 fi
 export USE_MPI=y
