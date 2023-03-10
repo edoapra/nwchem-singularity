@@ -84,6 +84,7 @@ jobs:
         repository: nwchemgit/nwchem
         ref: ${{ matrix.branch}}
         clean: false
+        fetch-depth: 0
         path: nwchem
     - name: build an apptainer container
       run: |
