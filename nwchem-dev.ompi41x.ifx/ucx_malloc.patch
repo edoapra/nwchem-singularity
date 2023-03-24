@@ -4,7 +4,7 @@
    msegmentptr ss = (msegmentptr)(chunk2mem(sp));
    mchunkptr tnext = chunk_plus_offset(sp, ssize);
    mchunkptr p = tnext;
-+#ifdef DEBUG
++#if 0
    int nfences = 0;
 +#endif
  
@@ -14,7 +14,7 @@
    for (;;) {
      mchunkptr nextp = chunk_plus_offset(p, SIZE_T_SIZE);
      p->head = FENCEPOST_HEAD;
-+#ifdef DEBUG
++#if 0
      ++nfences;
 +#endif    
      if ((char*)(&(nextp->head)) < old_end)
@@ -22,7 +22,7 @@
      else
        break;
    }
-+#ifdef DEBUG
++#if 0
    assert(nfences >= 2);
 +#endif
  
