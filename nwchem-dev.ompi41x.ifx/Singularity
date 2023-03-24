@@ -63,6 +63,7 @@ pwd \
  python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
  libnuma-dev libslurm-dev libpmi2-0-dev libpmi0-dev  libnl-3-dev libnl-route-3-dev udev \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers \
+ pkg-config \
 && apt-get clean \
 && echo TTTTT \
 &&  ./nwchem/travis/build_env.sh || true \
@@ -79,6 +80,8 @@ pwd \
 $FC -v \
 && wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz -O - | tar xzf - \
 && cd ucx-$ucx \
+&& curl -LJO https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch \
+&& patch -p1 < ./ucx_malloc.patch
 && mkdir build && cd build \
 && ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
 && make -j4 && make install \
