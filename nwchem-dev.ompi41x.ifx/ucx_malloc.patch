@@ -28,3 +28,14 @@
  
    /* Insert the rest of old top into a bin as an ordinary free chunk */
    if (csp != old_top) {
+--- configure	2023-03-24 16:38:52.718191491 -0700
++++ configure	2023-03-24 16:39:26.218354708 -0700
+@@ -20343,7 +20343,7 @@
+ #
+ # Initialize CFLAGS
+ #
+-BASE_CFLAGS="-g -Wall -Werror"
++BASE_CFLAGS="-Wall"
+ 
+ 
+ #
