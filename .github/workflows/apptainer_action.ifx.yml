@@ -18,7 +18,7 @@ jobs:
             - nwchem-dev.ompi41x.ifx
           branch:
             - master
-            - release-7-2-0
+            - hotfix/release-7-2-0
           fc:
             - ifort
             - gfortran
