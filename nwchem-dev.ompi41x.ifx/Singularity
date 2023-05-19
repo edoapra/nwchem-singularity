@@ -10,6 +10,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     ls -l ${SINGULARITY_ROOTFS}
     rm -f ${SINGULARITY_ROOTFS}/*.txt
     echo "FC=$FC " >> ${SINGULARITY_ROOTFS}/fc.txt
+    echo "ARMCI_NETWORK=$ARMCI_NETWORK " >> ${SINGULARITY_ROOTFS}/armci_network.txt
     echo "MPI_IMPL=$MPI_IMPL " >> ${SINGULARITY_ROOTFS}/mpi_impl.txt
     echo "BRANCH=$BRANCH " >> ${SINGULARITY_ROOTFS}/branch.txt
     echo '@@@ ls -lart $SINGULARITY_ROOTFS'
@@ -44,9 +45,11 @@ export SINGULARITY_PATH=$OMPI_DIR/bin:/root/apps/oneapi/compiler/latest/linux/bi
 export SINGULARITY_LD_LIBRARY_PATH=$OMPI_DIR/lib:/root/apps/oneapi/compiler/latest/linux/lib:/root/apps/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
 export SINGULARITY_LIBRARY_PATH=/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/root/apps/oneapi/compiler/latest/linux/lib 
 export `cat ./fc.txt`
+export `cat ./armci_network.txt`
 export `cat ./mpi_impl.txt`
 export `cat ./branch.txt`
 echo FC is $FC
+echo ARMCI_NETWORK is $ARMCI_NETWORK
 echo MPI_IMPL is $MPI_IMPL
 echo BRANCH is $BRANCH
 pwd \
@@ -110,7 +113,8 @@ echo ' check ucx' \
 && echo '********' 
 export PATH=$OMPI_DIR/bin:$PATH
 export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
-export ARMCI_NETWORK=MPI-PR
+#export ARMCI_NETWORK=MPI-PR
+echo ARMCI_NETWORK is $ARMCI_NETWORK
 #export NWCHEM_TOP=/opt/nwchem
 export NWCHEM_TARGET=LINUX64
 export NWCHEM_MODULES="all python gwmol xtb"

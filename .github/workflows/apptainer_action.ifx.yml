@@ -22,6 +22,9 @@ jobs:
           fc:
             - ifort
             - gfortran
+          armci_network:
+            - MPI-PR
+            - MPI-TS
     env:
         FC: ${{ matrix.fc }}
     steps:
@@ -32,12 +35,15 @@ jobs:
         else
           echo "nwversion=720" >> $GITHUB_ENV
         fi
+        if [[ ${{ matrix.armci_network }} !=  MPI-TS ]]; then
+          echo "armci_network=mpi-ts" >> $GITHUB_ENV
+        fi
     - name: tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.ompi41x" >> $GITHUB_ENV 
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}.ompi41x" >> $GITHUB_ENV
         else
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.ompi41x.${{ matrix.fc }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}.ompi41x.${{ matrix.fc }}" >> $GITHUB_ENV
         fi
     - name: echo-tag
       run: |
@@ -88,7 +94,7 @@ jobs:
     - name: build an apptainer container
       run: |
         cd ${{ matrix.folder }}
-        FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+        FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: store cache
       run: |
         mkdir -p ~/cache || true
