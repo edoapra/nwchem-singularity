@@ -35,8 +35,9 @@ jobs:
         else
           echo "nwversion=720" >> $GITHUB_ENV
         fi
-        if [[ ${{ matrix.armci_network }} !=  MPI-TS ]]; then
-          echo "armci_network=mpi-ts." >> $GITHUB_ENV
+        if [[ ${{ matrix.armci_network }} !=  MPI-PR ]]; then
+          net_tag=$(echo ${{ matrix.armci_network }} | tr '[:upper:]' '[:lower:]')
+          echo "armci_network="${net_tag}"." >> $GITHUB_ENV
         fi
     - name: tag
       run: |
