@@ -36,14 +36,14 @@ jobs:
           echo "nwversion=720" >> $GITHUB_ENV
         fi
         if [[ ${{ matrix.armci_network }} !=  MPI-TS ]]; then
-          echo "armci_network=mpi-ts" >> $GITHUB_ENV
+          echo "armci_network=mpi-ts." >> $GITHUB_ENV
         fi
     - name: tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}.ompi41x" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi41x" >> $GITHUB_ENV
         else
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}.ompi41x.${{ matrix.fc }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi41x.${{ matrix.fc }}" >> $GITHUB_ENV
         fi
     - name: echo-tag
       run: |
