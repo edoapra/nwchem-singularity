@@ -76,7 +76,7 @@ pwd \
 && echo FFFFF \
 && echo 'FC -v ' `$FC -v` \
 && rm -f ./cc.txt || true \
-&& bash -o pipefail -c "if [[ $FC == 'ifx' ]]; then echo 'CC=icx ' > ./cc.txt; echo 'CXX=icpx ' > ./cxx.txt; fi" \
+#&& bash -o pipefail -c "if [[ $FC == 'ifx' ]]; then echo 'CC=icx ' > ./cc.txt; echo 'CXX=icpx ' > ./cxx.txt; fi" \
 && if [ -f ./cc.txt ]; then export `cat ./cc.txt` ; fi \
 && if [ -f ./cxx.txt ]; then export `cat ./cxx.txt` ; fi \
 && echo ' CC is ' "$CC" \
