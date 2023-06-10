@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: ubuntu:20.04
+From: ubuntu:22.04
 %labels
 MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 
@@ -195,7 +195,7 @@ rm -rf ~/apps  /var/intel  l_*sh ; fi"   \
 && echo "dddddddddddd" \
 &&  du -sk /tmp/* || true \
 &&  ls -lart /tmp ||true \
-&&  apt-get  -y purge cmake git  gcc-9  g++-9  gfortran-9  libstdc++-9-dev  libgcc-9-dev git \
+&&  apt-get  -y purge cmake git  gcc-11  g++-11  gfortran-11  libstdc++-11-dev  libgcc-11-dev git \
 && apt-get -y install libgcc-s1  \
 && apt-get -y autoremove && apt-get clean
 
