@@ -55,6 +55,7 @@ echo BRANCH is $BRANCH
 pwd \
 && apt-get -y update \
 && apt-get -y install -y tzdata git moreutils  wget curl rsync  sudo \
+&&  apt-get -y install -y  ${FC} \
 && pwd \
 && echo '@@ ls -lart ' \
 && ls -lart  \

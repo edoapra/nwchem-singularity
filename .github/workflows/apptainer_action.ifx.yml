@@ -22,7 +22,7 @@ jobs:
           fc:
             - ifx
             - ifort
-            - gfortran
+            - gfortran-12
           armci_network:
             - MPI-PR
             - MPI-TS
