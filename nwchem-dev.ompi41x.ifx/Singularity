@@ -55,7 +55,7 @@ echo BRANCH is $BRANCH
 pwd \
 && apt-get -y update \
 && apt-get -y install -y tzdata git moreutils  wget curl rsync  sudo \
-&&  apt-get -y install -y  ${FC} \
+&& bash -o  pipefail -c "if [[ $(echo $FC | cut -c -8) == gfortran ]]; then apt-get -y install -y  ${FC}; fi" \
 && pwd \
 && echo '@@ ls -lart ' \
 && ls -lart  \
