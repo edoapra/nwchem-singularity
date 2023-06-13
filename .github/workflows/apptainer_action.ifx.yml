@@ -24,7 +24,6 @@ jobs:
             - ifort
             - gfortran-11
             - gfortran-12
-            - gfortran-13
           armci_network:
             - MPI-PR
             - MPI-TS
