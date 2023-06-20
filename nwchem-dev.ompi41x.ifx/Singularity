@@ -38,12 +38,12 @@ export ucx=1.12.1
 export OMPI_DIR=/opt/ompi
 export SINGULARITY_ompi=4.1.4
 export SINGULARITY_ompi_prefix=ompi-$ompi
-export PATH=$OMPI_DIR/bin:/root/apps/oneapi/compiler/latest/linux/bin/intel64:/root//apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
-export LD_LIBRARY_PATH=$OMPI_DIR/lib:/root/apps/oneapi/compiler/latest/linux/lib:/root/apps/oneapi/compiler/latest/linux/lib/x64:/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
-export LIBRARY_PATH=/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/root/apps/oneapi/compiler/latest/linux/lib 
-export SINGULARITY_PATH=$OMPI_DIR/bin:/root/apps/oneapi/compiler/latest/linux/bin/intel64:/root/apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
-export SINGULARITY_LD_LIBRARY_PATH=$OMPI_DIR/lib:/root/apps/oneapi/compiler/latest/linux/lib:/root/apps/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
-export SINGULARITY_LIBRARY_PATH=/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/root/apps/oneapi/compiler/latest/linux/lib 
+export PATH=$OMPI_DIR/bin:/tmp/apps/oneapi/compiler/latest/linux/bin/intel64:/tmp//apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+export LD_LIBRARY_PATH=$OMPI_DIR/lib:/tmp/apps/oneapi/compiler/latest/linux/lib:/tmp/apps/oneapi/compiler/latest/linux/lib/x64:/tmp/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
+export LIBRARY_PATH=/tmp/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/tmp/apps/oneapi/compiler/latest/linux/lib 
+export SINGULARITY_PATH=$OMPI_DIR/bin:/tmp/apps/oneapi/compiler/latest/linux/bin/intel64:/tmp/apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+export SINGULARITY_LD_LIBRARY_PATH=$OMPI_DIR/lib:/tmp/apps/oneapi/compiler/latest/linux/lib:/tmp/apps/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
+export SINGULARITY_LIBRARY_PATH=/tmp/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/tmp/apps/oneapi/compiler/latest/linux/lib 
 export `cat ./fc.txt`
 export `cat ./armci_network.txt`
 export `cat ./mpi_impl.txt`
@@ -154,6 +154,9 @@ ls -l nwchem* || true \
 && curl  https://raw.githubusercontent.com/nwchemgit/nwchem/7e4ea3c5cd9205572fbe42c8a86f18ada43409ec/src/NWints/simint/libsimint_source/build_simint.sh > src/NWints/simint/libsimint_source/build_simint.sh \
 && curl -LJO https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/simint_forceg++.patch \
 && patch -p1 < simint_forceg++.patch \
+&& curl -LJO https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/oneapi_tmp.patch \
+&& patch -p1 < oneapi_tmp.patch \
+&& df -h \
 && export NWCHEM_TOP=`pwd` \
 && ls -lrt \
 && cd src \
@@ -170,8 +173,8 @@ echo 'ls ~/' `ls -lrt ~/` \
 && FC=$FC ../contrib/getmem.nwchem 2000  || true \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
 && ldd  ../bin/LINUX64/nwchem  "\
-&& if [ -f ~/apps/oneapi/compiler/latest/env/vars.sh ]; then  \
-rsync -av ~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin/lib*.so* $OMPI_DIR/lib/. ; fi \
+&& if [ -f /tmp/apps/oneapi/compiler/latest/env/vars.sh ]; then  \
+rsync -av /tmp/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin/lib*.so* $OMPI_DIR/lib/. ; fi \
 && DEBIAN_FRONTEND=noninteractive apt-get -y install localepurge \
 && echo MANDELETE >  /etc/locale.nopurge \
 && echo DONTBOTHERNEWLOCALE >> /etc/locale.nopurge \
