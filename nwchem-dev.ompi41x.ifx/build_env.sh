@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-echo '@@@@@@@@@@@@ June 20 2023 build_env @@@@@@@@'
 if [[ -z "$TRAVIS_BUILD_DIR" ]] ; then
     TRAVIS_BUILD_DIR=$(pwd)
 fi
@@ -25,8 +24,7 @@ if [ -z "$DISTR" ] ; then
     DISTR=$dist
 fi
 echo DISTR is "$DISTR"
-	IONEAPI_ROOT=/tmp/apps/oneapi
-#	IONEAPI_ROOT=~/apps/oneapi
+	IONEAPI_ROOT=~/apps/oneapi
  if [[ "$os" == "Darwin" ]]; then 
 #  HOMEBREW_NO_AUTO_UPDATE=1 brew cask uninstall oclint || true  
 #  HOMEBREW_NO_INSTALL_CLEANUP=1  HOMEBREW_NO_AUTO_UPDATE=1 brew install gcc "$MPI_IMPL" openblas python3 ||true
