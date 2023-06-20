@@ -70,6 +70,8 @@ pwd \
  pkg-config \
 && apt-get clean \
 && echo TTTTT \
+&& cp https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/build_env.sh nwchem/travis/. \
+&& df -h \
 &&  ./nwchem/travis/build_env.sh || true \
 && echo TTTTT \
 && echo "PATH" $PATH \
@@ -154,8 +156,6 @@ ls -l nwchem* || true \
 && curl  https://raw.githubusercontent.com/nwchemgit/nwchem/7e4ea3c5cd9205572fbe42c8a86f18ada43409ec/src/NWints/simint/libsimint_source/build_simint.sh > src/NWints/simint/libsimint_source/build_simint.sh \
 && curl -LJO https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/simint_forceg++.patch \
 && patch -p1 < simint_forceg++.patch \
-&& cp https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/build_env.sh travis/. \
-&& df -h \
 && export NWCHEM_TOP=`pwd` \
 && ls -lrt \
 && cd src \

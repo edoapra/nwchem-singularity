@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+echo '@@@@@@@@@@@@ June 20 2023 build_env @@@@@@@@'
 if [[ -z "$TRAVIS_BUILD_DIR" ]] ; then
     TRAVIS_BUILD_DIR=$(pwd)
 fi
