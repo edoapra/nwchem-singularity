@@ -67,7 +67,7 @@ pwd \
  python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
  libnuma-dev libslurm-dev libpmi2-0-dev libpmi0-dev  libnl-3-dev libnl-route-3-dev udev \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers \
- pkg-config \
+ pkg-config gawk \
 && apt-get clean \
 && echo TTTTT \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/build_env.sh  \
