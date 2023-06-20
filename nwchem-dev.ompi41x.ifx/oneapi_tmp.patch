@@ -1,5 +1,5 @@
 diff --git a/travis/build_env.sh b/travis/build_env.sh
-index 64fb681811..e5dfd702c7 100755
+index 64fb681811..a8eb8efa1a 100755
 --- a/travis/build_env.sh
 +++ b/travis/build_env.sh
 @@ -24,7 +24,8 @@ if [ -z "$DISTR" ] ; then
@@ -12,3 +12,14 @@ index 64fb681811..e5dfd702c7 100755
   if [[ "$os" == "Darwin" ]]; then 
  #  HOMEBREW_NO_AUTO_UPDATE=1 brew cask uninstall oclint || true  
  #  HOMEBREW_NO_INSTALL_CLEANUP=1  HOMEBREW_NO_AUTO_UPDATE=1 brew install gcc "$MPI_IMPL" openblas python3 ||true
+@@ -135,8 +136,8 @@ if [[ "$os" == "Linux" ]]; then
+ 	    tries=0 ; until [ "$tries" -ge 10 ] ; do \
+ 			  dir_base="7deeaac4-f605-4bcf-a81b-ea7531577c61"
+ 			  dir_hpc="1ff1b38a-8218-4c53-9956-f0b264de35a4"
+-			  base="l_BaseKit_p_2023.1.0.46401_offline"
+-			  hpc="l_HPCKit_p_2023.1.0.46346_offline"
++			  base="l_BaseKit_p_2023.1.0.46401"
++			  hpc="l_HPCKit_p_2023.1.0.46346"
+ 			  wget -nv https://registrationcenter-download.intel.com/akdlm/IRC_NAS/"$dir_hpc"/"$hpc".sh \
+ 			      && wget -nv  https://registrationcenter-download.intel.com/akdlm/IRC_NAS/"$dir_base"/"$base".sh \
+ 			      && break ;\
