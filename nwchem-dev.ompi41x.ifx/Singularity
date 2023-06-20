@@ -70,7 +70,9 @@ pwd \
  pkg-config \
 && apt-get clean \
 && echo TTTTT \
-&& cp https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/build_env.sh nwchem/travis/. \
+&& wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/build_env.sh  \
+&& cp build_env.sh nwchem/travis/. \
+&& chmod +x nwchem/travis/build_env.sh \
 && df -h \
 &&  ./nwchem/travis/build_env.sh || true \
 && echo TTTTT \
