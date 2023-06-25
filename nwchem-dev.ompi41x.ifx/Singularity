@@ -128,11 +128,11 @@ export USE_TBLITE=1
 if [ "$FC" = "gfortran" ]; then
    export BUILD_PLUMED=1
    export PYTHON_BIN=python3
+   export BUILD_ELPA=1
 fi	  
 export USE_LIBXC=1
 export BUILD_OPENBLAS=1
 export BUILD_SCALAPACK=1
-export BUILD_ELPA=1
 export BLAS_SIZE=8
 export SCALAPACK_SIZE=8
 #export USE_64TO32=y
