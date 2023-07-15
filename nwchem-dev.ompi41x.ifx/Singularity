@@ -13,6 +13,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     echo "ARMCI_NETWORK=$ARMCI_NETWORK " >> ${SINGULARITY_ROOTFS}/armci_network.txt
     echo "MPI_IMPL=$MPI_IMPL " >> ${SINGULARITY_ROOTFS}/mpi_impl.txt
     echo "BRANCH=$BRANCH " >> ${SINGULARITY_ROOTFS}/branch.txt
+    bash -c "if [ -z "${MYUSERNAME}" ]; then export MYUSERNAME=nwchemgit; fi ; echo "MYUSERNAME=$MYUSERNAME " >> ${SINGULARITY_ROOTFS}/myusername.txt "
     echo '@@@ ls -lart $SINGULARITY_ROOTFS'
     ls -lrt ${CACHEDIR} || true
     ls -la  ${CACHEDIR}/ || true
@@ -49,6 +50,7 @@ export `cat ./fc.txt`
 export `cat ./armci_network.txt`
 export `cat ./mpi_impl.txt`
 export `cat ./branch.txt`
+export `cat ./myusername.txt`
 echo FC is $FC
 echo ARMCI_NETWORK is $ARMCI_NETWORK
 echo MPI_IMPL is $MPI_IMPL
@@ -62,7 +64,7 @@ pwd \
 && ls -lart  \
 && echo '@@ ls on /opt' \
 && ls -lart /opt \
-&& bash -o  pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi " \
+&& bash -o  pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/$MYUSERNAME/nwchem.git; fi " \
 && apt-get -y install -y curl  tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
  g++ gfortran   make ssh patch curl  unzip perl-base file \
  python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
