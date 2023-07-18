@@ -31,11 +31,7 @@ jobs:
     steps:
     - name: nwchem version tag
       run: |
-        if [[ ${{ matrix.branch }} ==  master ]]; then
-          echo "nwversion=dev" >> $GITHUB_ENV
-        else
-          echo "nwversion=720" >> $GITHUB_ENV
-        fi
+        echo "nwversion=${{ matrix.branch }}" >> $GITHUB_ENV
         if [[ ${{ matrix.armci_network }} !=  MPI-PR ]]; then
           net_tag=$(echo ${{ matrix.armci_network }} | tr '[:upper:]' '[:lower:]')
           echo "armci_network="${net_tag}"." >> $GITHUB_ENV
