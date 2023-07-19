@@ -4,17 +4,19 @@ From: ubuntu:22.04
 MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 
 %setup
+    #!/bin/bash
+    echo "$(readlink /proc/$$/exe) is the shell in use"
+    env|egrep SHELL
     ls -la  ${GITHUB_WORKSPACE}
     export CACHEDIR=${GITHUB_WORKSPACE}/../../../cache
-    echo '@@@ ls -l $SINGULARITY_ROOTFS'
-    ls -l ${SINGULARITY_ROOTFS}
-    rm -f ${SINGULARITY_ROOTFS}/*.txt
-    echo "FC=$FC " >> ${SINGULARITY_ROOTFS}/fc.txt
-    echo "ARMCI_NETWORK=$ARMCI_NETWORK " >> ${SINGULARITY_ROOTFS}/armci_network.txt
-    echo "MPI_IMPL=$MPI_IMPL " >> ${SINGULARITY_ROOTFS}/mpi_impl.txt
-    echo "BRANCH=$BRANCH " >> ${SINGULARITY_ROOTFS}/branch.txt
-    bash -c "if [ -z "${MYUSERNAME}" ]; then export MYUSERNAME=nwchemgit; fi ; echo "MYUSERNAME=$MYUSERNAME " >> ${SINGULARITY_ROOTFS}/myusername.txt "
-    echo '@@@ ls -lart $SINGULARITY_ROOTFS'
+#    echo '@@@ ls -l $SINGULARITY_ROOTFS'
+#    ls -l ${SINGULARITY_ROOTFS}
+    rm -f ${SINGULARITY_ROOTFS}/*.txt || true
+    bash -c "if [[ -z '${FC}' ]]; then echo 'FC=gfortran ' >> ${SINGULARITY_ROOTFS}/fc.txt ; else echo 'FC is ${FC}'; echo 'FC=${FC} ' >> ${SINGULARITY_ROOTFS}/fc.txt ; fi"
+    bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"
+    bash -c "if [[ -z '${MPI_IMPL}' ]]; then echo 'MPI_IMPL=ompi ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; else echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"
+    bash -c "if [[ -z '${BRANCH}' ]]; then echo 'BRANCH=master ' >> ${SINGULARITY_ROOTFS}/branch.txt ; else echo 'BRANCH is ${BRANCH}'; echo 'BRANCH=${BRANCH} ' >> ${SINGULARITY_ROOTFS}/branch.txt ; fi"
+    bash -c "if [[ -z '${MYUSERNAME}' ]]; then echo 'MYUSERNAME=nwchemgit ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; else echo 'MYUSERNAME is ${MYUSERNAME}'; echo 'MYUSERNAME=${MYUSERNAME} ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; fi"
     ls -lrt ${CACHEDIR} || true
     ls -la  ${CACHEDIR}/ || true
     ls -la  ${CACHEDIR}/ompi || true
