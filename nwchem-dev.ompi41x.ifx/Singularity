@@ -87,7 +87,7 @@ pwd \
 && wget https://launchpad.net/~ubuntu-security-proposed/+archive/ubuntu/ppa/+build/26434623/+files/curl_7.81.0-1ubuntu1.13_amd64.deb \
 && wget https://launchpad.net/~ubuntu-security-proposed/+archive/ubuntu/ppa/+build/26434623/+files/libcurl4_7.81.0-1ubuntu1.13_amd64.deb \
 && dpkg -i *curl*deb \
-&7 rm -f *curl*deb \
+&& rm -f *curl*deb \
 && echo "curl version " $(dpkg-query -l curl) \
 && bash -o  pipefail -c  ./nwchem/travis/build_env.sh || true \
 && echo TTTTT \
