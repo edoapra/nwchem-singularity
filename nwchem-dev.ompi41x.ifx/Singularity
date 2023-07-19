@@ -93,8 +93,9 @@ pwd \
 $FC -v \
 && wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz -O - | tar xzf - \
 && cd ucx-$ucx \
-&& MYCURL2="curl -LJO "\
-&& MYCURL="wget "\
+&& export MYCURL2="curl -LJO "\
+&& export MYCURL="wget "\
+&& echo CURL envs $MYCURL2 $MYCURL \
 && $MYCURL https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch \
 && patch -p0 < ./ucx_malloc.patch \
 && mkdir build && cd build \
@@ -160,8 +161,9 @@ ls -l nwchem* || true \
 && bash -o pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
 && cd nwchem \
 && echo "output of git describe  --always " `git describe  --always` || true \
-&& MYCURL2="curl -LJO "\
-&& MYCURL="wget "\
+&& export MYCURL2="curl -LJO "\
+&& export MYCURL="wget "\
+&& echo CURL envs $MYCURL2 $MYCURL \
 && $MYCURL https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/largebasis.patch \
 && patch -p1 < largebasis.patch \
 && $MYCURL https://raw.githubusercontent.com/nwchemgit/nwchem/7e4ea3c5cd9205572fbe42c8a86f18ada43409ec/src/NWints/simint/libsimint_source/build_simint.sh > src/NWints/simint/libsimint_source/build_simint.sh \
