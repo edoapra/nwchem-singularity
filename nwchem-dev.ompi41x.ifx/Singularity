@@ -168,8 +168,11 @@ ls -l nwchem* || true \
 && $MYCURL https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/simint_forceg++.patch \
 && patch -p1 < simint_forceg++.patch \
 && export NWCHEM_TOP=`pwd` \
-&& ls -lrt \
+&& echo 'ls -lrta ' $(ls -lrta) \
+&& echo 'pwd ' $(pwd) \
 && cd src \
+&& echo 'ls -lrta ' $(ls -lrta) \
+&& echo 'pwd ' $(pwd) \
 && ls -lrt libext/lib || true \
 && make nwchem_config || { echo "config Failure"; exit 1; } \
 && bash -o pipefail -c " \
