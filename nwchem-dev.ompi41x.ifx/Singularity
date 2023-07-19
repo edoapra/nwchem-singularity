@@ -31,6 +31,9 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
 
 %post
+#!/bin/bash
+
+echo "$(readlink /proc/$$/exe) is the shell in use"
 #
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
 export DEBIAN_FRONTEND=noninteractive
@@ -159,12 +162,9 @@ ls -l nwchem* || true \
 && bash -o pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
 && cd nwchem \
 && echo "output of git describe  --always " `git describe  --always` || true \
-&& export MYCURL2="curl -LJO "\
-&& export MYCURL="wget "\
-&& echo CURL envs $MYCURL2 $MYCURL \
-&& $MYCURL https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/largebasis.patch \
+&& wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/largebasis.patch \
 && patch -p1 < largebasis.patch \
-&& $MYCURL https://raw.githubusercontent.com/nwchemgit/nwchem/7e4ea3c5cd9205572fbe42c8a86f18ada43409ec/src/NWints/simint/libsimint_source/build_simint.sh > src/NWints/simint/libsimint_source/build_simint.sh \
+&& wget https://raw.githubusercontent.com/nwchemgit/nwchem/3179a43a8b72512fd777129f674fae5a848b3e81/src/NWints/simint/libsimint_source/build_simint.sh -O src/NWints/simint/libsimint_source/build_simint.sh \
 && export NWCHEM_TOP=`pwd` \
 && echo 'ls -lrta ' $(ls -lrta) \
 && echo 'pwd ' $(pwd) \
