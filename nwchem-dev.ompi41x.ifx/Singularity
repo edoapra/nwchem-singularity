@@ -63,6 +63,8 @@ echo BRANCH is $BRANCH
 pwd \
 && apt-get -y update \
 && apt-get -y install -y tzdata git moreutils  wget rsync  sudo ca-certificates \
+&& wget https://github.com/moparisthebest/static-curl/releases/download/v8.1.2/curl-amd64 -O /usr/bin/curl \
+&& chmod +x /usr/bin/curl \
 && echo ca_certificate=/etc/ssl/certs/ca-certificates.crt >  ~/.wgetrc \
 && echo        "cacert=/etc/ssl/certs/ca-certificates.crt" >> ~/.curlrc \
 && bash -o  pipefail -c "if [[ $(echo $FC | cut -c -8) == gfortran ]]; then apt-get -y install -y  ${FC}; fi" \
@@ -84,11 +86,6 @@ pwd \
 && cp build_env.sh nwchem/travis/. \
 && chmod +x nwchem/travis/build_env.sh \
 && df -h \
-&& wget https://launchpad.net/~ubuntu-security-proposed/+archive/ubuntu/ppa/+build/26434623/+files/curl_7.81.0-1ubuntu1.13_amd64.deb \
-&& wget https://launchpad.net/~ubuntu-security-proposed/+archive/ubuntu/ppa/+build/26434623/+files/libcurl4_7.81.0-1ubuntu1.13_amd64.deb \
-&& dpkg -i *curl*deb \
-&& rm -f *curl*deb \
-&& echo "curl version " $(dpkg-query -l curl) \
 && bash -o  pipefail -c  ./nwchem/travis/build_env.sh || true \
 && echo TTTTT \
 && echo "PATH" $PATH \
