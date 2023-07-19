@@ -89,14 +89,12 @@ pwd \
 && if [ -f ./cxx.txt ]; then export `cat ./cxx.txt` ; fi \
 && echo ' CC is ' "$CC" \
 && echo ' CXX is ' "$CXX" || true \
+&& echo 'ls -l /opt/ompi/lib/libmpi.so' $(ls -l /opt/ompi/lib/libmpi.so) || true \
 && bash -o pipefail -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
 && wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz -O - | tar xzf - \
 && cd ucx-$ucx \
-&& export MYCURL2="curl -LJO "\
-&& export MYCURL="wget "\
-&& echo CURL envs $MYCURL2 $MYCURL \
-&& $MYCURL https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch \
+&& wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch \
 && patch -p0 < ./ucx_malloc.patch \
 && mkdir build && cd build \
 && ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
