@@ -62,6 +62,7 @@ pwd \
 && apt-get -y update \
 && apt-get -y install -y tzdata git moreutils  wget curl rsync  sudo ca-certificates \
 && echo ca_certificate=/etc/ssl/certs/ca-certificates.crt >  ~/.wgetrc \
+&& echo        "cacert=/etc/ssl/certs/ca-certificates.crt" >> ~/.curlrc \
 && bash -o  pipefail -c "if [[ $(echo $FC | cut -c -8) == gfortran ]]; then apt-get -y install -y  ${FC}; fi" \
 && pwd \
 && echo '@@ ls -lart ' \
