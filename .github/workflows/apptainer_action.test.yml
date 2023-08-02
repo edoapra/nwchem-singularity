@@ -17,7 +17,7 @@ jobs:
           folder:
             - nwchem-dev.ompi41x.ifx
           branch:
-            - dm3d
+            - dm3doff
           myusername:
             - edoapra
           fc:
