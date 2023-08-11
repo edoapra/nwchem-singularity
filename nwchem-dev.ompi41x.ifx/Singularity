@@ -169,8 +169,6 @@ ls -l nwchem* || true \
 && echo "output of git describe  --always " `git describe  --always` || true \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/largebasis.patch \
 && patch -p1 < largebasis.patch \
-&& wget https://github.com/edoapra/nwchem/commit/da1c37e7a605790658a31652036c57f9172cfc96.patch \
-&& patch -p1 -s -N < da1c37e7a605790658a31652036c57f9172cfc96.patch \
 && wget https://raw.githubusercontent.com/nwchemgit/nwchem/3179a43a8b72512fd777129f674fae5a848b3e81/src/NWints/simint/libsimint_source/build_simint.sh -O src/NWints/simint/libsimint_source/build_simint.sh \
 && export NWCHEM_TOP=`pwd` \
 && echo 'ls -lrta ' $(ls -lrta) \
