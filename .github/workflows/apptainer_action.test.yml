@@ -47,7 +47,7 @@ jobs:
       run: |
         echo ' the apptainer tag is ' "${{ env.tag }}"
     - name: Checkout nwchem-singularity source
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: edoapra/nwchem-singularity
         clean: false
@@ -82,7 +82,7 @@ jobs:
         which apptainer
         apptainer version
     - name: Checkout nwchem source
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ${{ matrix.myusername}}/nwchem
         ref: ${{ matrix.branch}}
