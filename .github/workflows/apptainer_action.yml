@@ -17,7 +17,7 @@ jobs:
             - nwchem-dev.ompi41x
     steps:
     - name: Checkout nwchem-singularity source
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Setup cache
       id: setup-cache
       uses: actions/cache@v3
@@ -48,7 +48,7 @@ jobs:
         which apptainer
         apptainer version
     - name: Checkout nwchem source
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: nwchemgit/nwchem
         clean: false
