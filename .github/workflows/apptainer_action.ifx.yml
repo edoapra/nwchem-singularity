@@ -78,7 +78,7 @@ jobs:
         fi
     - name: Install apptainer
       env:
-        APP_VER: 1.1.2
+        APP_VER: 1.2.2
       run: |
         sudo apt-get install -y  libfuse2 libseccomp2 zlib1g uidmap squashfs-tools squashfuse fuse2fs fuse-overlayfs fakeroot
         wget -q  https://github.com/apptainer/apptainer/releases/download/v${APP_VER}/apptainer_${APP_VER}_amd64.deb 
