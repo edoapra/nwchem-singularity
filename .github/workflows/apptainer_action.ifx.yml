@@ -133,7 +133,7 @@ jobs:
         ./runtests.mpi.unix procs 2 h2o_opt
     - name: Install Singularity CE
       env:
-        SG_VER: 3.10.3
+        SG_VER: 4.0.0
       run: |
         sudo apt-get purge -y apptainer
         sudo apt-get update && sudo apt-get install -y \
