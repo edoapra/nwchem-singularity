@@ -17,7 +17,7 @@ jobs:
           folder:
             - nwchem-dev.ompi41x.ifx
           branch:
-            - dm3doff
+            - flaccid-fraction
           myusername:
             - edoapra
           fc:
@@ -74,7 +74,7 @@ jobs:
         fi
     - name: Install apptainer
       env:
-        APP_VER: 1.1.2
+        APP_VER: 1.2.3
       run: |
         sudo apt-get install -y  libfuse2 libseccomp2 zlib1g uidmap squashfs-tools squashfuse fuse2fs fuse-overlayfs fakeroot
         wget -q  https://github.com/apptainer/apptainer/releases/download/v${APP_VER}/apptainer_${APP_VER}_amd64.deb 
@@ -129,7 +129,7 @@ jobs:
         ./runtests.mpi.unix procs 2 h2o_opt
     - name: Install Singularity CE
       env:
-        SG_VER: 3.10.3
+        SG_VER: 4.0.0
       run: |
         sudo apt-get purge -y apptainer
         sudo apt-get update && sudo apt-get install -y \
