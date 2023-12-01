@@ -124,8 +124,9 @@ cd / && ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
 && bash -o pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
 && cd nwchem \
+&& echo ' === git descr == ' \
 && echo "output of git describe  --always " `git describe  --always` || true \
-&& echp ' texas check ' \
+&& echo ' texas check ' \
 && ls -lrt src/NWints/texas ||true \
 && MYCURL2="curl -LJO "\
 && MYCURL="wget "\
