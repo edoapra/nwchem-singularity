@@ -30,8 +30,6 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
 export DEBIAN_FRONTEND=noninteractive
 export HPCX_DIR=/opt/hpcx
-export SINGULARITY_ompi=4.1.4
-export SINGULARITY_ompi_prefix=ompi-$ompi
 export PATH=$HPCX_DIR/ompi/bin:$HPCX_DIR/ucx/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
 export LD_LIBRARY_PATH=$HPCX_DIR/ompi/lib:$HPCX_DIR/ucx/lib:$HPCX_DIR/ucx/lib/ucx
 export SINGULARITY_PATH=$PATH
@@ -74,9 +72,13 @@ pwd \
 && echo ' CC is ' "$CC" \
 && echo ' CXX is ' "$CXX" || true \
 && $FC -v \
+&& cd /opt \
 && echo pwd is $(pwd) \
 && wget --progress=dot:giga http://www.mellanox.com/downloads/hpc/hpc-x/v2.15/hpcx-v2.15-gcc-MLNX_OFED_LINUX-5-ubuntu22.04-cuda12-gdrcopy2-nccl2.17-x86_64.tbz -O - | tar --exclude=sharp --exclude=ucc  -xjf - \
 && ln  -sf hpcx-v2.15-gcc-MLNX_OFED_LINUX-5-ubuntu22.04-cuda12-gdrcopy2-nccl2.17-x86_64 hpcx \
+&& ls -l \
+&& echo PATH is $PATH \
+&& ls -lrt hpcx/ucx/bin \
 && rm -rf *tbz   \
 && echo ' check ucx' \
 && echo ' ucx_info -v ' `ucx_info -v|| true` \
@@ -118,7 +120,7 @@ export USE_NOIO=y
 #ENV         MRCC_METHODS=y
 #ENV         CCSDTQ=y
 #ENV         CCSDTLR=y
-ls -l nwchem* || true \
+cd / && ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
 && bash -o pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
 && cd nwchem \
