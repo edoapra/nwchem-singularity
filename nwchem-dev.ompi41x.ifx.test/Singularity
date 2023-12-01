@@ -32,7 +32,7 @@ export DEBIAN_FRONTEND=noninteractive
 export HPCX_DIR=/opt/hpcx
 export SINGULARITY_ompi=4.1.4
 export SINGULARITY_ompi_prefix=ompi-$ompi
-export PATH=$HPCX_DIR/ompi/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+export PATH=$HPCX_DIR/ompi/bin:$HPCX_DIR/ucx/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
 export LD_LIBRARY_PATH=$HPCX_DIR/ompi/lib:$HPCX_DIR/ucx/lib:$HPCX_DIR/ucx/lib/ucx
 export SINGULARITY_PATH=$PATH
 export SINGULARITY_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
@@ -84,7 +84,7 @@ pwd \
 && echo '********'
 
 export HPCX_DIR=/opt/hpcx
-export PATH=$HPCX_DIR/ompi/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+export PATH=$HPCX_DIR/ompi/bin:$HPCX_DIR/ucx/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
 export LD_LIBRARY_PATH=$HPCX_DIR/ompi/lib:$HPCX_DIR/ucx/lib:$HPCX_DIR/ucx/lib/ucx
 #export ARMCI_NETWORK=MPI-PR
 echo ARMCI_NETWORK is $ARMCI_NETWORK
@@ -189,7 +189,7 @@ rm -rf ~/apps  /var/intel  l_*sh ; fi"   \
 #cd /data
 %environment
 export HPCX_DIR=/opt/hpcx
-export SINGULARITYENV_APPEND_PATH=$HPCX_DIR/ompi/bin
+export SINGULARITYENV_APPEND_PATH=$HPCX_DIR/ompi/bin:$HPCX_DIR/ucx/bin
 export SINGULARITYENV_APPEND_LD_LIBRARY_PATH=$HPCX_DIR/ompi/lib:$HPCX_DIR/ucx/lib:$HPCX_DIR/ucx/lib/ucx
 
 #export nwchem_hash=77ba3a6e1dd6f9ba26879d0416bb93b302f1f4f7
@@ -203,7 +203,7 @@ export SPCE=${NWCHEM_TOP}/src/data/solvents/spce.rst
 export CHARMM_S=$NWCHEM_TOP/src/data/charmm_s/
 export CHARMM_X=$NWCHEM_TOP/src/data/charmm_x/
 export PATH=$PATH:/opt/nwchem/bin/
-export PATH=$HPCX_DIR/ompi/bin:$PATH
+export PATH=$HPCX_DIR/ompi/bin:$HPCX_DIR/ucx/bin:$PATH
 export NWCHEM_BASIS_LIBRARY=/opt/nwchem/share/libraries/
 export NWCHEM_NWPW_LIBRARY=/opt/nwchem/share/libraryps/
 export LD_LIBRARY_PATH=$HPCX_DIR/ompi/lib:$HPCX_DIR/ucx/lib:$HPCX_DIR/ucx/lib/ucx:$LD_LIBRARY_PATH
