@@ -127,8 +127,10 @@ export USE_NOIO=y
 #ENV         MRCC_METHODS=y
 #ENV         CCSDTQ=y
 #ENV         CCSDTLR=y
-/usr/bin/env|egrep BUILD_ 
-cd ${SINGULARITY_ROOTFS}/nwchem \
+/usr/bin/env|egrep BUILD_
+echo '===== cd SG_RFS/nwchem ===='
+cd ${SINGULARITY_ROOTFS}/nwchem 
+echo '===== done cd SG_RFS/nwchem ===='
 echo pwd is $(pwd)
  ls -lart  
  echo ' === git descr == ' 
