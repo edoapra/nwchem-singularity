@@ -113,9 +113,7 @@ export BLAS_SIZE=8
 export USE_INTERNALBLAS=1
 #export SCALAPACK_SIZE=8
 #export USE_64TO32=y
-if [ "$BRANCH" !=  "master" ]; then
    export USE_OPENMP=1
-fi
 export USE_MPI=y
 export USE_MPIF=y
 export USE_MPIF4=y
@@ -180,8 +178,6 @@ echo pwd is $(pwd)
 && cd ../.. \
 && du -sh nwchem \
 && du -sk *|sort -n  \
-&& bash -o pipefail -c "if [[ $FC == 'ifx' ]] || [[ $FC  == 'ifort' ]]; then \
-rm -rf ~/apps  /var/intel  l_*sh ; fi"   \
 && ls -lrth    \
 &&  ldd  /opt/nwchem/bin/nwchem  \
 && du -sk *|sort -n \
