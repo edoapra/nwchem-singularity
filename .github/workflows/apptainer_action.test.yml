@@ -15,9 +15,10 @@ jobs:
         fail-fast: false
         matrix:
           folder:
-            - nwchem-dev.ompi41x.ifx
+            - nwchem-dev.ompi41x.ifx.test
           branch:
-            - flaccid-fraction
+            - master
+            - hotfix/release-7-2-0
           myusername:
             - edoapra
           fc:
@@ -39,9 +40,9 @@ jobs:
     - name: tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi41x" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi41x_test" >> $GITHUB_ENV
         else
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi41x.${{ matrix.fc }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi41x_test.${{ matrix.fc }}" >> $GITHUB_ENV
         fi
     - name: echo-tag
       run: |
