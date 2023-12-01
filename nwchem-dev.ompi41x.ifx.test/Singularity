@@ -46,15 +46,14 @@ echo MPI_IMPL is $MPI_IMPL
 echo BRANCH is $BRANCH
 pwd \
 && apt-get -y update \
-&& apt-get -y install -y tzdata git moreutils  wget curl rsync  sudo ca-certificates
+&& apt-get -y install -y tzdata git moreutils  wget curl rsync  sudo ca-certificates \
 && echo ca_certificate=/etc/ssl/certs/ca-certificates.crt >  ~/.wgetrc \
 && pwd \
 && echo '@@ ls -lart ' \
 && ls -lart  \
 && echo '@@ ls on /opt' \
-&& ls -lart /opt
-
-bash -o  pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi " \
+&& ls -lart /opt \
+&& bash -o  pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi " \
 && apt-get -y install -y curl  tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
  g++ gfortran   make ssh patch curl  unzip perl-base file \
  python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
