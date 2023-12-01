@@ -69,7 +69,6 @@ pwd \
 && echo FFFFF \
 && echo 'FC -v ' `$FC -v` \
 && rm -f ./cc.txt || true \
-&& bash -o pipefail -c "if [[ $FC == 'ifx' ]]; then echo 'CC=icx ' > ./cc.txt; echo 'CXX=icpx ' > ./cxx.txt; fi" \
 && if [ -f ./cc.txt ]; then export `cat ./cc.txt` ; fi \
 && if [ -f ./cxx.txt ]; then export `cat ./cxx.txt` ; fi \
 && echo ' CC is ' "$CC" \
@@ -79,7 +78,7 @@ pwd \
 && wget --progress=dot:giga wget http://www.mellanox.com/downloads/hpc/hpc-x/v2.15/hpcx-v2.15-gcc-MLNX_OFED_LINUX-5-ubuntu22.04-cuda12-gdrcopy2-nccl2.17-x86_64.tbz --exclude=sharp --exclude=ucc -O - | tar xzf - \
 && ln  -sf hpcx-v2.15-gcc-MLNX_OFED_LINUX-5-ubuntu22.04-cuda12-gdrcopy2-nccl2.17-x86_64 hpcx \
 && rm -rf *tbz   \
-echo ' check ucx' \
+&& echo ' check ucx' \
 && echo ' ucx_info -v ' `ucx_info -v|| true` \
 && echo ' ucx Transports' `ucx_info  -d |grep Transport |cut -c 19- || true` \
 && echo '********'
@@ -143,7 +142,12 @@ echo 'ls ~/' `ls -lrt ~/` \
 && mpif90 -show \
 && echo FC is $FC \
 && $FC -v \
-&& make FC=$FC -j6 || { echo 'Compilation Failure'; exit 1; } \
+&&    make SKIP_COMPILERS=1 deps_stamp  >& deps.log \
+&& tail deps.log \
+&&    make directories \
+&&    export QUICK_BUILD=1 \
+&& make FC=$FC V=0 -j6 || { echo 'Compilation Failure'; exit 1; } \
+&& unset QUICK_BUILD \
 && FC=$FC ../contrib/getmem.nwchem 2000  || true \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
 && ldd  ../bin/LINUX64/nwchem  "\
