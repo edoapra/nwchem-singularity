@@ -127,8 +127,11 @@ export USE_NOIO=y
 #ENV         MRCC_METHODS=y
 #ENV         CCSDTQ=y
 #ENV         CCSDTLR=y
-/usr/bin/env|egrep BUILD_
+#/usr/bin/env|egrep BUILD_
+ls -l ${SINGULARITY_ROOTFS}/
+ls -l ${SINGULARITY_ROOTFS}/nwchem
 echo '===== cd SG_RFS/nwchem ===='
+echo '================'
 cd ${SINGULARITY_ROOTFS}/nwchem 
 echo '===== done cd SG_RFS/nwchem ===='
 echo pwd is $(pwd)
