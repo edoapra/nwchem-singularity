@@ -75,7 +75,7 @@ pwd \
 && echo ' CXX is ' "$CXX" || true \
 && $FC -v \
 && echo pwd is $(pwd) \
-&& wget --progress=dot:giga http://www.mellanox.com/downloads/hpc/hpc-x/v2.15/hpcx-v2.15-gcc-MLNX_OFED_LINUX-5-ubuntu22.04-cuda12-gdrcopy2-nccl2.17-x86_64.tbz -O - | tar --exclude=sharp --exclude=ucc  -xzf - \
+&& wget --progress=dot:giga http://www.mellanox.com/downloads/hpc/hpc-x/v2.15/hpcx-v2.15-gcc-MLNX_OFED_LINUX-5-ubuntu22.04-cuda12-gdrcopy2-nccl2.17-x86_64.tbz -O - | tar --exclude=sharp --exclude=ucc  -xjf - \
 && ln  -sf hpcx-v2.15-gcc-MLNX_OFED_LINUX-5-ubuntu22.04-cuda12-gdrcopy2-nccl2.17-x86_64 hpcx \
 && rm -rf *tbz   \
 && echo ' check ucx' \
