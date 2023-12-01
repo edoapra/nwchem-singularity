@@ -135,7 +135,7 @@ echo '=== ls on / =='
 ls -lrt / 
 cd  && ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
-&& cd nwchem \
+&& cd ${SINGULARITY_ROOTFS}/nwchem \
 && echo ' === git descr == ' \
 && echo "output of git describe  --always " `git describe  --always` || true \
 && echo ' texas check ' \
