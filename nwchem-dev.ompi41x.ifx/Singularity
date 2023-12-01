@@ -73,6 +73,11 @@ pwd \
 && ls -lart  \
 && echo '@@ ls on /opt' \
 && ls -lart /opt \
+&& echo " ==========" \
+&& pwd \
+&& echo pwd $(pwd) \
+&& echo 'ls nwchem' $(ls -lrta nwchem) \
+&& echo 'ls nwchem/src' $(ls -lrta nwchem/src) \
 && bash -o  pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/$MYUSERNAME/nwchem.git; fi " \
 && apt-get -y install -y   tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
  g++ gfortran   make ssh patch   unzip perl-base file \
@@ -161,6 +166,11 @@ export SIMINT_MAXAM=5
 #ENV         CCSDTLR=y
 ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
+&& echo " ==========" \
+&& pwd \
+&& echo pwd $(pwd) \
+&& echo 'ls nwchem' $(ls -lrta nwchem) \
+&& echo 'ls nwchem/src' $(ls -lrta nwchem/src) \
 && bash -o pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/$MYUSERNAME/nwchem.git; fi" \
 && cd nwchem \
 && echo "output of git describe  --always " `git describe  --always` || true \
