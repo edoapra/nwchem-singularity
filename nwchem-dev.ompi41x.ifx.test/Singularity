@@ -109,13 +109,6 @@ export NWCHEM_TARGET=LINUX64
 #export NWCHEM_MODULES="all python gwmol xtb"
 #export USE_TBLITE=1 
 export NWCHEM_MODULES="nwdft driver solvation"
-#if [ "$FC" = "gfortran" ]; then
-#   export BUILD_PLUMED=1
-#   export PYTHON_BIN=python3
-#fi	  
-#export USE_LIBXC=1
-#export BUILD_OPENBLAS=1
-#export BUILD_SCALAPACK=1
 export BLAS_SIZE=8
 export USE_INTERNALBLAS=1
 #export SCALAPACK_SIZE=8
@@ -134,15 +127,14 @@ export USE_NOIO=y
 #ENV         MRCC_METHODS=y
 #ENV         CCSDTQ=y
 #ENV         CCSDTLR=y
+ echo '==== ls on SINGnwchem/src' \
+&&    ls -lrta  ${SINGULARITY_ROOTFS}/nwchem/src \
+&& echo SINGULARITY_ROOTFS is ${SINGULARITY_ROOTFS} \
+&& echo my pwd is $(pwd) \
 echo '=== ls on / ==' 
 ls -lrt / 
 cd  && ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
-&& bash -o pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/nwchemgit/nwchem.git; fi" \
-&&    echo '==== ls on SINGnwchem/src' \
-&&    ls -lrta  ${SINGULARITY_ROOTFS}/nwchem/src \
-&& echo SINGULARITY_ROOTFS is ${SINGULARITY_ROOTFS} \
-&& echo my pwd is $(pwd) \
 && cd nwchem \
 && echo ' === git descr == ' \
 && echo "output of git describe  --always " `git describe  --always` || true \
