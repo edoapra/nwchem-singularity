@@ -19,8 +19,15 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libnwc_simint.a || true
     ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ||true
     bash -c "if [[ ! -z "${GITHUB_WORKSPACE}" ]]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/contrib; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ||  true ; rsync -a ${GITHUB_WORKSPACE}/nwchem/contrib/getmem.nwchem ${SINGULARITY_ROOTFS}/nwchem/contrib/. || true ;rsync -a ${GITHUB_WORKSPACE}/nwchem/travis ${SINGULARITY_ROOTFS}/nwchem/. ||  true ; rsync -a ${GITHUB_WORKSPACE}/nwchem/.git ${SINGULARITY_ROOTFS}/nwchem/. ||true ; fi"
+    echo '==== ls on nwchem/.git'
+    ls -lrta  ${SINGULARITY_ROOTFS}/nwchem/
+    echo '==== ls on nwchem/src'
+    ls -lrta  ${SINGULARITY_ROOTFS}/nwchem/src
     bash -c "if [[  -f ${CACHEDIR}/libext/lib/libnwc_openblas.a ]]; then rsync -a ${CACHEDIR}/libext/* ${SINGULARITY_ROOTFS}/nwchem/src/libext/. ; echo libext cache fetched ;fi"
     bash -c "if [[  -f ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint.l5_p5_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
+    echo ' SINGULARITY_ROOTFS is $SINGULARITY_ROOTFS'
+    echo '@@@ ls -l SINGULARITY_ROOTFS'
+    ls -l ${SINGULARITY_ROOTFS}
 
 ##%files
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
@@ -145,8 +152,6 @@ cd  && ls -l nwchem* || true \
 && cd src \
 && ls -lrt libext/lib || true \
 && make nwchem_config || { echo "config Failure"; exit 1; } \
-&& bash -o pipefail -c " \
-echo 'ls ~/' `ls -lrt ~/` \
 && echo '222 PATH is ' `/usr/bin/env | grep PATH` \
 && echo '111 which FC ' `which $FC` || true \
 && mpif90 -show \
