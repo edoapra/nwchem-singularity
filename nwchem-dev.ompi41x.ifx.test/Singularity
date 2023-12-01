@@ -19,8 +19,10 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libnwc_simint.a || true
     ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ||true
     bash -c "if [[ ! -z "${GITHUB_WORKSPACE}" ]]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/contrib; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ||  true ; rsync -a ${GITHUB_WORKSPACE}/nwchem/contrib/getmem.nwchem ${SINGULARITY_ROOTFS}/nwchem/contrib/. || true ;rsync -a ${GITHUB_WORKSPACE}/nwchem/travis ${SINGULARITY_ROOTFS}/nwchem/. ||  true ; rsync -a ${GITHUB_WORKSPACE}/nwchem/.git ${SINGULARITY_ROOTFS}/nwchem/. ||true ; fi"
-    echo '==== ls on nwchem/.git'
+    echo '==== ls on SINGnwchem/'
     ls -lrta  ${SINGULARITY_ROOTFS}/nwchem/
+    echo '==== ls on GITSPnwchem/'
+    ls -lrta  ${GITHUB_WORKSPACE}/nwchem/
     echo '==== ls on nwchem/src'
     ls -lrta  ${SINGULARITY_ROOTFS}/nwchem/src
     bash -c "if [[  -f ${CACHEDIR}/libext/lib/libnwc_openblas.a ]]; then rsync -a ${CACHEDIR}/libext/* ${SINGULARITY_ROOTFS}/nwchem/src/libext/. ; echo libext cache fetched ;fi"
