@@ -95,17 +95,16 @@ pwd \
 && export HPCX_HOME=/opt/hpcx \
 && export OMPI_HOME=/opt/hpcx/ompi \
 && export OPAL_PREFIX=/opt/hpcx/ompi \
-&& echo  ' ls OMPI_HOME/lib ======= '\ 
-&& ls -lrt $OMPI_HOME/lib \
-&& find $HPCX_HOME -name libopen-pal.so.40 \
-&& ls -l \
-&& echo PATH is $PATH \
-&& ls -lrt hpcx/ucx/bin \
-&& rm -rf *tbz   \
-&& echo ' check ucx' \
-&& echo ' ucx_info -v ' `ucx_info -v|| true` \
-&& echo ' ucx Transports' `ucx_info  -d |grep Transport |cut -c 19- || true` \
-&& echo '********'
+&& echo  " ls OMPI_HOME/lib ======= " 
+ ls -lrt $OMPI_HOME/lib 
+ find $HPCX_HOME -name libopen-pal.so.40 
+ echo PATH is $PATH \
+ ls -lrt hpcx/ucx/bin 
+ rm -rf *tbz   
+ echo ' check ucx' 
+ echo ' ucx_info -v ' `ucx_info -v|| true` 
+ echo ' ucx Transports' `ucx_info  -d |grep Transport |cut -c 19- || true` 
+ echo '====='
 
 export HPCX_HOME=/opt/hpcx
 export OMPI_HOME=$HPCX_HOME/ompi
