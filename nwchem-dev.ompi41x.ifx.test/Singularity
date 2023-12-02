@@ -40,7 +40,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 #
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
 export DEBIAN_FRONTEND=noninteractive
-xport HPCX_HOME=/opt/hpcx 
+export HPCX_HOME=/opt/hpcx 
 export PATH=$HPCX_HOME/ompi/bin:$HPCX_HOME/ucx/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
 export LD_LIBRARY_PATH=$HPCX_HOME/ompi/lib:$HPCX_HOME/ucx/lib:$HPCX_HOME/ucx/lib/ucx
 export SINGULARITY_PATH=$PATH
