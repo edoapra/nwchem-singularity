@@ -107,7 +107,9 @@ pwd \
  echo '====='
  source $HPCX_HOME/hpcx-init.sh
  hpxc_load
-
+ env|egrep hpcx
+ mpif90 -v
+ mpif90 -show
 
 export HPCX_HOME=/opt/hpcx
 export OMPI_HOME=$HPCX_HOME/ompi
