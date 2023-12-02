@@ -105,6 +105,9 @@ pwd \
  echo ' ucx_info -v ' `ucx_info -v|| true` 
  echo ' ucx Transports' `ucx_info  -d |grep Transport |cut -c 19- || true` 
  echo '====='
+ source $HPCX_HOME/hpcx-init.sh
+ hpxc_load
+
 
 export HPCX_HOME=/opt/hpcx
 export OMPI_HOME=$HPCX_HOME/ompi
