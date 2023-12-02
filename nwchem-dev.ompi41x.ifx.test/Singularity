@@ -164,6 +164,8 @@ export NWCHEM_TOP=`pwd`
  ls -lrt 
  cd src 
  ls -lrt libext/lib || true 
+    mkdir -p ../bin/$NWCHEM_TARGET
+    gcc -o ../bin/$NWCHEM_TARGET/depend.x config/depend.c
  make nwchem_config || { echo "config Failure"; exit 1; } 
  echo '222 PATH is ' `/usr/bin/env | grep PATH` 
  echo '111 which FC ' `which $FC` || true 
