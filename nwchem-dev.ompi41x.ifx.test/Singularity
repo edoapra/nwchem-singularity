@@ -169,9 +169,11 @@ export NWCHEM_TOP=`pwd`
  echo '111 which FC ' `which $FC` || true 
  mpif90 -show 
  echo FC is $FC 
- $FC -v 
-    make SKIP_COMPILERS=1 deps_stamp  >& deps.log 
- tail deps.log 
+ $FC -v
+   cd libext   && make V=-1  && cd ..
+   cd tools    && make V=-1  && cd ..
+    make SKIP_COMPILERS=1 USE_INTERNALBLAS=1 deps_stamp  >& deps.log 
+ tail -50 deps.log 
     make directories 
     export QUICK_BUILD=1 
  make FC=$FC V=0 -j6 || { echo 'Compilation Failure'; exit 1; } 
