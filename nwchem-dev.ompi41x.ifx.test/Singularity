@@ -105,7 +105,7 @@ pwd \
  echo ' ucx_info -v ' `ucx_info -v|| true` 
  echo ' ucx Transports' `ucx_info  -d |grep Transport |cut -c 19- || true` 
  echo '====='
- source $HPCX_HOME/hpcx-init.sh
+ . $HPCX_HOME/hpcx-init.sh
  hpxc_load
  env|egrep hpcx
  echo ' ===== mpif90 ===='
