@@ -108,14 +108,17 @@ pwd \
  source $HPCX_HOME/hpcx-init.sh
  hpxc_load
  env|egrep hpcx
+ echo ' ===== mpif90 ===='
+ echo ' mpif90 -v $(mpif90 -v)'
  mpif90 -v
  mpif90 -show
+ echo ' ================='
 
 export HPCX_HOME=/opt/hpcx
 export OMPI_HOME=$HPCX_HOME/ompi
 export OPAL_PREFIX=$HPCX_HOME/ompi
-export PATH=$HPCX_HOME/ompi/bin:$HPCX_DIR/ucx/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
-export LD_LIBRARY_PATH=$HPCX_DIR/ompi/lib:$HPCX_DIR/ucx/lib:$HPCX_DIR/ucx/lib/ucx
+#export PATH=$HPCX_HOME/ompi/bin:$HPCX_DIR/ucx/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+#export LD_LIBRARY_PATH=$HPCX_DIR/ompi/lib:$HPCX_DIR/ucx/lib:$HPCX_DIR/ucx/lib/ucx
 #export ARMCI_NETWORK=MPI-PR
 echo ARMCI_NETWORK is $ARMCI_NETWORK
 #export NWCHEM_TOP=/opt/nwchem
