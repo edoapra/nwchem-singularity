@@ -178,7 +178,7 @@ export NWCHEM_TOP=`pwd`
  tail -50 deps.log 
     make directories 
     export QUICK_BUILD=1 
- make FC=$FC V=0 -j6 || { echo 'Compilation Failure'; exit 1; } 
+ make FC=$FC V=-1 -j6 || { echo 'Compilation Failure'; exit 1; } 
  unset QUICK_BUILD 
  FC=$FC ../contrib/getmem.nwchem 2000  || true 
  make FC=$FC install INSTALL_PREFIX=/opt/nwchem 

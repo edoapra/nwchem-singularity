@@ -119,7 +119,6 @@ jobs:
       run: |
         mkdir -p ~/cache || true
         cd ${{ matrix.folder }}
-        apptainer exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
         echo "cache stored"
