@@ -38,6 +38,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 echo "$(readlink /proc/$$/exe) is the shell in use"
 #
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
+export kernelv=$(dpkg-query -W linux-headers-generic|cut -f2 )
 export DEBIAN_FRONTEND=noninteractive
 export ompi=4.1.6
 export ompi_prefix=ompi-$ompi
@@ -110,7 +111,6 @@ $FC -v \
 && cd .. \
 && wget https://gitlab.inria.fr/knem/knem/uploads//4a43e3eb860cda2bbd5bf5c7c04a24b6/knem-$knem.tar.gz -O - | tar xzf - \
 && cd knem-$knem \
-&& kernelv=$(dpkg-query -W linux-headers-generic|cut -f2 )\
 && echo 'kernelv is $kernelv' \
 && ./configure --prefix=$OMPI_DIR --with-linux-build=/lib/modules/$kernelv/build --with-linux-release=$kernelv \
 && make -j3 \
