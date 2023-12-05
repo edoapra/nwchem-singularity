@@ -38,7 +38,6 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 echo "$(readlink /proc/$$/exe) is the shell in use"
 #
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
-export kernelv=$(dpkg-query -W linux-headers-generic|cut -f2 )
 export DEBIAN_FRONTEND=noninteractive
 export ompi=4.1.6
 export ompi_prefix=ompi-$ompi
@@ -88,6 +87,8 @@ pwd \
  libnuma-dev libslurm-dev libpmi2-0-dev libpmi0-dev  libnl-3-dev libnl-route-3-dev udev \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers \
  pkg-config gawk  software-properties-common linux-headers-generic \
+&& export kernelv=$(dpkg-query -W linux-headers-generic|cut -f2 ) \
+&& echo kernelv is $kernelv \ 
 && apt-get clean \
 && echo TTTTT \
 && df -h \
