@@ -32,7 +32,6 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 ##%files
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
 
-%post
 %post -c /bin/bash
 
 echo "$(readlink /proc/$$/exe) is the shell in use"
