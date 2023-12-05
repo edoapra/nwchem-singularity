@@ -39,9 +39,11 @@ echo "$(readlink /proc/$$/exe) is the shell in use"
 #
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
 export DEBIAN_FRONTEND=noninteractive
-export ompi=5.0.0
+export ompi=4.1.6
 export ompi_prefix=ompi-$ompi
 export ucx=1.14.0
+export xpmem=2.7.3
+export knem=1.1.4
 export OMPI_DIR=/opt/ompi
 export SINGULARITY_ompi=$ompi
 export SINGULARITY_ompi_prefix=ompi-$ompi
@@ -102,12 +104,24 @@ pwd \
 && echo 'ls -l /opt/ompi/lib/libmpi.so' $(ls -l /opt/ompi/lib/libmpi.so) || true \
 && bash -o pipefail -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
+&& wget --progress=dot:gigahttps://github.com/openucx/xpmem/archive/refs/tags/v$xpmem.tar.gz -O - |tar xzf - \
+&& cd xpmem-$xpmem \
+&& sh autogen.sh \
+&& ./configure --prefix=$OMPI_DIR \
+&& wget https://gitlab.inria.fr/knem/knem/uploads//4a43e3eb860cda2bbd5bf5c7c04a24b6/knem-$knem.tar.gz -O - tar xzf - \
+&& cd .. \
+&& cd knem-$knem \
+&& ./configure --prefix=$OMPI_DIR \
+&& make -j3 \
+&& make install \
+&& cd .. \
 && wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz -O - | tar xzf - \
 && cd ucx-$ucx \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch \
 && patch -p0 < ./ucx_malloc.patch \
 && mkdir build && cd build \
 && ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
+--with-xpmem=$OMPI_DIR --with-knem=$OMPI_DIR \
 && make -j4 && make install \
 && cd ../.. \
 && wget --progress=dot:giga https://github.com/open-mpi/ompi/archive/v$ompi.tar.gz -O - | tar xzf -   && \
