@@ -105,7 +105,7 @@ $FC -v \
 && cd xpmem-$xpmem \
 && sh autogen.sh \
 && ./configure --prefix=$OMPI_DIR --disable-kernel-module  \
-&& wget https://gitlab.inria.fr/knem/knem/uploads//4a43e3eb860cda2bbd5bf5c7c04a24b6/knem-$knem.tar.gz -O - tar xzf - \
+&& wget https://gitlab.inria.fr/knem/knem/uploads//4a43e3eb860cda2bbd5bf5c7c04a24b6/knem-$knem.tar.gz -O - | tar xzf - \
 && cd .. \
 && cd knem-$knem \
 && kernelv=$(dpkg-query -W linux-headers-generic|cut -f2 )\
