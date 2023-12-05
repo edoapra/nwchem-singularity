@@ -33,7 +33,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
 
 %post
-#!/bin/bash
+%post -c /bin/bash
 
 echo "$(readlink /proc/$$/exe) is the shell in use"
 #
@@ -111,7 +111,7 @@ $FC -v \
 && wget https://gitlab.inria.fr/knem/knem/uploads//4a43e3eb860cda2bbd5bf5c7c04a24b6/knem-$knem.tar.gz -O - tar xzf - \
 && cd .. \
 && cd knem-$knem \
-&& kernelv=$(dpkg-query -W linux-headers-generic|cut -d$'\t' -f2 )\
+&& kernelv=$(dpkg-query -W linux-headers-generic|cut -f2 )\
 && echo "kernelv is $kernelv"
 && ./configure --prefix=$OMPI_DIR --with-linux-build=/lib/modules/$kernelv/build --with-linux-release=$kernelv \
 && make -j3 \
