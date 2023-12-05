@@ -134,7 +134,7 @@ $FC -v \
 && mkdir build && cd build \
 && echo 'Configuring ucx ..........' \
 && ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
----with-xpmem=$OMPI_DIR --with-knem=$OMPI_DIR  >& config.log && tail -50 config.log \
+ --with-xpmem=$OMPI_DIR --with-knem=$OMPI_DIR  >& config.log && tail -50 config.log \
 && echo 'Compiling ucx ..........' \
 && make -j4 >& make.log && tail -50 make.log \
 && echo 'Installing ucx ..........' \
