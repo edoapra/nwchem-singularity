@@ -107,11 +107,13 @@ $FC -v \
 && wget --progress=dot:giga https://github.com/openucx/xpmem/archive/refs/tags/v$xpmem.tar.gz -O - |tar xzf - \
 && cd xpmem-$xpmem \
 && sh autogen.sh \
-&& ./configure --prefix=$OMPI_DIR \
+&& ./configure --prefix=$OMPI_DIR --disable-kernel-module  \
 && wget https://gitlab.inria.fr/knem/knem/uploads//4a43e3eb860cda2bbd5bf5c7c04a24b6/knem-$knem.tar.gz -O - tar xzf - \
 && cd .. \
 && cd knem-$knem \
-&& ./configure --prefix=$OMPI_DIR \
+&& kernelv=$(dpkg-query -W linux-headers-generic|cut -d$'\t' -f ) \
+&& echo "kernelv is $kernelv"
+&& ./configure --prefix=$OMPI_DIR --with-linux-build=/lib/modules/$kernelv/build --with-linux-release=$kernelv \
 && make -j3 \
 && make install \
 && cd .. \
