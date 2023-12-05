@@ -113,20 +113,6 @@ pwd \
  echo 'ls -l /opt/ompi/lib/libmpi.so' $(ls -l /opt/ompi/lib/libmpi.so) || true 
  bash -o pipefail -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
-#&& wget --progress=dot:giga https://github.com/openucx/xpmem/archive/refs/tags/v$xpmem.tar.gz -O - |tar xzf - \
-#&& cd xpmem-$xpmem \
-#&& sh autogen.sh \
-#&& ./configure --prefix=$OMPI_DIR --disable-kernel-module  \
-#&& make -j3 \
-#&& make install \
-#&& cd .. \
-#&& wget https://gitlab.inria.fr/knem/knem/uploads//4a43e3eb860cda2bbd5bf5c7c04a24b6/knem-$knem.tar.gz -O - | tar xzf - \
-#&& cd knem-$knem \
-#&& echo 'ktag is $ktag' \
-#&& ./configure --prefix=$OMPI_DIR --with-linux-build=/lib/modules/$ktag/build --with-linux-release=$ktag \
-#&& make -j3 \
-#&& make install \
-#&& cd .. \
 && wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz -O - | tar xzf - \
 && cd ucx-$ucx \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch \
@@ -135,8 +121,6 @@ $FC -v \
 && echo 'Configuring ucx ..........' \
 && ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
  >& config.log && tail -50 config.log \
-#&& ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
---with-xpmem=$OMPI_DIR --with-knem=$OMPI_DIR >& config.log && tail -50 config.log \
 && echo 'Compiling ucx ..........' \
 && make -j4 >& make.log && tail -50 make.log \
 && echo 'Installing ucx ..........' \
