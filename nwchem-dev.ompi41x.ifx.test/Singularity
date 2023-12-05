@@ -112,7 +112,7 @@ $FC -v \
 && cd .. \
 && cd knem-$knem \
 && kernelv=$(dpkg-query -W linux-headers-generic|cut -f2 )\
-&& echo "kernelv is $kernelv"
+&& echo "kernelv is $kernelv" \
 && ./configure --prefix=$OMPI_DIR --with-linux-build=/lib/modules/$kernelv/build --with-linux-release=$kernelv \
 && make -j3 \
 && make install \
