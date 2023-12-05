@@ -96,9 +96,6 @@ pwd \
 && echo "LD_LIBRARY_PATH" $LD_LIBRARY_PATH \
 && echo FFFFF \
 && echo 'FC -v ' `$FC -v` \
-&& rm -f ./cc.txt || true \
-&& if [ -f ./cc.txt ]; then export `cat ./cc.txt` ; fi \
-&& if [ -f ./cxx.txt ]; then export `cat ./cxx.txt` ; fi \
 && echo ' CC is ' "$CC" \
 && echo ' CXX is ' "$CXX" || true \
 && echo 'ls -l /opt/ompi/lib/libmpi.so' $(ls -l /opt/ompi/lib/libmpi.so) || true \
@@ -112,7 +109,7 @@ $FC -v \
 && cd .. \
 && cd knem-$knem \
 && kernelv=$(dpkg-query -W linux-headers-generic|cut -f2 )\
-&& echo "kernelv is $kernelv" \
+&& echo 'kernelv is $kernelv' \
 && ./configure --prefix=$OMPI_DIR --with-linux-build=/lib/modules/$kernelv/build --with-linux-release=$kernelv \
 && make -j3 \
 && make install \
