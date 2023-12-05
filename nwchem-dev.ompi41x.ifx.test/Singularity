@@ -130,22 +130,31 @@ $FC -v \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch \
 && patch -p0 < ./ucx_malloc.patch \
 && mkdir build && cd build \
+&& echo 'Configuring ucx ..........' \
 && ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
---with-xpmem=$OMPI_DIR --with-knem=$OMPI_DIR \
-&& make -j4 && make install \
+--with-xpmem=$OMPI_DIR --with-knem=$OMPI_DIR >& config.log && tail -100 config.log \
+&& echo 'Compiling ucx ..........' \
+&& make -j4 >& make.log && tail -100 make.log \
+&& echo 'Installing ucx ..........' \
+&& make install >& makei.log && tail -100 makei.log \
+&& make clean \
 && cd ../.. \
 && wget --progress=dot:giga https://github.com/open-mpi/ompi/archive/v$ompi.tar.gz -O - | tar xzf -   && \
 cd $ompi_prefix                                                        && \
-./autogen.pl                                                           && \
+echo './autogen.pl openmpi ..........' &&\
+./autogen.pl   >& autogen.log && tail -100 autogen.log                  && \
+echo 'Configuring openmpi ..........' &&\
 ./configure  --prefix=$OMPI_DIR --with-ucx=$OMPI_DIR --enable-mca-no-build=btl-uct   \
  --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
  --without-sge --without-alps --without-lustre --disable-memchecker \
  --without-hcoll --disable-static  \
 --disable-mpi-java --enable-dlopen --without-cuda --without-verbs \
---disable-mpi-cxx --disable-cxx-exceptions FC=$FC && \
-make FC=$FC -j 6                                                               && \
-make install                                                            && \
-make clean                                                              && \
+--disable-mpi-cxx --disable-cxx-exceptions FC=$FC >& config.log && tail -100 config.log && \
+echo 'Compiling openmpi ..........' &&\
+make FC=$FC -j 4 >& make.log && tail -100 make.log                                  && \
+echo 'Installing openmpi ..........' &&\
+make -j4 install >& makei.log && tail -100 makei.log               && \
+make clean >& makec.log                                                   && \
 #cd /tmp && \
 #rm -rf /usr/share/doc/ && \
 #rm -rf /usr/share/man/
@@ -160,15 +169,15 @@ export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
 echo ARMCI_NETWORK is $ARMCI_NETWORK
 #export NWCHEM_TOP=/opt/nwchem
 export NWCHEM_TARGET=LINUX64
-#export NWCHEM_MODULES="all python gwmol xtb"
-#export USE_TBLITE=1 
+#dexport NWCHEM_MODULES="all python gwmol xtb"
+#dexport USE_TBLITE=1 
 export NWCHEM_MODULES="nwdft driver solvation"
-if [ "$FC" = "gfortran" ]; then
-   export BUILD_PLUMED=1
-   export PYTHON_BIN=python3
-   export BUILD_ELPA=1
-fi	  
-#export USE_LIBXC=1
+#dif [ "$FC" = "gfortran" ]; then
+#d   export BUILD_PLUMED=1
+#d   export PYTHON_BIN=python3
+#d   export BUILD_ELPA=1
+#dfi	  
+#dexport USE_LIBXC=1
 export BUILD_OPENBLAS=1
 export BUILD_SCALAPACK=1
 export BLAS_SIZE=8
@@ -180,10 +189,10 @@ export SCALAPACK_SIZE=8
 export USE_MPI=y
 export USE_MPIF=y
 export USE_MPIF4=y
-#export USE_HWOPT=n
-#export USE_LIBXC=y
+export USE_HWOPT=n
+#dexport USE_LIBXC=y
 export USE_NOIO=y
-#export USE_SIMINT=y
+#dexport USE_SIMINT=y
 export SIMINT_MAXAM=5
 #ENV         MRCC_METHODS=y
 #ENV         CCSDTQ=y
@@ -215,7 +224,13 @@ echo 'ls ~/' `ls -lrt ~/` \
 && mpif90 -show \
 && echo FC is $FC \
 && $FC -v \
+&& echo pwd is $(pwd) \
+&& mkdir -p ../bin/LINUX64 || true \
+&& gcc -o config/depend.c ../bin/LINUX64/depend.x \
+&& echo cd libext \
+&& echo 'Compiling libext ..........' \
 && cd libext ; make FC=$FC ; cd .. \
+&& echo 'Compiling tools ..........' \
 && cd tools  ; make FC=$FC ; cd .. \
 && make SKIP_COMPILERS=1 deps_stamp   \
 && make directories \
