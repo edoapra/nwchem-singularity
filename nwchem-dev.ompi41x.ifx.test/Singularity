@@ -88,20 +88,20 @@ pwd \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers \
  pkg-config gawk  software-properties-common linux-headers-generic \
 && export kernelv=$(dpkg-query -W linux-headers-generic|cut -f2 ) \
-&& echo kernelv is $kernelv \ 
-&& apt-get clean \
-&& echo TTTTT \
-&& df -h \
-&& bash -o  pipefail -c  ./nwchem/travis/build_env.sh || true \
-&& echo TTTTT \
-&& echo "PATH" $PATH \
-&& echo "LD_LIBRARY_PATH" $LD_LIBRARY_PATH \
-&& echo FFFFF \
-&& echo 'FC -v ' `$FC -v` \
-&& echo ' CC is ' "$CC" \
-&& echo ' CXX is ' "$CXX" || true \
-&& echo 'ls -l /opt/ompi/lib/libmpi.so' $(ls -l /opt/ompi/lib/libmpi.so) || true \
-&& bash -o pipefail -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
+&& echo kernelv is $kernelv 
+ apt-get clean 
+ echo TTTTT 
+ df -h 
+ bash -o  pipefail -c  ./nwchem/travis/build_env.sh || true 
+ echo TTTTT 
+ echo "PATH" $PATH 
+ echo "LD_LIBRARY_PATH" $LD_LIBRARY_PATH 
+ echo FFFFF 
+ echo 'FC -v ' `$FC -v` 
+ echo ' CC is ' "$CC" 
+ echo ' CXX is ' "$CXX" || true 
+ echo 'ls -l /opt/ompi/lib/libmpi.so' $(ls -l /opt/ompi/lib/libmpi.so) || true 
+ bash -o pipefail -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
 && wget --progress=dot:giga https://github.com/openucx/xpmem/archive/refs/tags/v$xpmem.tar.gz -O - |tar xzf - \
 && cd xpmem-$xpmem \
