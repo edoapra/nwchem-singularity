@@ -225,8 +225,8 @@ echo 'ls ~/' `ls -lrt ~/` \
 && echo FC is $FC \
 && $FC -v \
 && echo pwd is $(pwd) \
-&& mkdir -p ../bin/LINUX64 || true \
-&& gcc -o config/depend.c ../bin/LINUX64/depend.x \
+&& mkdir -p ../bin/LINUX64 \
+&& gcc  config/depend.c -o ../bin/LINUX64/depend.x \
 && echo cd libext \
 && echo 'Compiling libext ..........' \
 && cd libext ; make FC=$FC ; cd .. \
