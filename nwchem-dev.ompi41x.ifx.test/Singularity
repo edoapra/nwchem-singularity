@@ -104,7 +104,7 @@ pwd \
 && echo 'ls -l /opt/ompi/lib/libmpi.so' $(ls -l /opt/ompi/lib/libmpi.so) || true \
 && bash -o pipefail -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
-&& wget --progress=dot:gigahttps://github.com/openucx/xpmem/archive/refs/tags/v$xpmem.tar.gz -O - |tar xzf - \
+&& wget --progress=dot:giga https://github.com/openucx/xpmem/archive/refs/tags/v$xpmem.tar.gz -O - |tar xzf - \
 && cd xpmem-$xpmem \
 && sh autogen.sh \
 && ./configure --prefix=$OMPI_DIR \
