@@ -29,6 +29,11 @@ jobs:
     env:
         FC: ${{ matrix.fc }}
     steps:
+    - name: Get Instruction
+      id: get-simd
+      run: |
+        /usr/bin/lscpu
+        echo "simd=$(./travis/guess_simd.sh)" >> $GITHUB_ENV
     - name: nwchem version tag
       run: |
         echo "nwversion=${{ matrix.branch }}" >> $GITHUB_ENV
