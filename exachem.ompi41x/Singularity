@@ -15,7 +15,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     bash -c "if [[ -z '${FC}' ]]; then echo 'FC=gfortran ' >> ${SINGULARITY_ROOTFS}/fc.txt ; else echo 'FC is ${FC}'; echo 'FC=${FC} ' >> ${SINGULARITY_ROOTFS}/fc.txt ; fi"
     bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"
     bash -c "if [[ -z '${MPI_IMPL}' ]]; then echo 'MPI_IMPL=ompi ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; else echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"
-    bash -c "if [[ -z '${BRANCH}' ]]; then echo 'BRANCH=main ' >> ${SINGULARITY_ROOTFS}/branch.txt ; else echo 'BRANCH is ${BRANCH}'; echo 'BRANCH=${BRANCH} ' >> ${SINGULARITY_ROOTFS}/branch.txt ; fi"
+    bash -c "if [[ -z '${TAMM_BRANCH}' ]]; then echo 'TAMM_BRANCH=main ' >> ${SINGULARITY_ROOTFS}/branch.txt ; else echo 'TAMM_BRANCH is ${TAMM_BRANCH}'; echo 'TAMM_BRANCH=${TAMM_BRANCH} ' >> ${SINGULARITY_ROOTFS}/branch.txt ; fi"
     bash -c "if [[ -z '${MYUSERNAME}' ]]; then echo 'MYUSERNAME=edoapra ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; else echo 'MYUSERNAME is ${MYUSERNAME}'; echo 'MYUSERNAME=${MYUSERNAME} ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; fi"
     ls -lrt ${CACHEDIR} || true
     ls -la  ${CACHEDIR}/ || true
@@ -48,6 +48,7 @@ export CUDA_VERSION_MINOR=7
 export GCC_VERSION=11
 export PY_VERSION=3.11
 export FETCHED_LIBINT=0
+export TAMM_BRANCH=main
 export USE_CPU=N
 export USE_SYSV=N
 
@@ -63,7 +64,7 @@ export `cat ./myusername.txt`
 echo FC is $FC
 echo ARMCI_NETWORK is $ARMCI_NETWORK
 echo MPI_IMPL is $MPI_IMPL
-echo BRANCH is $BRANCH
+echo TAMM_BRANCH is $TAMM_BRANCH
 pwd \
 && apt-get -y update \
 && apt-get -y install -y tzdata git moreutils  wget rsync  sudo ca-certificates \
