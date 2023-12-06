@@ -42,9 +42,9 @@ jobs:
     - name: tag
       run: |
         if [[ ${{ matrix.cxx }} == "g++" ]]; then
-          echo "tag=oras://ghcr.io/${{ github.repository }}/exachem-${{ env.exachemversion}}.${{ env.armci_network}}ompi41x_test" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/exachem-${{ env.exachemversion}}.${{ env.armci_network}}ompi41x" >> $GITHUB_ENV
         else
-          echo "tag=oras://ghcr.io/${{ github.repository }}/exachem-${{ env.exachemversion}}.${{ env.armci_network}}ompi41x_test.${{ matrix.fc }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/exachem-${{ env.exachemversion}}.${{ env.armci_network}}ompi41x.${{ matrix.cxx }}" >> $GITHUB_ENV
         fi
     - name: echo-tag
       run: |
@@ -83,7 +83,7 @@ jobs:
       with:
         path: |
           ~/cache
-        key: ${{ matrix.folder}}-${{ env.exachemversion}}-exachemcache-${{ matrix.fc}}-v001
+        key: ${{ matrix.folder}}-${{ env.exachemversion}}-exachemcache-${{ matrix.cxx}}-v001
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
