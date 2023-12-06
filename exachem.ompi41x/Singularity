@@ -47,7 +47,9 @@ export CUDA_VERSION_MAJOR=11
 export CUDA_VERSION_MINOR=7
 export GCC_VERSION=11
 export PY_VERSION=3.11
-export FETCHED_LIBINT=0 
+export FETCHED_LIBINT=0
+export USE_CPU=N
+export USE_SYSV=N
 
 export PATH=$OMPI_DIR/bin:/usr/local/cuda-"$CUDA_VERSION_MAJOR"."$CUDA_VERSION_MINOR"/bin::/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
 export LD_LIBRARY_PATH=/usr/local/cuda-"$CUDA_VERSION_MAJOR"."$CUDA_VERSION_MINOR"/lib64:/usr/local/lib:$OMPI_DIR/lib
