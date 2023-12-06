@@ -41,7 +41,7 @@ jobs:
         fi
     - name: tag
       run: |
-        if [[ ${{ matrix.fc }} == "gfortran" ]]; then
+        if [[ ${{ matrix.cxx }} == "g++" ]]; then
           echo "tag=oras://ghcr.io/${{ github.repository }}/exachem-${{ env.exachemversion}}.${{ env.armci_network}}ompi41x_test" >> $GITHUB_ENV
         else
           echo "tag=oras://ghcr.io/${{ github.repository }}/exachem-${{ env.exachemversion}}.${{ env.armci_network}}ompi41x_test.${{ matrix.fc }}" >> $GITHUB_ENV
