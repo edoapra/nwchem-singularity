@@ -182,7 +182,7 @@ export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
 export PATH=$PATH:/usr/local/cuda-"$CUDA_VERSION_MAJOR"."$CUDA_VERSION_MINOR"/bin
 export LD_LIBRARY_PATH=$$LD_LIBRARY_PATHL/usr/local/cuda-"$CUDA_VERSION_MAJOR"."$CUDA_VERSION_MINOR"/lib64
 #export ARMCI_NETWORK=MPI-PR
-echo ARMCI_NETWORK is $ARMCI_NETWORK
+echo ARMCI_NETWORK is $ARMCI_NETWORK \
 	    && echo TAMM_BRANCH is ${TAMM_BRANCH} \
 	    && echo 'cloning tamm source *** ' || true \
 	    && mkdir -p /opt/install/CC/ /opt/cache\
