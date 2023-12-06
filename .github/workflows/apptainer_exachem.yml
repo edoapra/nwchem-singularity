@@ -1,0 +1,146 @@
+name: exachem_apptainer
+
+on:
+  schedule:
+    - cron: '0 0 * * SUN'
+  repository_dispatch:
+    types: [backend_automation]
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build_image:
+    runs-on: ubuntu-22.04
+    strategy:
+        fail-fast: false
+        matrix:
+          folder:
+            - exachem.ompi41x
+          branch:
+            - main
+          myusername:
+            - edoapra
+          cxx:
+            - g++
+          armci_network:
+            - MPI-PR
+    env:
+        CXX: ${{ matrix.cxx }}
+    steps:
+    - name: Get Instruction
+      id: get-simd
+      run: |
+        /usr/bin/lscpu
+        echo "simd=$(./travis/guess_simd.sh)" >> $GITHUB_ENV
+    - name: exachem version tag
+      run: |
+        echo "exachemversion=${{ matrix.branch }}" >> $GITHUB_ENV
+        if [[ ${{ matrix.armci_network }} !=  MPI-PR ]]; then
+          net_tag=$(echo ${{ matrix.armci_network }} | tr '[:upper:]' '[:lower:]')
+          echo "armci_network="${net_tag}"." >> $GITHUB_ENV
+        fi
+    - name: tag
+      run: |
+        if [[ ${{ matrix.fc }} == "gfortran" ]]; then
+          echo "tag=oras://ghcr.io/${{ github.repository }}/exachem-${{ env.exachemversion}}.${{ env.armci_network}}ompi41x_test" >> $GITHUB_ENV
+        else
+          echo "tag=oras://ghcr.io/${{ github.repository }}/exachem-${{ env.exachemversion}}.${{ env.armci_network}}ompi41x_test.${{ matrix.fc }}" >> $GITHUB_ENV
+        fi
+    - name: echo-tag
+      run: |
+        echo ' the apptainer tag is ' '${{ env.tag }}'
+    - name: Checkout exachem-singularity source
+      uses: actions/checkout@v4
+      with:
+        repository: edoapra/exachem-singularity
+        clean: false
+    - name: pkg cleanup
+      run: |
+        df -h
+        if [[ $(uname -s) == "Linux" ]]; then
+        ubuntu_ver=$(cat /etc/os-release | grep VERSION_ID |cut -d \" -f 2)
+        dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n
+        sudo apt-get purge -y azure-cli || true
+        sudo apt-get purge -y google-cloud-cli microsoft-edge-stable dotnet-sdk-7.0 dotnet-sdk-6.0 google-chrome-stable firefox
+        sudo apt-get purge -y temurin-17-jdk temurin-11-jdk temurin-8-jdk
+        if [[ $ubuntu_ver == "20.04" ]]; then
+        sudo apt-get purge -y llvm-12-dev llvm-11-dev llvm-10-dev
+        sudo apt-get purge -y hhvm
+        sudo apt-get purge -y libgl1-mesa-dri
+        fi
+        if [[ $ubuntu_ver == "22.04" ]]; then
+        sudo apt-get purge -y llvm-13-dev llvm-14-dev llvm-15-dev
+        fi
+        sudo apt-get -y clean
+        sudo apt-get autoremove -y 
+        dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n
+        df -h
+        fi
+      shell: bash
+    - name: Setup cache
+      id: setup-cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/cache
+        key: ${{ matrix.folder}}-${{ env.exachemversion}}-exachemcache-${{ matrix.fc}}-v001
+    - name: fetch cache
+      if: steps.setup-cache.outputs.cache-hit == 'true'
+      run: |
+        ls -lart ~/cache
+        if [[ -f ~/cache/ompi/lib/libmpi.so ]]; then \
+        echo "ompi cache present" ; \
+        fi
+        if [[ -f ~/cache/simint.l5_p5_d1.install/lib/libnwc_simint.a ]]; then \
+        echo "simint cache present" ; \
+        fi
+    - name: Install apptainer
+      env:
+        APP_VER: 1.2.3
+      run: |
+        sudo apt-get install -y  libfuse2 libseccomp2 zlib1g uidmap squashfs-tools squashfuse fuse2fs fuse-overlayfs fakeroot
+        wget -q  https://github.com/apptainer/apptainer/releases/download/v${APP_VER}/apptainer_${APP_VER}_amd64.deb 
+        sudo dpkg -i apptainer_${APP_VER}_amd64.deb
+        which apptainer
+        apptainer version
+    - name: Checkout exachem source
+      uses: actions/checkout@v4
+      with:
+        repository: Exachem/exachem
+        ref: ${{ matrix.branch}}
+        clean: false
+        fetch-depth: 0
+        path: exachem
+    - name: build an apptainer container
+      run: |
+        cd ${{ matrix.folder }}
+        CXX=${{ matrix.cxx }} MYUSERNAME=${{ matrix.myusername}} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+    - name: store cache
+      run: |
+        mkdir -p ~/cache || true
+        cd ${{ matrix.folder }}
+        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
+        echo "cache stored"
+        ls -l ~/cache
+    - name: builddate
+      id: build-date
+      run: |
+        echo "date=$(TZ=America/Los_Angeles date +%Y%m%d_%H%M%S)" >> $GITHUB_ENV
+    - name: push to ghcr.io
+      run: |
+        echo ${{ secrets.GITHUB_TOKEN }} | apptainer remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
+        apptainer remote list
+        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:${{ env.date }}
+        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:latest
+    - name: test image with apptainer
+      run: |
+        pwd
+        ls -la
+        apptainer pull -F ${{ env.tag }}:${{ env.date }}
+        export UCX_TLS=tcp,self
+        export UCX_POSIX_USE_PROC_LINK=n
+        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
+        sudo apt-get install -y openmpi-bin openmpi-common libopenmpi-dev
+        which mpirun
+        ldd `which mpirun`
+        apptainer exec ${{ env.tag }}:latest ldd /opt/install/CC/bin/ExaChem
