@@ -24,6 +24,10 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     ls -la  ${CACHEDIR}/libint.tar.bz2 || true
     bash -c "if [[  -f ${CACHEDIR}/ompi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/ompi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"
     bash -c "if [[  -f ${CACHEDIR}/libint.tar.bz2 ]]; then cd / ; tar xvjf ${CACHEDIR}/libint.tar.bz2; echo libint cache fetched ;fi"
+    ls -lrta /opt/  ||true
+    ls -lrta /opt/install  ||true
+    ls -lrta /opt/install/CC  ||true
+    ls -lrta /opt/install/CC/lib  ||true
 
 ##%files
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
