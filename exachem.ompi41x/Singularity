@@ -245,17 +245,14 @@ echo ARMCI_NETWORK is $ARMCI_NETWORK \
 && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 50 \
 && echo "dddddddddddd" \
 &&  du -sk /tmp/* || true \
-&&  ls -lart /tmp ||true \
-&&  apt-get  -y purge cmake git  gcc-11  g++-11  gfortran-11  libstdc++-11-dev  libgcc-11-dev git \
-&& apt-get -y install libgcc-s1 libgfortran5 \
-&& apt-get -y autoremove && apt-get clean
+&&  ls -lart /tmp ||true
+
+#&&  apt-get  -y purge cmake git  gcc-11  g++-11  gfortran-11  libstdc++-11-dev  libgcc-11-dev git \
+#&& apt-get -y install libgcc-s1 libgfortran5 \
+#&& apt-get -y autoremove && apt-get clean
 
 
 
-#clean unnecessary packages
-
-#apt-get -y purge curl wget tar  cmake  unzip zip perl automake libtool autoconf flex  \
-#&&  apt-get -y autoremove && apt-get clean
 
 #cd /data
 %environment
