@@ -23,7 +23,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     ls -la  ${CACHEDIR}/ompi/lib || true
     ls -la  ${CACHEDIR}/libint.tar.bz2 || true
     bash -c "if [[  -f ${CACHEDIR}/ompi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/ompi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"
-    bash -c "if [[  -f ${CACHEDIR}/libint.tar.bz2 ]]; then cd / ; tar xjf ${CACHEDIR}/libint.tar.bz2; echo libint cache fetched ;fi"
+    bash -c "if [[  -f ${CACHEDIR}/libint.tar.bz2 ]]; then cd / ; tar xvjf ${CACHEDIR}/libint.tar.bz2; echo libint cache fetched ;fi"
 
 ##%files
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
@@ -194,6 +194,11 @@ echo ARMCI_NETWORK is $ARMCI_NETWORK \
 	    && mkdir build && cd build \
 	    && echo " USE_SYSV is " $USE_SYSV \
 	    && echo " USE_CPU is " $USE_CPU \
+	    && echo ' === ls -l /opt/install/CC ===' $(ls -l /opt/install/CC) \
+	    && echo ' === ls -l /opt/install/CC/lib ===' $(ls -l /opt/install/CC/lib) \
+	    && if [ -f /opt/install/CC/lib/libint2.a ]; then echo 'found libint cache' ;\
+	    mkdir -p /opt/CoupledCluster/build/stage/opt || true ; \
+	    rsync -av /opt/install /opt/CoupledCluster/build/stage/opt/. ; fi \
             && CMAKE_OPTIONS="-DCMAKE_INSTALL_PREFIX=/opt/install/CC -DMODULES=CC  -DBLIS_CONFIG=zen3 -DMARCH_FLAGS=-march=znver3 " \
             && if [ ${USE_SYSV} = "Y" ]; then echo "sysv enabled"; CMAKE_OPTIONS="$CMAKE_OPTIONS -DGA_ENABLE_SYSV=ON "; fi \
             && if [ ${USE_CPU} = "N" ]; then echo "gpu code"; CMAKE_OPTIONS="$CMAKE_OPTIONS -DUSE_CUDA=ON" ; else echo "cpu code" ;fi \
