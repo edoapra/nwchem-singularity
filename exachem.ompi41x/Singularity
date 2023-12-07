@@ -49,7 +49,7 @@ export GCC_VERSION=11
 export PY_VERSION=3.11
 export FETCHED_LIBINT=0
 export TAMM_BRANCH=main
-export USE_CPU=Y
+export USE_CPU=N
 export USE_SYSV=N
 
 export PATH=$OMPI_DIR/bin:/usr/local/cuda-"$CUDA_VERSION_MAJOR"."$CUDA_VERSION_MINOR"/bin::/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
