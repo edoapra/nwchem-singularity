@@ -49,7 +49,7 @@ export GCC_VERSION=11
 export PY_VERSION=3.11
 export FETCHED_LIBINT=0
 export TAMM_BRANCH=main
-export USE_CPU=N
+export USE_CPU=Y
 export USE_SYSV=N
 
 export PATH=$OMPI_DIR/bin:/usr/local/cuda-"$CUDA_VERSION_MAJOR"."$CUDA_VERSION_MINOR"/bin::/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
@@ -197,8 +197,8 @@ echo ARMCI_NETWORK is $ARMCI_NETWORK \
 	    && echo " USE_SYSV is " $USE_SYSV \
 	    && echo " USE_CPU is " $USE_CPU \
             && CMAKE_OPTIONS="-DCMAKE_INSTALL_PREFIX=/opt/install/CC -DMODULES=CC  -DBLIS_CONFIG=zen3 -DMARCH_FLAGS=-march=znver3 " \
-            && if [[ $USE_SYSV == Y ]]; then echo "sysv enabled"; CMAKE_OPTIONS+="-DGA_ENABLE_SYSV=ON "; fi \
-            && if [[ $USE_CPU == N ]]; then echo "gpu code"; CMAKE_OPTIONS+="-DUSE_CUDA=ON" ; else echo "cpu code" ;fi \
+            && if [ ${USE_SYSV} = "Y" ]; then echo "sysv enabled"; CMAKE_OPTIONS="$CMAKE_OPTIONS -DGA_ENABLE_SYSV=ON "; fi \
+            && if [ ${USE_CPU} = "N" ]; then echo "gpu code"; CMAKE_OPTIONS="$CMAKE_OPTIONS -DUSE_CUDA=ON" ; else echo "cpu code" ;fi \
             && export CMAKE_OPTIONS \
 	    && echo CMAKE_OPTIONS $CMAKE_OPTIONS \
 	    && CC=gcc CXX=g++ FC=gfortran cmake  $CMAKE_OPTIONS .. \
