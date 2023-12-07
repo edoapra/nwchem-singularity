@@ -21,15 +21,15 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     ls -la  ${CACHEDIR}/ || true
     ls -la  ${CACHEDIR}/ompi || true
     ls -la  ${CACHEDIR}/ompi/lib || true
-    ls -la  ${CACHEDIR}/libint || true
+    ls -la  ${CACHEDIR}/libint.tar.bz2 || true
     bash -c "if [[  -f ${CACHEDIR}/ompi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/ompi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"
-    bash -c "if [[  -f ${CACHEDIR}/libint ]]; then rsync -av ${CACHEDIR}/simint.l5_p5_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
+    bash -c "if [[  -f ${CACHEDIR}/libint.tar.bz2 ]]; then cd / ; tar xjf ${CACHEDIR}/libint.tar.bz2; echo libint cache fetched ;fi"
 
 ##%files
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
 
 %post 
-#!/bin/bash
+#!/bin	/bash
 
 echo "$(readlink /proc/$$/exe) is the shell in use"
 #
@@ -47,7 +47,6 @@ export CUDA_VERSION_MAJOR=11
 export CUDA_VERSION_MINOR=7
 export GCC_VERSION=11
 export PY_VERSION=3.11
-export FETCHED_LIBINT=0
 export TAMM_BRANCH=main
 export USE_CPU=N
 export USE_SYSV=N
@@ -65,7 +64,8 @@ echo FC is $FC
 echo ARMCI_NETWORK is $ARMCI_NETWORK
 echo MPI_IMPL is $MPI_IMPL
 echo TAMM_BRANCH is $TAMM_BRANCH
-pwd \
+cd / \
+&& pwd \
 && apt-get -y update \
 && apt-get -y install -y tzdata git moreutils  wget rsync  sudo ca-certificates \
 && wget https://github.com/moparisthebest/static-curl/releases/download/v8.1.2/curl-amd64 -O /usr/bin/curl \
@@ -120,7 +120,7 @@ pwd \
  echo FFFFF 
  echo 'FC -v ' `$FC -v` 
  echo ' CC is ' "$CC" 
- echo ' CXX is ' "$CXX" || true 
+ echo 	 ' CXX is ' "$CXX" || true 
  echo 'ls -l /opt/ompi/lib/libmpi.so' $(ls -l /opt/ompi/lib/libmpi.so) || true 
  bash -o pipefail -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
@@ -188,8 +188,6 @@ export LD_LIBRARY_PATH=$$LD_LIBRARY_PATHL/usr/local/cuda-"$CUDA_VERSION_MAJOR"."
 echo ARMCI_NETWORK is $ARMCI_NETWORK \
 	    && echo TAMM_BRANCH is ${TAMM_BRANCH} \
 	    && echo 'cloning tamm source *** ' || true \
-	    && mkdir -p /opt/install/CC/ /opt/cache\
-            && if [[ -f /tmp/libint.tar.bz2 ]]; then cd /opt/install/CC; tar xjvf /tmp/libint.tar.bz2; rm -rf /tmp/libint.tar.bz2 ; export FETCHED_LIBINT=1; fi \
             && cd /opt || { echo "Failure"; exit 1; } \
             && git clone -b ${TAMM_BRANCH} --depth 20  https://github.com/ExaChem/exachem.git CoupledCluster  \
             && cd CoupledCluster \
@@ -208,16 +206,12 @@ echo ARMCI_NETWORK is $ARMCI_NETWORK \
 	    && echo exit code for make install $? \
 	    && echo git describe --always `git describe --always`  >> /opt/install/info.txt \
 	    && echo git rev-parse HEAD git `git rev-parse HEAD` >> /opt/install/info.txt \
-	    && echo 'caching libint' \
-	    && cd /opt/install/CC/ \
-	    && if [[ $FETCHED_LIBINT == 1 ]]; then rm -f /opt/cache/libint.tar.bz2 || true; else tar cjvf /opt/cache/libint.tar.bz2 ./include/libint* ./share/libint* ./lib/pkgconfig/libint*.pc ./lib/cmake/libint* ./lib/libint*  || true ; fi  \
             && echo 'clean unnecessary source to reduce docker size' \
             && cd /opt && rm  -rf CoupledCluster \
 	    && cd /opt/install/CC/share/libint/2.7.2/basis/ \
 	    && wget -O aug-cc-pvdz.g94 "https://www.basissetexchange.org/download_basis/basis/aug-cc-pvdz/format/gaussian94/?version=1&elements=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36&optimize_general=true&uncontract_general=true" \
 	    && wget -O aug-cc-pvtz.g94 "https://www.basissetexchange.org/download_basis/basis/aug-cc-pvtz/format/gaussian94/?version=1&elements=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36&optimize_general=true&uncontract_general=true" \
 	    && wget -O aug-cc-pvqz.g94 "https://www.basissetexchange.org/download_basis/basis/aug-cc-pvqz/format/gaussian94/?version=1&elements=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36&optimize_general=true&uncontract_general=true" \
-	    && cd /usr/local || { echo "Failure"; exit 1; } ; if [[ $FETCHED_MPICH == 1 ]]; then rm -f /opt/cache/mpich.tar.bz2 || true; else tar cjvf /opt/cache/mpich.tar.bz2 lib/* include/* bin/* share/* ||true ; fi\
             && echo 'clean unnecessary packages ' \
             && DEBIAN_FRONTEND=noninteractive apt-get -q=2 -y install localepurge \
 	    && echo MANDELETE >  /etc/locale.nopurge \
