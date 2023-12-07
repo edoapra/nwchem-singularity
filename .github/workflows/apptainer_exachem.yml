@@ -120,7 +120,9 @@ jobs:
         mkdir -p ~/cache || true
         cd ${{ matrix.folder }}
         apptainer exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
-        apptainer exec ${{ matrix.folder }}.simg tar cjf ~/cache/libint.tar.bz2 /opt/install/CC/include/libint2/*  /opt/install/CC/include/libint2.hpp /opt/install/CC/include/libint2.h  /opt/install/CC/share/libint /opt/install/CC/lib/cmake/libint2 /opt/install/CC/lib/libint2.a  /opt/install/CC/lib/pkgconfig/libint2.pc 
+        apptainer exec ${{ matrix.folder }}.simg ls -l /opt/install/CC/include || true
+        apptainer exec ${{ matrix.folder }}.simg ls -l /opt/install/CC || true
+        apptainer exec ${{ matrix.folder }}.simg tar cjf ~/cache/libint.tar.bz2 /opt/install/CC/include/libint2/  /opt/install/CC/include/libint2.hpp /opt/install/CC/include/libint2.h  /opt/install/CC/share/libint /opt/install/CC/lib/cmake/libint2 /opt/install/CC/lib/libint2.a  /opt/install/CC/lib/pkgconfig/libint2.pc 
         echo "cache stored"
         ls -l ~/cache
     - name: builddate
