@@ -73,7 +73,7 @@ jobs:
         cd ..
         find . -name ${{ matrix.folder }}.simg
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.folder }}
         path: ${{ matrix.folder }}/${{ matrix.folder }}.simg
