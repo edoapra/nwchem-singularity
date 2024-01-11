@@ -128,6 +128,7 @@ $FC -v \
 && echo ARMCI_NETWORK is $ARMCI_NETWORK\
 && export NWCHEM_TARGET=LINUX64\
 && export NWCHEM_MODULES="all python gwmol xtb"\
+&& export USE_OPENMP=1 \
 && export USE_TBLITE=1 \
 && if [ "$FC" = "gfortran" ]; then 
    export BUILD_PLUMED=1
@@ -226,7 +227,8 @@ export OMPI_DIR=/opt/ompi
 export SINGULARITY_OMPI_DIR=$OMPI_DIR
 export SINGULARITYENV_APPEND_PATH=$OMPI_DIR/bin
 export SINGULARITYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib
-
+export OMP_NUM_THREADS=1
+export SINGULARITY_OMP_NUM_THREADS=1
 export COMEX_MAX_NB_OUTSTANDING=6
 export SINGULARITY_COMEX_MAX_NB_OUTSTANDING=6
 #export nwchem_hash=77ba3a6e1dd6f9ba26879d0416bb93b302f1f4f7
