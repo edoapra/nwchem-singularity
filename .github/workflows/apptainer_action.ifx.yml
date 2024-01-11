@@ -124,7 +124,9 @@ jobs:
         cd nwchem/QA
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
-        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
+        export APPTAINERENV_OMPI_MCA_btl_vader_single_copy_mechanism=none
+        export OMPI_MCA_btl_vader_single_copy_mechanism=none 
+        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -x OMPI_MCA_btl_vader_single_copy_mechanism=none -n"
         sudo apt-get install -y openmpi-bin openmpi-common libopenmpi-dev
         which mpirun
         ldd `which mpirun`
