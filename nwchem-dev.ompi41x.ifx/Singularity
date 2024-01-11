@@ -33,34 +33,30 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
 
 %post
-#!/bin/bash
-
-echo "$(readlink /proc/$$/exe) is the shell in use"
-#
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
-export DEBIAN_FRONTEND=noninteractive
-export ompi=4.1.4
-export ompi_prefix=ompi-$ompi
-export ucx=1.12.1
-export OMPI_DIR=/opt/ompi
-export SINGULARITY_ompi=4.1.4
-export SINGULARITY_ompi_prefix=ompi-$ompi
-export PATH=$OMPI_DIR/bin:/root/apps/oneapi/compiler/latest/linux/bin/intel64:/root//apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
-export LD_LIBRARY_PATH=$OMPI_DIR/lib:/root/apps/oneapi/compiler/latest/linux/lib:/root/apps/oneapi/compiler/latest/linux/lib/x64:/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
-export LIBRARY_PATH=/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/root/apps/oneapi/compiler/latest/linux/lib 
-export SINGULARITY_PATH=$OMPI_DIR/bin:/root/apps/oneapi/compiler/latest/linux/bin/intel64:/root/apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
-export SINGULARITY_LD_LIBRARY_PATH=$OMPI_DIR/lib:/root/apps/oneapi/compiler/latest/linux/lib:/root/apps/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
-export SINGULARITY_LIBRARY_PATH=/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/root/apps/oneapi/compiler/latest/linux/lib 
-export `cat ./fc.txt`
-export `cat ./armci_network.txt`
-export `cat ./mpi_impl.txt`
-export `cat ./branch.txt`
-export `cat ./myusername.txt`
-echo FC is $FC
-echo ARMCI_NETWORK is $ARMCI_NETWORK
-echo MPI_IMPL is $MPI_IMPL
-echo BRANCH is $BRANCH
-pwd \
+export DEBIAN_FRONTEND=noninteractive \
+&& export ompi=4.1.4\
+&& export ompi_prefix=ompi-$ompi\
+&& export ucx=1.12.1\
+&& export OMPI_DIR=/opt/ompi\
+&& export SINGULARITY_ompi=4.1.4\
+&& export SINGULARITY_ompi_prefix=ompi-$ompi\
+&& export PATH=$OMPI_DIR/bin:/root/apps/oneapi/compiler/latest/linux/bin/intel64:/root//apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+&& export LD_LIBRARY_PATH=$OMPI_DIR/lib:/root/apps/oneapi/compiler/latest/linux/lib:/root/apps/oneapi/compiler/latest/linux/lib/x64:/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin \
+&& export LIBRARY_PATH=/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/root/apps/oneapi/compiler/latest/linux/lib \
+&& export SINGULARITY_PATH=$OMPI_DIR/bin:/root/apps/oneapi/compiler/latest/linux/bin/intel64:/root/apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+&& export SINGULARITY_LD_LIBRARY_PATH=$OMPI_DIR/lib:/root/apps/oneapi/compiler/latest/linux/lib:/root/apps/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin \
+&& export SINGULARITY_LIBRARY_PATH=/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/root/apps/oneapi/compiler/latest/linux/lib \
+&& export `cat ./fc.txt`\
+&& export `cat ./armci_network.txt`\
+&& export `cat ./mpi_impl.txt`\
+&& export `cat ./branch.txt`\
+&& export `cat ./myusername.txt`\
+&& echo FC is $FC\
+&& echo ARMCI_NETWORK is $ARMCI_NETWORK\
+&& echo MPI_IMPL is $MPI_IMPL\
+&& echo BRANCH is $BRANCH\
+&& pwd \
 && apt-get -y update \
 && apt-get -y install -y tzdata git moreutils  wget rsync  sudo ca-certificates \
 && wget https://github.com/moparisthebest/static-curl/releases/download/v8.1.2/curl-amd64 -O /usr/bin/curl \
@@ -110,61 +106,48 @@ $FC -v \
 && ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
 && make -j4 && make install \
 && cd ../.. \
-&& wget --progress=dot:giga https://github.com/open-mpi/ompi/archive/v$ompi.tar.gz -O - | tar xzf -   && \
-cd $ompi_prefix                                                        && \
+&& wget --progress=dot:giga https://github.com/open-mpi/ompi/archive/v$ompi.tar.gz -O - | tar xzf -   \
+&& cd $ompi_prefix                                                        && \
 ./autogen.pl                                                           && \
 ./configure  --prefix=$OMPI_DIR --with-ucx=$OMPI_DIR --enable-mca-no-build=btl-uct   \
  --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
  --without-sge --without-alps --without-lustre --disable-memchecker \
  --without-hcoll --disable-static  \
 --disable-mpi-java --enable-dlopen --without-cuda --without-verbs \
---disable-mpi-cxx --disable-cxx-exceptions FC=$FC && \
-make FC=$FC -j 6                                                               && \
-make install                                                            && \
-make clean                                                              && \
-#cd /tmp && \
-#rm -rf /usr/share/doc/ && \
-#rm -rf /usr/share/man/
-cd .. ; rm -rf *tar*gz $ompi-prefix ucx-$ucx ;fi "
-echo ' check ucx' \
+--disable-mpi-cxx --disable-cxx-exceptions FC=$FC \
+&& make FC=$FC -j 6                                                  \
+&&make install                                                             \
+&& make clean                                                               \
+&& cd .. ; rm -rf *tar*gz $ompi-prefix ucx-$ucx ;fi " \
+&& echo ' check ucx' \
 && echo ' /opt/ompi/bin/ucx_info -v ' `/opt/ompi/bin/ucx_info -v|| true` \
 && echo ' ucx Transports' `/opt/ompi/bin/ucx_info  -d |grep Transport |cut -c 19- || true` \
-&& echo '********' 
-export PATH=$OMPI_DIR/bin:$PATH
-export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
-#export ARMCI_NETWORK=MPI-PR
-echo ARMCI_NETWORK is $ARMCI_NETWORK
-#export NWCHEM_TOP=/opt/nwchem
-export NWCHEM_TARGET=LINUX64
-export NWCHEM_MODULES="all python gwmol xtb"
-export USE_TBLITE=1 
-#export NWCHEM_MODULES="nwdft driver solvation"
-if [ "$FC" = "gfortran" ]; then
+&& echo '********'  \
+&& export PATH=$OMPI_DIR/bin:$PATH\
+&& export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH\
+&& echo ARMCI_NETWORK is $ARMCI_NETWORK\
+&& export NWCHEM_TARGET=LINUX64\
+&& export NWCHEM_MODULES="all python gwmol xtb"\
+&& export USE_TBLITE=1 \
+&& if [ "$FC" = "gfortran" ]; then 
    export BUILD_PLUMED=1
    export PYTHON_BIN=python3
    export BUILD_ELPA=1
-fi	  
-export USE_LIBXC=1
-export BUILD_OPENBLAS=1
-export BUILD_SCALAPACK=1
-export BLAS_SIZE=8
-export SCALAPACK_SIZE=8
-#export USE_64TO32=y
-#if [ "$BRANCH" !=  "master" ]; then
-   export USE_OPENMP=1
-#fi
-export USE_MPI=y
-export USE_MPIF=y
-export USE_MPIF4=y
-export USE_HWOPT=n
-export USE_LIBXC=y
-export USE_NOIO=y
-export USE_SIMINT=y
-export SIMINT_MAXAM=5
-#ENV         MRCC_METHODS=y
-#ENV         CCSDTQ=y
-#ENV         CCSDTLR=y
-ls -l nwchem* || true \
+fi	   \
+&& export USE_LIBXC=1\
+&& export BUILD_OPENBLAS=1\
+&& export BUILD_SCALAPACK=1\
+&& export BLAS_SIZE=8\
+&& export SCALAPACK_SIZE=8\
+&& export USE_MPI=y\
+&& export USE_MPIF=y\
+&& export USE_MPIF4=y\
+&& export USE_HWOPT=n\
+&& export USE_LIBXC=y\
+&& export USE_NOIO=y\
+&& export USE_SIMINT=y\
+&& export SIMINT_MAXAM=5\
+&& ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
 && echo " ==========" \
 && pwd \
