@@ -26,6 +26,8 @@ jobs:
           armci_network:
             - MPI-PR
             - MPI-TS
+            - SOCKETS
+            - OPENIB
     env:
         FC: ${{ matrix.fc }}
     steps:
