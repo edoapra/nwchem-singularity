@@ -180,7 +180,7 @@ echo 'ls ~/' `ls -lrt ~/` \
 && make FC=$FC -j6 || { echo 'Compilation Failure'; exit 1; } \
 && cd tools && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/pend.patch  \
 &&  patch -p0 < pend.patch \
-&& cd build; make FC=$FC ; make FC=$FC install \
+&& cd build; make clean; make FC=$FC CFLAGS="-O0 -g" -j3 V=1 ; make FC=$FC install \
 && cd ../.. \
 && FC=$FC ../contrib/getmem.nwchem 2000  || true \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
