@@ -166,6 +166,8 @@ fi	   \
 && echo 'ls -lrta ' $(ls -lrta) \
 && echo 'pwd ' $(pwd) \
 && cd src \
+&& cd tools && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/pend.patch  \
+&&  patch -p0 < pend.patch && cd .. \
 && echo 'ls -lrta ' $(ls -lrta) \
 && echo 'pwd ' $(pwd) \
 && ls -lrt libext/lib || true \

@@ -1,0 +1,19 @@
+--- ga-5.8.2/tcgmsg/tcgmsg-mpi/misc.c.org	2024-07-09 13:51:47.183088540 -0700
++++ ga-5.8.2/tcgmsg/tcgmsg-mpi/misc.c	2024-07-09 13:52:29.439363977 -0700
+@@ -184,14 +184,14 @@
+  */ 
+ void PEND_()
+ {
+-#ifdef NXTVAL_SERVER
++#if 0
+     long zero=0;
+     if( SR_parallel ) {
+         (void) NXTVAL_OFF_(&zero);
+     }
+     MPI_Barrier(TCGMSG_Comm);
+ #endif
+-    finalize_nxtval();
++    /*    finalize_nxtval();*/
+     MPI_Finalize();
+     exit(0);
+ }
