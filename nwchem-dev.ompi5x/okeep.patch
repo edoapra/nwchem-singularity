@@ -1,0 +1,28 @@
+diff --git a/src/nwdft/nwdft.F b/src/nwdft/nwdft.F
+index e3ca449ce6..520953dace 100644
+--- a/src/nwdft/nwdft.F
++++ b/src/nwdft/nwdft.F
+@@ -5,10 +5,11 @@ c
+       implicit none
+ c
+ #include "rtdb.fh"
++#include "mafdecls.fh"
+ c
+       integer rtdb
+ c
+-      logical nwdft
++      logical nwdft,okeep
+       external nwdft
+       logical status
+ c
+@@ -16,7 +17,9 @@ c     == Add theory flag ==
+       status = rtdb_cput(rtdb,'dft:theory', 1, 'dft')
+ c
+       dft_energy = nwdft(rtdb)
+-      call grid_cleanup(.true.)
++      if (.not.rtdb_get(rtdb,'dft:okeep',mt_log,1,okeep))
++     O     okeep=.true.
++      call grid_cleanup(okeep)
+ c
+       end
+ c
