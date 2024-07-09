@@ -1,4 +1,4 @@
-name: nwchem_apptainer_omp5x
+name: nwchem_apptainer_ompi5x
 
 on:
   schedule:
@@ -15,7 +15,7 @@ jobs:
         fail-fast: false
         matrix:
           folder:
-            - nwchem-dev.ompi5x.ifx
+            - nwchem-dev.ompi5x
           branch:
             - master
           fc:
