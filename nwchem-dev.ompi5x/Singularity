@@ -31,7 +31,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 export DEBIAN_FRONTEND=noninteractive \
 && export ompi=5.0.3\
 && export ompi_prefix=openmpi-$ompi\
-&& export ucx=1.16.0\
+&& export ucx=1.12.1\
 && export OMPI_DIR=/opt/ompi\
 && export SINGULARITY_ompi=$ompi\
 && export SINGULARITY_ompi_prefix=openmpi-$ompi\
