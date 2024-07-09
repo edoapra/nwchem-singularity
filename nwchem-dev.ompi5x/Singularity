@@ -179,9 +179,7 @@ echo 'ls ~/' `ls -lrt ~/` \
 && $FC -v \
 && make FC=$FC -j6 || { echo 'Compilation Failure'; exit 1; } \
 && cd tools && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/pend.patch  \
-&& echo 'ls -rt tools ' $(ls -lrt) \
 &&  patch -p0 < pend.patch \
-&& echo 'ls -l misc.c' $(ls -lrt ga-5.8.2/tcgmsg/tcgmsg-mpi/misc.c*) \
 && cd build; make FC=$FC ; make FC=$FC install \
 && cd ../.. \
 && FC=$FC ../contrib/getmem.nwchem 2000  || true \
