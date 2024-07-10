@@ -100,17 +100,16 @@ $FC -v \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch \
 && patch -p0 < ./ucx_malloc.patch \
 && mkdir build && cd build \
-&& ../configure --prefix=$OMPI_DIR --disable-logging --enable-debug  \
+&& ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
 && make -j4 && make install \
 && if [ ! -f $OMPI_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi \
 && cd ../.. \
 && wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.3.tar.gz  -O - | tar xzf -   \
 && cd $ompi_prefix                                                        && \
-./configure  --prefix=$OMPI_DIR --with-ucx=$OMPI_DIR    \
+./configure  --prefix=$OMPI_DIR --with-ucx=$OMPI_DIR --enable-mca-no-build=btl-uct   \
  --with-pmix --with-pmix-libdir=/usr/lib/x86_64-linux-gnu --enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
- --without-sge --without-alps --without-lustre  \
- --without-hcoll --disable-static  \
---enable-mem-debug  --enable-debug \
+ --without-sge --without-alps --without-lustre --disable-memchecker \
+  --disable-static  \
 --disable-mpi-java --enable-dlopen --without-cuda  \
 --disable-mpi-cxx --disable-cxx-exceptions FC=$FC \
 && make FC=$FC -j 6                                                  \
