@@ -125,7 +125,7 @@ $FC -v \
 && export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH\
 && echo ARMCI_NETWORK is $ARMCI_NETWORK\
 && export NWCHEM_TARGET=LINUX64\
-&& export NWCHEM_MODULES="nwdft driver solvation python gwmol xtb"\
+&& export NWCHEM_MODULES="all python gwmol xtb"\
 && export USE_OPENMP=1 \
 && export USE_TBLITE=1 \
 && if [ "$FC" = "gfortran" ]; then 
@@ -145,7 +145,6 @@ fi	   \
 && export IPCCSD=y \
 && export EACCSD=y \
 && export MRCC_METHODS=y \
-&& unset MRCC_METHODS=y \
 && export USE_SIMINT=y\
 && export SIMINT_MAXAM=5\
 && export PYTHONVERSION=$(python -V| cut -d ' ' -f 2 |cut -d . -f 1-2) \
