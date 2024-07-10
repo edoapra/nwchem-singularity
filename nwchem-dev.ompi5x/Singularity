@@ -100,7 +100,7 @@ $FC -v \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch \
 && patch -p0 < ./ucx_malloc.patch \
 && mkdir build && cd build \
-&& ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
+&& ../configure --prefix=$OMPI_DIR --disable-logging --enable-debug  \
 && make -j4 && make install \
 && if [ ! -f $OMPI_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi \
 && cd ../.. \
