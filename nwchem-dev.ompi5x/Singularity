@@ -106,10 +106,11 @@ $FC -v \
 && cd ../.. \
 && wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.3.tar.gz  -O - | tar xzf -   \
 && cd $ompi_prefix                                                        && \
-./configure  --prefix=$OMPI_DIR --with-ucx=$OMPI_DIR --enable-mca-no-build=btl-uct   \
+./configure  --prefix=$OMPI_DIR --with-ucx=$OMPI_DIR    \
  --with-pmix --with-pmix-libdir=/usr/lib/x86_64-linux-gnu --enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
- --without-sge --without-alps --without-lustre --disable-memchecker \
+ --without-sge --without-alps --without-lustre  \
  --without-hcoll --disable-static  \
+--enable-mem-debug  --enable-debug \
 --disable-mpi-java --enable-dlopen --without-cuda  \
 --disable-mpi-cxx --disable-cxx-exceptions FC=$FC \
 && make FC=$FC -j 6                                                  \
