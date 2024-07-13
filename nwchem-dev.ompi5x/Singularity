@@ -48,9 +48,9 @@ export DEBIAN_FRONTEND=noninteractive \
 && echo OMPI is $OMPI\
 && export ompi_prefix=openmpi-$OMPI\
 && echo ompi_prefix is $ompi_prefix \
-&& export ompi_major=$(echo '$OMPI'| cut -d . -f1) \
+&& export ompi_major=$(echo $OMPI | cut -d . -f1) \
 && echo ompi_major is $ompi_major \
-&& export ompi_minor=$(echo '$OMPI'| cut -d . -f2) \
+&& export ompi_minor=$(echo $OMPI | cut -d . -f2) \
 && echo ompi_minor is $ompi_minor \
 && echo ARMCI_NETWORK is $ARMCI_NETWORK\
 && echo MPI_IMPL is $MPI_IMPL\
