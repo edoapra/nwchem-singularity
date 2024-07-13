@@ -27,6 +27,7 @@ jobs:
             - OPENIB
     env:
         FC: ${{ matrix.fc }}
+        OMPI: ${{ matrix.ompi }}
     steps:
     - name: nwchem version tag
       run: |
@@ -42,9 +43,9 @@ jobs:
     - name: tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}.ompi${{ matrix.ompi }}" >> $GITHUB_ENV
         else
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}.${{ matrix.fc }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}.ompi${{ matrix.ompi }}.${{ matrix.fc }}" >> $GITHUB_ENV
         fi
     - name: echo-tag
       run: |
