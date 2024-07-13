@@ -8,6 +8,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 &&     export CACHEDIR=${GITHUB_WORKSPACE}/../../../cache\
 &&     rm -f ${SINGULARITY_ROOTFS}/*.txt || true\
 &&     bash -c "if [[ -z '${FC}' ]]; then echo 'FC=gfortran ' >> ${SINGULARITY_ROOTFS}/fc.txt ; else echo 'FC is ${FC}'; echo 'FC=${FC} ' >> ${SINGULARITY_ROOTFS}/fc.txt ; fi"\
+&&     bash -c "if [[ -z '${OMPI}' ]]; then echo 'OMPI=4.1.6 ' >> ${SINGULARITY_ROOTFS}/OMPI.txt ; else echo 'OMPI is ${OMPI}'; echo 'OMPI=${OMPI} ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; fi"\
 &&     bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"\
 &&     bash -c "if [[ -z '${MPI_IMPL}' ]]; then echo 'MPI_IMPL=ompi ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; else echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"\
 &&     bash -c "if [[ -z '${BRANCH}' ]]; then echo 'BRANCH=master ' >> ${SINGULARITY_ROOTFS}/branch.txt ; else echo 'BRANCH is ${BRANCH}'; echo 'BRANCH=${BRANCH} ' >> ${SINGULARITY_ROOTFS}/branch.txt ; fi"\
@@ -29,12 +30,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 %post
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
 export DEBIAN_FRONTEND=noninteractive \
-&& export ompi=5.0.3\
-&& export ompi_prefix=openmpi-$ompi\
-&& export ucx=1.14.1\
 && export OMPI_DIR=/opt/ompi\
-&& export SINGULARITY_ompi=$ompi\
-&& export SINGULARITY_ompi_prefix=openmpi-$ompi\
 && export PATH=$OMPI_DIR/bin:/root/apps/oneapi/compiler/latest/bin:/root/apps/oneapi/compiler/latest/linux/bin/intel64:/root//apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
 && export LD_LIBRARY_PATH=$OMPI_DIR/lib:/root/apps/oneapi/compiler/latest/lib:/root/apps/oneapi/compiler/latest/linux/lib:/root/apps/oneapi/compiler/latest/linux/lib/x64:/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin \
 && export LIBRARY_PATH=/root/apps/oneapi/compiler/latest/lib:/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/root/apps/oneapi/compiler/latest/linux/lib \
@@ -42,11 +38,16 @@ export DEBIAN_FRONTEND=noninteractive \
 && export SINGULARITY_LD_LIBRARY_PATH=$OMPI_DIR/lib:/root/apps/oneapi/compiler/latest/lib:/root/apps/oneapi/compiler/latest/linux/lib:/root/apps/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin \
 && export SINGULARITY_LIBRARY_PATH=/root/apps/oneapi/compiler/latest/lib:/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/root/apps/oneapi/compiler/latest/linux/lib \
 && export `cat ./fc.txt`\
+&& export `cat ./ompi.txt`\
+&& export ucx=1.14.1\
 && export `cat ./armci_network.txt`\
 && export `cat ./mpi_impl.txt`\
 && export `cat ./branch.txt`\
 && export `cat ./myusername.txt`\
 && echo FC is $FC\
+&& echo OMPI is $OMPI\
+&& export ompi_prefix=openmpi-$OMPI\
+&& echo ompi_prefix is $ompi_prefix \
 && echo ARMCI_NETWORK is $ARMCI_NETWORK\
 && echo MPI_IMPL is $MPI_IMPL\
 && echo BRANCH is $BRANCH\
@@ -74,6 +75,7 @@ export DEBIAN_FRONTEND=noninteractive \
  python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
  libnuma-dev libslurm-dev \
 libpmix-bin libpmix-dev libpmix2 \
+libpmi2-0-dev libpmi0-dev  \
  libnl-3-dev  libnl-route-3-dev udev \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers  \
  libhwloc-dev \
@@ -104,13 +106,21 @@ $FC -v \
 && make -j4 && make install \
 && if [ ! -f $OMPI_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi \
 && cd ../.. \
-&& wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.3.tar.gz  -O - | tar xzf -   \
+&& wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v"$ompi"/openmpi-"$ompi".tar.gz  -O - | tar xzf -   \
+&& ompi_major=$(echo $OMPI| cut -d . -f1) \
+&& echo $ompi_major \
+&& if [ "$ompi_major" = "5" ]; then
+    ompi_options=" --with-pmix --with-pmix-libdir=/usr/lib/x86_64-linux-gnu --enable-mca-no-build=coll-han "
+else
+    ompi_options=" --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --without-verbs "
+fi \
+&& echo ompi_options $ompi_options \
 && cd $ompi_prefix                                                        && \
 ./configure  --prefix=$OMPI_DIR --with-ucx=$OMPI_DIR --enable-mca-no-build=btl-uct   \
- --with-pmix --with-pmix-libdir=/usr/lib/x86_64-linux-gnu --enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
+$ompi_options \
+--enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
  --without-sge --without-alps --without-lustre --disable-memchecker \
  --without-hcoll --disable-static  \
- --enable-mca-no-build=coll-han \
  --disable-mpi-java --enable-dlopen --without-cuda  \
  --disable-mpi-cxx --disable-cxx-exceptions FC=$FC \
 && make FC=$FC -j 6                                                  \
@@ -225,17 +235,14 @@ rm -rf ~/apps  /var/intel  l_*sh ; fi"   \
 
 #cd /data
 %environment
-export ompi=4.1.4
-export SINGULARITY_ompi=4.1.4
-export SINGULARITY_ompi_prefix=ompi-$ompi
 export OMPI_DIR=/opt/ompi
 export SINGULARITY_OMPI_DIR=$OMPI_DIR
 export SINGULARITYENV_APPEND_PATH=$OMPI_DIR/bin
 export SINGULARITYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib
 export OMP_NUM_THREADS=1
 export SINGULARITY_OMP_NUM_THREADS=1
-export COMEX_MAX_NB_OUTSTANDING=6
-export SINGULARITY_COMEX_MAX_NB_OUTSTANDING=6
+export COMEX_MAX_NB_OUTSTANDING=12
+export SINGULARITY_COMEX_MAX_NB_OUTSTANDING=12
 #export nwchem_hash=77ba3a6e1dd6f9ba26879d0416bb93b302f1f4f7
 #export NWCHEM_TOP=/opt/nwchem
 export NWCHEM_SHARE=/opt/nwchem/share/

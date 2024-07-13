@@ -16,15 +16,14 @@ jobs:
         matrix:
           folder:
             - nwchem-dev.ompi5x
+          ompi:
+            - 5.0.3
+            - 4.1.6
           branch:
             - master
-          fc:
-            - ifx
-            - gfortran
           armci_network:
             - MPI-PR
             - MPI3
-            - SOCKETS
             - OPENIB
     env:
         FC: ${{ matrix.fc }}
@@ -43,9 +42,9 @@ jobs:
     - name: tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi5x" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi{{ matrix.ompi }}" >> $GITHUB_ENV
         else
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi5x.${{ matrix.fc }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi{{ matrix.ompi }}.${{ matrix.fc }}" >> $GITHUB_ENV
         fi
     - name: echo-tag
       run: |
@@ -85,7 +84,7 @@ jobs:
       with:
         path: |
           ~/cache
-        key: ${{ matrix.folder}}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001
+        key: ${{ matrix.folder}}-${{ matrix.ompi}}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
@@ -119,7 +118,7 @@ jobs:
     - name: build an apptainer container
       run: |
         cd ${{ matrix.folder }}
-        FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+        OMPI=${{ matrix.ompi }} FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: store cache
       run: |
         mkdir -p ~/cache || true
