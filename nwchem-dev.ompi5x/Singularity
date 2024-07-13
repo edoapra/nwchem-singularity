@@ -109,10 +109,10 @@ $FC -v \
 && wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v"$ompi"/openmpi-"$ompi".tar.gz  -O - | tar xzf -   \
 && ompi_major=$(echo $OMPI| cut -d . -f1) \
 && echo $ompi_major \
-&& if [ "$ompi_major" = "5" ]; then
-    ompi_options=" --with-pmix --with-pmix-libdir=/usr/lib/x86_64-linux-gnu --enable-mca-no-build=coll-han "
+&& if [ $ompi_major = '5' ]; then
+    ompi_options=' --with-pmix --with-pmix-libdir=/usr/lib/x86_64-linux-gnu --enable-mca-no-build=coll-han '
 else
-    ompi_options=" --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --without-verbs "
+    ompi_options=' --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --without-verbs '
 fi \
 && echo ompi_options $ompi_options \
 && cd $ompi_prefix                                                        && \
