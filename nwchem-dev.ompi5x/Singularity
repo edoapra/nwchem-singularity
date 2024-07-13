@@ -126,10 +126,10 @@ $ompi_options \
  --disable-mpi-java --enable-dlopen --without-cuda  \
  --disable-mpi-cxx --disable-cxx-exceptions FC=$FC \
 && make FC=$FC -j 6                                                  \
-&&make install                                                             \
+&& make install                  \
 && if [ ! -f $OMPI_DIR/bin/mpif90 ]; then echo mpif90\ not\ found ; exit 1 ; fi \
-&& make clean                                                               \
-&& cd .. ; rm -rf *tar*gz $ompi-prefix ucx-$ucx ;fi " \
+&& echo mpif90 show is $($OMPI_DIR/bin/mpif90 -show) \
+&& cd .. ; rm -rf *tar*gz openmpi-* ucx-* ;fi " \
 && echo ' check ucx' \
 && if [ ! -f $OMPI_DIR//bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi \
 && echo ' /opt/ompi/bin/ucx_info -v ' `/opt/ompi/bin/ucx_info -v|| true` \
