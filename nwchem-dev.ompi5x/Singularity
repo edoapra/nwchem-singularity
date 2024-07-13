@@ -106,9 +106,11 @@ $FC -v \
 && make -j4 && make install \
 && if [ ! -f $OMPI_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi \
 && cd ../.. \
-&& wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v'$OMPI'/openmpi-'$OMPI'.tar.gz  -O - | tar xzf -   \
 && ompi_major=$(echo $OMPI| cut -d . -f1) \
 && echo $ompi_major \
+&& ompi_minor=$(echo $OMPI| cut -d . -f2) \
+&& echo $ompi_minor \
+&& wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v'$ompi_major'.'$ompi_minor'/openmpi-'$OMPI'.tar.gz  -O - | tar xzf -   \
 && if [ $ompi_major = '5' ]; then
     ompi_options=' --with-pmix --with-pmix-libdir=/usr/lib/x86_64-linux-gnu --enable-mca-no-build=coll-han '
 else
