@@ -106,7 +106,7 @@ $FC -v \
 && make -j4 && make install \
 && if [ ! -f $OMPI_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi \
 && cd ../.. \
-&& wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v"$ompi"/openmpi-"$ompi".tar.gz  -O - | tar xzf -   \
+&& wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v'$ompi'/openmpi-'$ompi'.tar.gz  -O - | tar xzf -   \
 && ompi_major=$(echo $OMPI| cut -d . -f1) \
 && echo $ompi_major \
 && if [ $ompi_major = '5' ]; then
