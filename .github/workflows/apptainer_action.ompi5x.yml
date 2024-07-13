@@ -19,6 +19,9 @@ jobs:
           ompi:
             - 5.0.3
             - 4.1.6
+          fc:
+            - ifx
+            - gfortran
           branch:
             - master
           armci_network:
