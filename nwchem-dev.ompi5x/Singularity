@@ -84,6 +84,11 @@ libpmi2-0-dev libpmi0-dev  \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers  \
  libhwloc-dev \
  pkg-config gawk  software-properties-common \
+&& if [ $ompi_major = '5' ]; then
+    apt-get -y install -y libpmix-bin libpmix-dev libpmix2
+else
+    apt-get -y install -y libpmi2-0-dev libpmi0-dev
+fi \
 && apt-get clean \
 && echo TTTTT \
 && df -h \
@@ -125,6 +130,7 @@ $ompi_options \
  --without-hcoll --disable-static  \
  --disable-mpi-java --enable-dlopen --without-cuda  \
  --disable-mpi-cxx --disable-cxx-exceptions FC=$FC \
+&& head config.log \
 && make FC=$FC -j 6                                                  \
 && make install                  \
 && if [ ! -f $OMPI_DIR/bin/mpif90 ]; then echo mpif90\ not\ found ; exit 1 ; fi \
