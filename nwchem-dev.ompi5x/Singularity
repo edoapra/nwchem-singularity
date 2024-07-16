@@ -130,7 +130,7 @@ $ompi_options \
  --without-sge --without-alps --without-lustre --disable-memchecker \
  --without-hcoll --disable-static  \
  --disable-mpi-java --enable-dlopen --without-cuda  \
- --disable-mpi-cxx --disable-cxx-exceptions FC=$FC \
+  FC=$FC \
 && head config.log \
 && make FC=$FC -j 6                                                  \
 && make install                  \
