@@ -117,9 +117,9 @@ $FC -v \
 && cd ../.. \
 && wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v'$ompi_major'.'$ompi_minor'/openmpi-'$OMPI'.tar.gz  -O - | tar xzf -   \
 && if [ $ompi_major = '5' ]; then
-    ompi_options=' --with-pmix --with-pmix-libdir=/usr/lib/x86_64-linux-gnu --enable-mca-no-build=coll-han '
+    export ompi_options=' --with-pmix --with-pmix-libdir=/usr/lib/x86_64-linux-gnu --enable-mca-no-build=coll-han '
 else
-    ompi_options=' --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --without-verbs '
+    export ompi_options=' --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --without-verbs '
 fi \
 && echo ompi_options $ompi_options \
 && cd $ompi_prefix                                                        && \
@@ -131,6 +131,7 @@ $ompi_options \
  --disable-mpi-java --enable-dlopen --without-cuda  \
  --disable-mpi-cxx --disable-cxx-exceptions FC=$FC \
 && head config.log \
+&& echo ' CCCCC ' \
 && make FC=$FC -j 6                                                  \
 && make install                  \
 && if [ ! -f $OMPI_DIR/bin/mpif90 ]; then echo mpif90\ not\ found ; exit 1 ; fi \
