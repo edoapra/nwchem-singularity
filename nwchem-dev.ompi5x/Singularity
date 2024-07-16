@@ -116,9 +116,12 @@ $FC -v \
 && if [ ! -f $OMPI_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi \
 && cd ../.. \
 && wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v'$ompi_major'.'$ompi_minor'/openmpi-'$OMPI'.tar.gz  -O - | tar xzf -   \
+&& echo ompi_major is $ompi_major \
 && if [ $ompi_major = '5' ]; then
+    echo ' 555 '
     export ompi_options=' --with-pmix --with-pmix-libdir=/usr/lib/x86_64-linux-gnu --enable-mca-no-build=coll-han '
 else
+    echo ' 444 '
     export ompi_options=' --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --without-verbs '
 fi \
 && echo ompi_options $ompi_options \
