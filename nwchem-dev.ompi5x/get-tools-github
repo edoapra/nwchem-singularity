@@ -1,0 +1,238 @@
+#!/usr/bin/env bash
+#
+# $Id: get-tools 28436 2016-08-03 19:50:05Z edo $
+#
+function ga_download()
+{
+    TAR_URL=$1
+    GA_RELEASE_NO=$2
+       CURL_YES=`curl  -O 2>&1 | head -1  | awk ' /URL/ {print "Y";exit};{print "N"}'`
+	if [ $CURL_YES = "Y" ]
+	then
+	    if test "x$GADOWN_IGNORECERTS" != x
+	    then
+	    curl -L -k "$TAR_URL" -o ga-"$GA_RELEASE_NO".tar.gz
+	    else
+	    curl -L  "$TAR_URL" -o ga-"$GA_RELEASE_NO".tar.gz
+	    fi
+	else
+	WGET_YES=`wget  -O 2>&1 | head -1  | awk ' /require/ {print "Y";exit};{print "N"}'`
+	    if [ $WGET_YES = "Y" ]
+	    then
+	        #try wget because curl is not there
+	        if wget  -O ga-"$GA_RELEASE_NO".tar.gz "$TAR_URL" ; then
+                    echo "wget works"
+                else
+                    echo " "
+                    echo "obsolete wget"
+                    echo "trying tlsv12 wget option"
+                    echo " "
+		    if test "x$GADOWN_IGNORECERTS" != x
+		    then
+			wget --no-check-certificate  --secure-protocol=TLSv1_2 -O ga-"$GA_RELEASE_NO".tar.gz "$TAR_URL"
+		    else
+			wget  --secure-protocol=TLSv1_2 -O ga-"$GA_RELEASE_NO".tar.gz "$TAR_URL"
+		    fi
+                fi
+            else
+	        echo " "
+	        echo "wget or curl required for downloading GA tar file" 
+	        echo " "
+	        exit 1
+            fi
+	fi
+# check tar.gz integrity	
+	gzip -t ga-"$GA_RELEASE_NO".tar.gz >&  /dev/null
+	if [ $? -ne 0 ]; then
+            echo ga-"$GA_RELEASE_NO".tar.gz file integrity check failed
+            return 1
+	else
+            echo ga-"$GA_RELEASE_NO".tar.gz file integrity OK
+	    return 0
+	fi
+    }
+
+unalias -a
+export NWCHEM_TOP=${NWCHEM_TOP:-"`pwd`/../"}
+if test "x$NWCHEM_TOP" = x
+then
+    echo You must set NWCHEM_TOP to use this script.
+    exit 1
+fi
+ga_version=0
+while [ $# -gt 0 ]
+do
+   case "$1" in
+      --ga-version) ga_version=1;;
+      *)
+         echo >&2 "usage: $0 [--ga-version]"
+         exit 1;;
+   esac
+   shift 
+done
+
+TOOLDIR=`pwd`
+TOOLGIT=`which git`
+CONFIG=$NWCHEM_TOP/src/config/makefile.h
+if test "x$DEV_GA" != x
+then
+    GA_DIR=ga-5.8.2
+    GA_BRANCH=hotfix/5.8.2
+fi
+if test "x$GA_BRANCH" = x 
+then
+USE_GA_RELEASE=1
+fi
+if test "x$USE_GA_RELEASE" != x
+then
+    if test "x$GA_RELEASE_NO" = x
+    then
+	GA_RELEASE_NO=5.8.2
+    fi
+    GA_DIR=ga-"$GA_RELEASE_NO"
+    if [ ! -f ga-"$GA_RELEASE_NO".tar.gz ]; then
+	if test "x$TAR_URL" = x
+	then
+	TAR_URL=https://github.com/GlobalArrays/ga/releases/download/v"$GA_RELEASE_NO"/ga-"$GA_RELEASE_NO".tar.gz
+#	 TAR_URL=https://github.com/edoapra/ga/releases/download/v"$GA_RELEASE_NO"/ga-"$GA_RELEASE_NO".tar.gz
+#	 TAR_URL=https://github.com/edoapra/ga/releases/download/v"$GA_RELEASE_NO"/ga-5.8.2.v3.tar.gz
+#         TAR_URL=https://github.com/GlobalArrays/ga/archive/refs/tags/v"$GA_RELEASE_NO".tar.gz
+	 #         https://github.com/edoapra/ga/releases/download/v5.7.2/ga-5.7.2.tar.gz
+	fi
+	echo "downloading" ga-"$GA_RELEASE_NO".tar.gz  "from" "$TAR_URL"
+	max_retry=5
+	counter=0
+	until 	ga_download $TAR_URL $GA_RELEASE_NO
+	do
+	    [[ counter -eq $max_retry ]] && echo "GA download failed!" && exit 1
+	    sleep 2
+	    echo "Trying again. Try #$counter"
+	    ((counter++))
+	done
+	if [ $? -ne 0 ]
+	then
+	    rm -f ga-"$GA_RELEASE_NO".tar.gz
+	    echo "wget failed for"  ga-"$GA_RELEASE_NO".tar.gz
+	    echo "trying git clone"
+	    echo " "
+            USE_GA_RELEASE=
+#	    exit 1
+	fi
+    fi
+    if [ ! -f ga-"$GA_RELEASE_NO".tar.gz ]; then 
+	echo "Failed to download" ga-$GA_RELEASE_NO.tar.gz
+        USE_GA_RELEASE=
+	#    exit 1
+    else
+	if [ ! -f "$GA_DIR"/configure ]; then 
+	    tar xzf ga-"$GA_RELEASE_NO".tar.gz
+	fi
+    fi
+fi
+#oldelse #USE_GA_RELEASE
+if test "x$USE_GA_RELEASE" = x
+then
+if test "x$DEV_GA" != x
+then
+#DEV_GA=1 gives the current "best" dev branch, not develop
+#to get develop, set GA_BRANCH-develop
+    GA_DIR=ga-develop
+    GA_BRANCH=develop
+else
+    if test "x$GA_BRANCH" != x
+    then
+	if test "x$GA_DIR" = x
+	then
+	    GA_DIR0=ga-"$GA_BRANCH"
+	    GA_DIR=`echo $GA_DIR0 | sed -e 's/\//_/g'`
+	fi
+    else
+	GA_DIR=ga-5.8.2
+	GA_BRANCH=hotfix/5.8.2
+    fi
+fi
+if test "x$GA_URL" != x
+then
+    echo "Using GA_URL" $GA_URL
+else
+GA_URL="https://github.com/GlobalArrays/ga.git"
+fi
+GA_GIT="$GA_URL  -b $GA_BRANCH"
+echo "Using GA_GIT" $GA_GIT "and GA_DIR" $GA_DIR
+
+if [ $ga_version == 1 ] ; then
+  echo $GA_DIR
+  exit 0
+fi
+
+if [ ${#TOOLGIT} -eq 0 ] ; then
+  echo "No Git found!"
+  echo "Giving up and hoping for the best..."
+  exit 0
+fi
+if test -d $GA_DIR
+then
+    echo "Updating existing $GA_DIR"
+    cd $GA_DIR
+#    git cleanup
+    if git fetch 
+    then
+        echo "Finished updating existing $GA_DIR"
+    else
+        echo "Failed updating existing $GA_DIR"
+        exit 1
+    fi
+    cd $TOOLDIR
+else
+    echo "Checking out $GA_GIT into dir $GA_DIR"
+    git clone $GA_GIT $GA_DIR 2> /dev/null
+    if [ $? -ne 0 ]
+    then
+	echo "Git clone failed" >&2
+	exit 1
+    fi
+fi
+fi #USE_GA_RELEASE
+# check if configure is there
+#disable nxtval
+./nxtval.sh $GA_DIR
+if [[  -z "${CC}" ]]; then
+    CC=cc
+fi
+GOTMINGW64=` $CC -dM -E - </dev/null 2> /dev/null |grep MINGW64|cut -c21 `
+if [[ -d "ga-5.8.2" ]]; then
+    if [[ ! -f "ga-5.8.2/patched581" ]]; then
+	./gamalloc_patch.sh $GA_DIR
+	./peigstubs_patch.sh $GA_DIR
+	./mpipr-too-many_patch.sh $GA_DIR
+	./ga_ma_align_patch.sh $GA_DIR
+	./scalapacki4_patch.sh $GA_DIR
+	./ga_diag_seg_i4_patch.sh $GA_DIR
+	if [ $(uname -s) != "Darwin" ]; then
+	    ./autoconf_patch.sh $GA_DIR
+	fi
+	./scalasl2_patch.sh $GA_DIR
+	echo patched
+	touch ga-5.8.2/patched581
+    fi
+fi
+#if [ ! -z "$GOTMINGW64" ]
+#then
+#echo "CC" $CC
+#echo "GOTMINGW64" $GOTMINGW64
+##patch for MSMPI
+#./msmpi_patch.sh $GA_DIR
+#./mingw64_patch.sh $GA_DIR
+#fi
+
+#patch -p0 -s -N < ./scala1.patch
+if test -e $GA_DIR/configure
+then
+        echo "configure present. no autogen.sh required"
+else
+        echo "configure missing. running autogen.sh"
+        echo $GA_DIR/configure $GA_DIR/autogen.sh
+        cd  $GA_DIR;sh ./autogen.sh
+fi
+exit 0
+

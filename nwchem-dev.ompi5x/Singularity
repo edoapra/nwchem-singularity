@@ -184,6 +184,9 @@ fi	   \
 && patch -p1 < largebasis.patch \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/okeep.patch \
 && patch -p1 < okeep.patch \
+&& cd tools \
+&& mv get-tools-github get-tools-github.org && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/get-tools-github  \
+&& wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/scalasl2_patch.sh \
 && export NWCHEM_TOP=`pwd` \
 && echo 'ls -lrta ' $(ls -lrta) \
 && echo 'pwd ' $(pwd) \
