@@ -89,7 +89,7 @@ jobs:
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
         ls -lart ~/cache
-        if [[ -f ~/cache/mpich/lib/libmpi.so ]]; then \
+        if [[ -f ~/cache/mpich/lib/libmpi.a ]]; then \
         echo "mpich cache present" ; \
         fi
         if [[ -f ~/cache/libext/lib/libnwc_openblas.a ]]; then \
