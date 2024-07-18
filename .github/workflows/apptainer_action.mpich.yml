@@ -16,7 +16,7 @@ jobs:
         matrix:
           folder:
             - nwchem-dev.mpich3
-           mpich:
+          mpich:
             - 3.4.2
           fc:
             - gfortran
