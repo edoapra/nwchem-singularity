@@ -119,8 +119,8 @@ $mpich_options \
 --enable-fortran=all \
 --disable-opencl --enable-silent-rules \
 --disable-cuda \
- FFLAGS=" -fallow-argument-mismatch " \
- FCFLAGS=" -fallow-argument-mismatch " \
+ FFLAGS=' -fallow-argument-mismatch ' \
+ FCFLAGS=' -fallow-argument-mismatch ' \
   FC=$FC \
 && head config.log \
 && make FC=$FC -j 6                                                  \
