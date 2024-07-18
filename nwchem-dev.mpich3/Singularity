@@ -79,7 +79,7 @@ fi \
 && echo pwd $(pwd) \
 && echo 'ls nwchem' $(ls -lrta nwchem) \
 && echo 'ls nwchem/src' $(ls -lrta nwchem/src) \
-&& bash -o  pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then wget --progress=dot:giga https://github.com/${MYUSERNAME}/nwchem/tarball/${BRANCH} -O - | tar -xz  --exclude=web --exclude=examples --exclude=doc --exclude="nwxc*"  --exclude="chem-library-tests" && 	     ${MYUSERNAME}-nwchem-* nwchem ; fi " \
+&& bash -o  pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then wget --progress=dot:giga https://github.com/${MYUSERNAME}/nwchem/tarball/${BRANCH} -O - | tar -xz  --exclude=web --exclude=examples --exclude=doc --exclude="nwxc*"  --exclude="chem-library-tests" && mv    ${MYUSERNAME}-nwchem-* nwchem ; fi " \
 && apt-get -y install -y   tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
  g++ gfortran   make ssh patch   unzip perl-base file \
  python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
@@ -118,6 +118,7 @@ $mpich_options \
 --enable-fortran=all \
 --disable-opencl --enable-silent-rules \
 --disable-cuda \
+--disable-cxx \
  FFLAGS=' -fallow-argument-mismatch ' \
  FCFLAGS=' -fallow-argument-mismatch ' \
   FC=$FC \
@@ -165,7 +166,7 @@ $mpich_options \
 && echo 'ls nwchem' $(ls -lrta nwchem) \
 && echo 'ls nwchem/src' $(ls -lrta nwchem/src) \
 && bash -o pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then  \
-wget --progress=dot:giga https://github.com/${MYUSERNAME}/nwchem/tarball/${BRANCH} -O - | tar -xz  --exclude=web --exclude=examples --exclude=doc --exclude="nwxc*"  --exclude="chem-library-tests" && 	     ${MYUSERNAME}-nwchem-* nwchem ; fi \
+wget --progress=dot:giga https://github.com/${MYUSERNAME}/nwchem/tarball/${BRANCH} -O - | tar -xz  --exclude=web --exclude=examples --exclude=doc --exclude="nwxc*"  --exclude="chem-library-tests" && 	 mv ${MYUSERNAME}-nwchem-* nwchem ; fi \
 && cd nwchem \
 && echo "output of git describe  --always " `git describe  --always` || true \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/largebasis.patch \
