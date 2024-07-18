@@ -115,7 +115,12 @@ $FC -v \
 && cd $mpich_prefix                                                        && \
 ./configure  --prefix=$MPICH_DIR   \
 $mpich_options \
---with-device=ch4:ofi 
+--with-device=ch4:ofi  \
+--enable-fortran=all \
+--disable-opencl --enable-silent-rules \
+--disable-cuda \
+ FFLAGS=" -fallow-argument-mismatch " \
+ FCFLAGS=" -fallow-argument-mismatch " \
   FC=$FC \
 && head config.log \
 && make FC=$FC -j 6                                                  \
