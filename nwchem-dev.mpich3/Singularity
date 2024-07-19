@@ -118,11 +118,12 @@ $mpich_options \
 --enable-fortran=all \
 --disable-opencl --enable-silent-rules \
 --disable-cuda \
---disable-cxx \
  FFLAGS=' -fallow-argument-mismatch ' \
  FCFLAGS=' -fallow-argument-mismatch ' \
   FC=$FC \
 && head config.log \
+&& cat config.log \
+&& exit 1 \
 && make FC=$FC -j 6                                                  \
 && make install                  \
 && if [ ! -f $MPICH_DIR/bin/mpif90 ]; then echo mpif90\ not\ found ; exit 1 ; fi \
@@ -134,7 +135,7 @@ $mpich_options \
 && export LD_LIBRARY_PATH=$MPICH_DIR/lib:$LD_LIBRARY_PATH\
 && echo ARMCI_NETWORK is $ARMCI_NETWORK\
 && export NWCHEM_TARGET=LINUX64\
-&& export NWCHEM_MODULES="nwdft driver solvation"\
+&& export NWCHEM_MODULES="all python gwmol xtb"\
 && export USE_OPENMP=1 \
 && export USE_TBLITE=1 \
 && if [ "$FC" = "gfortran" ]; then 
@@ -158,12 +159,6 @@ fi	   \
 && export USE_SIMINT=y \
 && export SIMINT_MAXAM=5\
 && export SIMINT_VECTOR=AVX2 \
-&& unset  USE_SIMINT \
-&& unset BUILD_PLUMED \
-&& unset BUILD_ELPA \
-&& unset USE_LIBXC \
-&& unset MRCC_METHODS \
-&& unset USE_TBLITE \
 && export PYTHONVERSION=$(python -V| cut -d ' ' -f 2 |cut -d . -f 1-2) \
 && ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
