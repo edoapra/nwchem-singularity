@@ -160,6 +160,7 @@ fi	   \
 && unset BUILD_ELPA \
 && unset USE_LIBXC \
 && unset MRCC_METHODS \
+&& unset USE_TBLITE \
 && export PYTHONVERSION=$(python -V| cut -d ' ' -f 2 |cut -d . -f 1-2) \
 && ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
