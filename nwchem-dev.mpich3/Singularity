@@ -81,7 +81,7 @@ fi \
 && echo 'ls nwchem/src' $(ls -lrta nwchem/src) \
 && bash -o  pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then wget --progress=dot:giga https://github.com/${MYUSERNAME}/nwchem/tarball/${BRANCH} -O - | tar -xz  --exclude=web --exclude=examples --exclude=doc --exclude="nwxc*"  --exclude="chem-library-tests" && mv    ${MYUSERNAME}-nwchem-* nwchem ; fi " \
 && apt-get -y install -y   tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
- g++ gfortran   make ssh patch   unzip perl-base file \
+ g++ gfortran   make patch   unzip perl-base file \
  python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
  libnuma-dev libslurm-dev \
 libpmix-bin libpmix-dev libpmix2 \
