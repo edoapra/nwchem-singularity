@@ -148,6 +148,8 @@ fi	   \
 && export USE_MPIF=y\
 && export USE_MPIF4=y\
 && export USE_HWOPT=n\
+&& export FORCETARGET=" TARGET=ZEN " \
+&& export GFORTRAN_MARCH=znver3 \
 && export USE_LIBXC=y\
 && export USE_NOIO=y\
 && export IPCCSD=y \
@@ -155,6 +157,7 @@ fi	   \
 && export MRCC_METHODS=y \
 && export USE_SIMINT=y \
 && export SIMINT_MAXAM=5\
+&& export SIMINT_VECTOR=AVX2 \
 && unset  USE_SIMINT \
 && unset BUILD_PLUMED \
 && unset BUILD_ELPA \
