@@ -148,8 +148,6 @@ fi	   \
 && export USE_MPIF=y\
 && export USE_MPIF4=y\
 && export USE_HWOPT=n\
-&& export FORCETARGET=" TARGET=ZEN " \
-&& export GFORTRAN_MARCH=znver3 \
 && export USE_LIBXC=y\
 && export USE_NOIO=y\
 && export IPCCSD=y \
@@ -263,3 +261,6 @@ export NWCHEM_NWPW_LIBRARY=${NWCHEM_SHARE}//libraryps/
 export LD_LIBRARY_PATH=$MPICH_DIR/lib:$LD_LIBRARY_PATH
 #%runscript
 #exec /bin/bash "$@"
+
+#&& export FORCETARGET=" TARGET=ZEN " \
+#&& export GFORTRAN_MARCH=znver3 \
