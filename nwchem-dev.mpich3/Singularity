@@ -122,8 +122,7 @@ $mpich_options \
  FCFLAGS=' -fallow-argument-mismatch ' \
   FC=$FC \
 && head config.log \
-&& cat config.log \
-&& exit 1 \
+&& tail -300 config.log \
 && make FC=$FC -j 6                                                  \
 && make install                  \
 && if [ ! -f $MPICH_DIR/bin/mpif90 ]; then echo mpif90\ not\ found ; exit 1 ; fi \
