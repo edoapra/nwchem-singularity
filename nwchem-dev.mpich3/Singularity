@@ -84,7 +84,7 @@ fi \
  g++ gfortran   make patch   unzip perl-base file \
  python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
  libnuma-dev libslurm-dev \
-libpmix-bin libpmix-dev libpmix2 \
+ libpmix-dev libpmix2 \
 libpmi2-0-dev libpmi0-dev  \
  libnl-3-dev  libnl-route-3-dev udev \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers  \
