@@ -57,7 +57,7 @@ export DEBIAN_FRONTEND=noninteractive \
 else
     export mpich_options=' '
 fi \
-&& export GCC_VERSION=11
+&& export GCC_VERSION=11 \
 && echo mpich_options $mpich_options \
 && echo ARMCI_NETWORK is $ARMCI_NETWORK\
 && echo MPI_IMPL is $MPI_IMPL\
@@ -96,7 +96,6 @@ libpmi2-0-dev libpmi0-dev  \
 else
     apt-get -y install -y libpmi2-0-dev libpmi0-dev
 fi \
-
 && add-apt-repository -y ppa:ubuntu-toolchain-r/test && apt-get update \
             && apt-get install -q=2 -y  gcc-"$GCC_VERSION"  g++-"$GCC_VERSION" gfortran-"$GCC_VERSION" libgfortran-"$GCC_VERSION"-dev  make patch curl rsync wget git file  bzip2 tar gnupg2  \
 && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-"$GCC_VERSION" 100 \
