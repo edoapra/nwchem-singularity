@@ -57,6 +57,7 @@ export DEBIAN_FRONTEND=noninteractive \
 else
     export mpich_options=' '
 fi \
+&& export GCC_VERSION=11
 && echo mpich_options $mpich_options \
 && echo ARMCI_NETWORK is $ARMCI_NETWORK\
 && echo MPI_IMPL is $MPI_IMPL\
@@ -95,6 +96,13 @@ libpmi2-0-dev libpmi0-dev  \
 else
     apt-get -y install -y libpmi2-0-dev libpmi0-dev
 fi \
+
+&& add-apt-repository -y ppa:ubuntu-toolchain-r/test && apt-get update \
+            && apt-get install -q=2 -y  gcc-"$GCC_VERSION"  g++-"$GCC_VERSION" gfortran-"$GCC_VERSION" libgfortran-"$GCC_VERSION"-dev  make patch curl rsync wget git file  bzip2 tar gnupg2  \
+&& update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-"$GCC_VERSION" 100 \
+&& update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-"$GCC_VERSION" 100 \
+&& update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-"$GCC_VERSION" 100 \
+            && apt-get install  -q=2 -y  autoconf automake libtool git \
 && apt-get clean \
 && echo TTTTT \
 && df -h \
@@ -222,7 +230,7 @@ rm -rf ~/apps  /var/intel  l_*sh ; fi"   \
 && echo "dddddddddddd" \
 &&  du -sk /tmp/* || true \
 &&  ls -lart /tmp ||true \
-&&  apt-get  -y purge cmake git  gcc-11  g++-11  gfortran-11  libstdc++-11-dev  libgcc-11-dev git \
+&&  apt-get  -y purge cmake git  gcc-"$GCC_VERSION"  g++-"$GCC_VERSION"  gfortran-"$GCC_VERSION"  libstdc++-"$GCC_VERSION"-dev  libgcc-"$GCC_VERSION"-dev git \
 && apt-get -y install libgcc-s1 libgfortran5 \
 && apt-get -y autoremove && apt-get clean
 
