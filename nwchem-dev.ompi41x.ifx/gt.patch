@@ -1,0 +1,13 @@
+diff --git a/src/tools/GNUmakefile b/src/tools/GNUmakefile
+index 2f6e049b80..5a72d78b2f 100644
+--- a/src/tools/GNUmakefile
++++ b/src/tools/GNUmakefile
+@@ -629,7 +629,7 @@ ifdef USE_GAGITHUB
+       GA_BRANCH = develop
+     else
+       GA_DIR0=ga-$(GA_BRANCH)
+-      GA_DIR := (shell echo $(GA_DIR0) | sed -e 's/\//_/g')
++      GA_DIR := $(shell echo $(GA_DIR0) | sed -e 's/\//_/g')
+     endif
+   endif
+ else
