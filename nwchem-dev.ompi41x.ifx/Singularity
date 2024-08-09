@@ -160,7 +160,6 @@ fi	   \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/gt.patch \
 && ls -l *patch \
 && patch -p1 < largebasis.patch \
-&& patch -p1 -s -N < gt.patch \
 && export NWCHEM_TOP=`pwd` \
 && echo 'ls -lrta ' $(ls -lrta) \
 && echo 'pwd ' $(pwd) \
@@ -177,7 +176,8 @@ echo 'ls ~/' `ls -lrt ~/` \
 && echo FC is $FC \
 && $FC -v \
 && if [ "$BRANCH" = "master" ]; then
-   export GA_BRANCH=feature/malloc
+#   export GA_BRANCH=feature/malloc
+   export GA_BRANCH=develop
 fi	   \
 && make V=-1 FC=$FC -j6 || { echo 'Compilation Failure'; exit 1; } \
 && FC=$FC ../contrib/getmem.nwchem 2000  || true \
