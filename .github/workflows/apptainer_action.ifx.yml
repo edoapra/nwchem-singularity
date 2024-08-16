@@ -116,7 +116,7 @@ jobs:
     - name: create sif from docker
       if: steps.setup-cache.outputs.cache-hit != 'true'
       run: |
-          cd apptainer
+          cd ${{ matrix.folder }}
           apptainer pull docker://ubuntu:jammy
     - name: Checkout nwchem source
       uses: actions/checkout@v4
