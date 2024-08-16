@@ -104,6 +104,11 @@ jobs:
         if [[ -f ~/cache/ubuntu_jammy.sif]]; then \
         cp ~/cache/ubuntu_jammy.sif ${{ matrix.folder }}/. ; \
         fi
+    - name: create sif from docker
+      if: steps.setup-cache.outputs.cache-hit != 'true'
+      run: |
+          cd apptainer
+          apptainer pull docker://ubuntu:jammy
     - name: Install apptainer
       env:
         APP_VER: 1.2.3
