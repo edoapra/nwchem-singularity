@@ -101,7 +101,7 @@ jobs:
         if [[ -f ~/cache/simint.l5_p5_d1.install/lib/libnwc_simint.a ]]; then \
         echo "simint cache present" ; \
         fi
-        if [[ -f ~/cache/ubuntu_jammy.sif]]; then \
+        if [[ -f ~/cache/ubuntu_jammy.sif ]]; then \
         cp ~/cache/ubuntu_jammy.sif ${{ matrix.folder }}/. ; \
         fi
     - name: Install apptainer
