@@ -87,7 +87,7 @@ jobs:
       with:
         path: |
           ~/cache
-        key: ${{ matrix.folder}}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001
+        key: ${{ matrix.folder}}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v002
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
@@ -100,6 +100,9 @@ jobs:
         fi
         if [[ -f ~/cache/simint.l5_p5_d1.install/lib/libnwc_simint.a ]]; then \
         echo "simint cache present" ; \
+        fi
+        if [[ -f ~/cache/ubuntu_jammy.sif]]; then \
+        cp ~/cache/ubuntu_jammy.sif ${{ matrix.folder }}/. ; \
         fi
     - name: Install apptainer
       env:
@@ -129,6 +132,7 @@ jobs:
         apptainer exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
+        cp ubuntu_jammy.sif ~/cache/.
         echo "cache stored"
         ls -l ~/cache
     - name: builddate
