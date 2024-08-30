@@ -90,7 +90,7 @@ libpmi2-0-dev libpmi0-dev  \
  libnl-3-dev  libnl-route-3-dev udev \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers  \
  libhwloc-dev \
- pkg-config gawk  software-properties-common \
+ pkg-config gawk  software-properties-common gdb\
 && if [ $mpich_major = '5' ]; then
     apt-get -y install -y libpmix-bin libpmix-dev libpmix2
 else
