@@ -102,6 +102,9 @@ jobs:
         if [[ -f ~/cache/simint.l5_p5_d1.install/lib/libnwc_simint.a ]]; then \
         echo "simint cache present" ; \
         fi
+        if [[ -f ~/cache/ubuntu_jammy.sif ]]; then \
+        cp ~/cache/ubuntu_jammy.sif ${{ matrix.folder }}/. ; \
+        fi
     - name: Install apptainer
       env:
         APP_VER: 1.2.3
@@ -111,6 +114,11 @@ jobs:
         sudo dpkg -i apptainer_${APP_VER}_amd64.deb
         which apptainer
         apptainer version
+    - name: create sif from docker
+      if: steps.setup-cache.outputs.cache-hit != 'true'
+      run: |
+          cd ${{ matrix.folder }}
+          apptainer pull docker://ubuntu:jammy
     - name: Checkout nwchem source
       uses: actions/checkout@v4
       with:
@@ -130,6 +138,7 @@ jobs:
         apptainer exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
+        cp ubuntu_jammy.sif ~/cache/.
         echo "cache stored"
         ls -l ~/cache
     - name: builddate
