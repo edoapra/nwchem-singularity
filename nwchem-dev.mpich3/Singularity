@@ -117,6 +117,14 @@ fi \
 && echo 'ls -l /opt/mpich/lib/libmpi.a' $(ls -l /opt/mpich/lib/libmpi.a) || true \
 && bash -o pipefail -c "if [[ ! -f /opt/mpich/lib/libmpi.a ]]; then  \
 $FC -v \
+&&  export xpmem=2.7.3 \
+&& wget --progress=dot:giga https://github.com/openucx/xpmem/archive/refs/tags/v$xpmem.tar.gz -O - |tar xzf - \
+&& cd xpmem-$xpmem \
+&& sh autogen.sh \
+&& ./configure --prefix=$MPICH_DIR --disable-kernel-module  \
+&& make -j3 \
+&& make install \
+&& cd .. \
 && wget  --progress=dot:giga https://www.mpich.org/static/downloads/$MPICH/mpich-'$MPICH'.tar.gz  -O - | tar xzf -   \
 && cd $mpich_prefix                                                        && \
 ./configure  --prefix=$MPICH_DIR   \
@@ -125,6 +133,7 @@ $mpich_options \
 --enable-fortran=all \
 --disable-opencl --enable-silent-rules \
 --disable-cuda \
+--with-xpmem=$MPICH_DIR \
  FFLAGS=' -fallow-argument-mismatch ' \
  FCFLAGS=' -fallow-argument-mismatch ' \
   FC=$FC \
