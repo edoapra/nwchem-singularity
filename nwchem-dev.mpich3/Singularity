@@ -117,8 +117,7 @@ fi \
 && echo 'ls -l /opt/mpich/lib/libmpi.a' $(ls -l /opt/mpich/lib/libmpi.a) || true \
 && bash -o pipefail -c "if [[ ! -f /opt/mpich/lib/libmpi.a ]]; then  \
 $FC -v \
-&&  export xpmem=2.7.3 \
-&& wget --progress=dot:giga https://github.com/openucx/xpmem/archive/refs/tags/v$xpmem.tar.gz -O - |tar xzf - \
+&& wget --progress=dot:giga https://github.com/openucx/xpmem/archive/refs/tags/v2.7.3.tar.gz -O - |tar xzf - \
 && cd xpmem-$xpmem \
 && sh autogen.sh \
 && ./configure --prefix=$MPICH_DIR --disable-kernel-module  \
