@@ -9,6 +9,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 &&     rm -f ${SINGULARITY_ROOTFS}/*.txt || true\
 &&     bash -c "if [[ -z '${FC}' ]]; then echo 'FC=gfortran ' >> ${SINGULARITY_ROOTFS}/fc.txt ; else echo 'FC is ${FC}'; echo 'FC=${FC} ' >> ${SINGULARITY_ROOTFS}/fc.txt ; fi"\
 &&     bash -c "if [[ -z '${MPICH}' ]]; then echo 'MPICH=3.4.2 ' >> ${SINGULARITY_ROOTFS}/MPICH.txt ; else echo 'MPICH is ${MPICH}'; echo 'MPICH=${MPICH} ' >> ${SINGULARITY_ROOTFS}/mpich.txt ; fi"\
+&&     bash -c "if [[ -z '${MPICH_DEVICE}' ]]; then echo 'MPICH_DEVICE=ch4:ofi ' >> ${SINGULARITY_ROOTFS}/MPICH_DEVICE.txt ; else echo 'MPICH_DEVICE is ${MPICH_DEVICE}'; echo 'MPICH_DEVICE=${MPICH_DEVICE} ' >> ${SINGULARITY_ROOTFS}/mpich_device.txt ; fi"\
 &&     bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"\
 &&     bash -c "if [[ -z '${MPI_IMPL}' ]]; then echo 'MPI_IMPL=mpich ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; else echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"\
 &&     bash -c "if [[ -z '${BRANCH}' ]]; then echo 'BRANCH=master ' >> ${SINGULARITY_ROOTFS}/branch.txt ; else echo 'BRANCH is ${BRANCH}'; echo 'BRANCH=${BRANCH} ' >> ${SINGULARITY_ROOTFS}/branch.txt ; fi"\
@@ -43,8 +44,10 @@ export DEBIAN_FRONTEND=noninteractive \
 && export `cat ./mpi_impl.txt`\
 && export `cat ./branch.txt`\
 && export `cat ./myusername.txt`\
+&& export `cat ./mpich_device.txt`\
 && echo FC is $FC\
 && echo MPICH is $MPICH\
+&& echo MPICH_DEVICE is $MPICH_DEVICE\
 && export mpich_prefix=mpich-$MPICH\
 && echo mpich_prefix is $mpich_prefix \
 && export mpich_major=$(echo $MPICH | cut -d . -f1) \
@@ -130,7 +133,7 @@ $FC -v \
 && cd $mpich_prefix                                                        && \
 ./configure  --prefix=$MPICH_DIR   \
 $mpich_options \
---with-device=ch4:ofi  \
+--with-device=$MPICH_DEVICE  \
 --enable-fortran=all \
 --disable-opencl --enable-silent-rules \
 --disable-cuda \

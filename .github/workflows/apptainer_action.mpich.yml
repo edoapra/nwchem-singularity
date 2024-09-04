@@ -25,9 +25,13 @@ jobs:
           armci_network:
             - MPI-PR
             - MPI3
+          mpich_device:
+            - ch4:ofi
+            - ch4:ucx
     env:
         FC: ${{ matrix.fc }}
         MPICH: ${{ matrix.mpich }}
+        MPICH_DEVICE: ${{ matrix.mpich_device }}
     steps:
     - name: nwchem version tag
       run: |
@@ -43,9 +47,9 @@ jobs:
     - name: tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}mpich${{ matrix.mpich }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}mpich${{ matrix.mpich }}device${{ matrix.mpich_device }}" >> $GITHUB_ENV
         else
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}mpich${{ matrix.mpich }}.${{ matrix.fc }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}mpich${{ matrix.mpich }}.${{ matrix.fc }}device${{ matrix.mpich_device }}" >> $GITHUB_ENV
         fi
     - name: echo-tag
       run: |
@@ -85,7 +89,7 @@ jobs:
       with:
         path: |
           ~/cache
-        key: ${{ matrix.folder}}-${{ matrix.mpich}}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001
+        key: ${{ matrix.folder}}-${{ matrix.mpich}}${{ matrix.mpich_device}}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
@@ -127,7 +131,7 @@ jobs:
     - name: build an apptainer container
       run: |
         cd ${{ matrix.folder }}
-        MPICH=${{ matrix.mpich }} FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=mpich  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+        MPICH_DEVICE=${{ matrix.mpich_device }} MPICH=${{ matrix.mpich }} FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=mpich  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: store cache
       run: |
         mkdir -p ~/cache || true
