@@ -140,10 +140,11 @@ $FC -v \
    mkdir -p build && cd build ;\
    ../configure --prefix=\$MPICH_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check ;\
    make -j4 && make install ;\
-   mpich_options='\$mpich_options --with-ucx=\$MPICH_DIR' ; \
+   export mpich_options='\$mpich_options --with-ucx=\$MPICH_DIR' ; \
  if [ ! -f $MPICH_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi ;\
    fi  \
 && cd .. \
+&& echo ' mpich_options is set to' $mpich_options \
 && wget  --progress=dot:giga https://www.mpich.org/static/downloads/$MPICH/mpich-'$MPICH'.tar.gz  -O - | tar xzf -   \
 && cd $mpich_prefix                                                        && \
 ./configure  --prefix=$MPICH_DIR   \
