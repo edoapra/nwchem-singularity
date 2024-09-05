@@ -131,16 +131,16 @@ $FC -v \
 && cd .. \
 && if [[ $MPICH_DEVICE == ch4:ofi ]]; then echo 'installing ucx' ; \
    export ucx=1.11.0 ; \
-   echo 'the ucx version is'  '$ucx' ; \
-   wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/v$ucx/ucx-$ucx.tar.gz ; \
-   tar xzf ucx-$ucx.tar.gz && rm ucx-$ucx.tar.gz  ;\
-   cd ucx-$ucx ; \
+   echo 'the ucx version is'  ${ucx} ; \
+   wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/v${ucx}/ucx-${ucx}.tar.gz ; \
+   tar xzf ucx-${ucx}.tar.gz && rm ucx-${ucx}.tar.gz  ;\
+   cd ucx-${ucx} ; \
    wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch ;\
    patch -p0 < ./ucx_malloc.patch ;\
    mkdir -p build && cd build ;\
-   ../configure --prefix=$MPICH_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check ;\
+   ../configure --prefix=${MPICH_DIR} --disable-logging --disable-debug --disable-assertions --disable-params-check ;\
    make -j4 && make install ;\
-   mpich_options='$mpich_options --with-ucx=$MPICH_DIR' ; \
+   mpich_options='${mpich_options} --with-ucx=$MPICH_DIR' ; \
  if [ ! -f $MPICH_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi ;\
    fi \
 && cd .. \
