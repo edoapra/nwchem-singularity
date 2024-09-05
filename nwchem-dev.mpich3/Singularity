@@ -148,7 +148,7 @@ $FC -v \
 && wget  --progress=dot:giga https://www.mpich.org/static/downloads/$MPICH/mpich-'$MPICH'.tar.gz  -O - | tar xzf -   \
 && cd $mpich_prefix                                                        && \
 ./configure  --prefix=$MPICH_DIR   \
-$mpich_options \
+\$mpich_options \
 --with-device=$MPICH_DEVICE  \
 --enable-fortran=all \
 --disable-opencl --enable-silent-rules \
