@@ -129,8 +129,7 @@ $FC -v \
 && make -j3 \
 && make install \
 && cd .. \
-&& if [[ $MPICH_DEVICE != ch4:ofi ]]; then echo 'installing ucx' ; \
-if [[ ${MPICH_DEVICE} != ch4:ofi ]]; then echo 'installing ucx' ; \
+&& if [[ ${MPICH_DEVICE} != ch4:ofi ]]; then echo 'installing ucx' ; \
    export ucx=1.11.0 ; \
    echo 'the ucx version is'  \$ucx ; \
    wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/v\$ucx/ucx-\$ucx.tar.gz ; \
@@ -143,7 +142,7 @@ if [[ ${MPICH_DEVICE} != ch4:ofi ]]; then echo 'installing ucx' ; \
    make -j4 && make install ;\
    mpich_options='\$mpich_options --with-ucx=\$MPICH_DIR' ; \
  if [ ! -f $MPICH_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi ;\
-   fi \
+   fi  \
 && cd .. \
 && wget  --progress=dot:giga https://www.mpich.org/static/downloads/$MPICH/mpich-'$MPICH'.tar.gz  -O - | tar xzf -   \
 && cd $mpich_prefix                                                        && \
