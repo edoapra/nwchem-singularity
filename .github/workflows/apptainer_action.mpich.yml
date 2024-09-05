@@ -44,10 +44,14 @@ jobs:
           net_tag=$(echo ${{ matrix.armci_network }} | tr '[:upper:]' '[:lower:]')
           echo "armci_network="${net_tag}"." >> $GITHUB_ENV
         fi
+        if [[ ${{ matrix.mpich_device }} !=  ch4:ofi ]]; then
+          dev_tag=$(echo ${{ matrix.mpich_device }} | sed  's/:/_/' )
+          echo "mpich_device="${dev_tag}"." >> $GITHUB_ENV
+        fi
     - name: tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}mpich${{ matrix.mpich }}device${{ matrix.mpich_device }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}mpich${{ matrix.mpich }}${{ env.mpich_device }}" >> $GITHUB_ENV
         else
           echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}mpich${{ matrix.mpich }}.${{ matrix.fc }}device${{ matrix.mpich_device }}" >> $GITHUB_ENV
         fi
