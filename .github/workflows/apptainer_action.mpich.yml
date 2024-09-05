@@ -27,7 +27,6 @@ jobs:
             - MPI3
           mpich_device:
             - ch4:ofi
-            - ch4:ucx
     env:
         FC: ${{ matrix.fc }}
         MPICH: ${{ matrix.mpich }}
