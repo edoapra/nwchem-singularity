@@ -46,7 +46,7 @@ jobs:
         fi
         if [[ ${{ matrix.mpich_device }} !=  ch4:ofi ]]; then
           dev_tag=$(echo ${{ matrix.mpich_device }} | sed  's/:/_/' )
-          echo "mpich_device="${dev_tag}"." >> $GITHUB_ENV
+          echo "mpich_device="${dev_tag} >> $GITHUB_ENV
         fi
     - name: tag
       run: |
