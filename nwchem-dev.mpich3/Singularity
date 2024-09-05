@@ -120,10 +120,10 @@ fi \
 && echo 'ls -l /opt/mpich/lib/libmpi.a' $(ls -l /opt/mpich/lib/libmpi.a) || true \
 && bash -o pipefail -c "if [[ ! -f /opt/mpich/lib/libmpi.a ]]; then  \
 $FC -v \
-&& wget --progress=dot:giga https://github.com/openucx/xpmem/archive/refs/tags/v2.7.3.tar.gz \
-&& tar xzf v2.7.3.tar.gz \
-&& rm v2.7.3.tar.gz \
-&& cd xpmem-2.7.3 \
+&& wget --progress=dot:giga https://github.com/Cray-HPE/xpmem/tarball/master -O xpmem.tar.gz \
+&& tar xzf xpmem.tar.gz \
+&& rm xpmem.tar.gz \
+&& cd Cray-HPE-xpmem* \
 && sh autogen.sh \
 && ./configure --prefix=$MPICH_DIR --disable-kernel-module  \
 && make -j3 \
