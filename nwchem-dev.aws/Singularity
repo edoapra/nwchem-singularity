@@ -84,7 +84,7 @@ fi \
 && bash -o  pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/$MYUSERNAME/nwchem.git; fi " \
 && apt-get -y install -y   tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
  g++ gfortran   make ssh patch   unzip perl-base file \
- python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
+ python3 python3-minimal python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
  libnuma-dev libslurm-dev \
 libpmix-bin libpmix-dev libpmix2 \
 libpmi2-0-dev libpmi0-dev  \
@@ -116,7 +116,6 @@ fi \
 $FC -v \
 && export libfabric_version="1.19.0amzn4.0" \
 && echo using libfabric_version "$libfabric_version" \
-&& wget --progress=dot:giga  https://github.com/aws/libfabric/releases/download/v"$libfabric_version"/libfabric-"$libfabric_version".tar.gz \
 && wget --progress=dot:giga  https://github.com/aws/libfabric/releases/download/v"$libfabric_version"/libfabric-"$libfabric_version".tar.gz -O - | tar --no-same-owner  -xzf - \
 && cd libfabric-$libfabric_version \
 && mkdir build && cd build \
@@ -144,6 +143,7 @@ $ompi_options \
 && if [ ! -f $OMPI_DIR//bin/fi_info ]; then echo fi_info\ not\ found ; exit 1 ; fi \
 && echo ' /opt/ompi/bin/fi_info --version ' `/opt/ompi/bin/fi_info --version|| true` \
 && echo ' Libfabric Providers' `/opt/ompi/bin/fi_info  -l ` \
+&& echo ' OMPI configuration `/opt/ompi/bin/ompi_info -c ` \
 && if [ ! -f $OMPI_DIR/bin/mpif90 ]; then echo mpif90\ not\ found ; exit 1 ; fi \
 && echo '********'  \
 && export PATH=$OMPI_DIR/bin:$PATH\
@@ -237,7 +237,7 @@ rm -rf ~/apps  /var/intel  l_*sh ; fi"   \
 &&  du -sk /tmp/* || true \
 &&  ls -lart /tmp ||true \
 &&  apt-get  -y purge cmake git  gcc-11  g++-11  gfortran-11  libstdc++-11-dev  libgcc-11-dev git \
-&& apt-get -y install libgcc-s1 libgfortran5 \
+&& apt-get -y install libgcc-s1 libgfortran5 libatomic1\
 && apt-get -y autoremove && apt-get clean
 
 
