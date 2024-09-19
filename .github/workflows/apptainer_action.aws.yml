@@ -1,0 +1,191 @@
+name: nwchem_apptainer_aws
+
+on:
+  schedule:
+    - cron: '0 0 * * SUN'
+  repository_dispatch:
+    types: [backend_automation]
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build_image:
+    runs-on: ubuntu-20.04
+    strategy:
+        fail-fast: false
+        matrix:
+          folder:
+            - nwchem-dev.aws
+          ompi:
+            - 5.0.3
+            - 4.1.6
+          fc:
+            - gfortran
+          branch:
+            - master
+          armci_network:
+            - MPI-PR
+            - OPENIB
+    env:
+        FC: ${{ matrix.fc }}
+        OMPI: ${{ matrix.ompi }}
+    steps:
+    - name: nwchem version tag
+      run: |
+        if [[ ${{ matrix.branch }} ==  master ]]; then
+          echo "nwversion=dev" >> $GITHUB_ENV
+        else
+          echo "nwversion=720" >> $GITHUB_ENV
+        fi
+        if [[ ${{ matrix.armci_network }} !=  MPI-PR ]]; then
+          net_tag=$(echo ${{ matrix.armci_network }} | tr '[:upper:]' '[:lower:]')
+          echo "armci_network="${net_tag}"." >> $GITHUB_ENV
+        fi
+    - name: tag
+      run: |
+        if [[ ${{ matrix.fc }} == "gfortran" ]]; then
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}" >> $GITHUB_ENV
+        else
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}.${{ matrix.fc }}" >> $GITHUB_ENV
+        fi
+    - name: echo-tag
+      run: |
+        echo ' the apptainer tag is ' "${{ env.tag }}"
+    - name: Checkout nwchem-singularity source
+      uses: actions/checkout@v4
+      with:
+        repository: edoapra/nwchem-singularity
+        clean: false
+#        path: nwchem-singularity
+    - name: pkg cleanup
+      run: |
+        df -h
+        if [[ $(uname -s) == "Linux" ]]; then
+        ubuntu_ver=$(cat /etc/os-release | grep VERSION_ID |cut -d \" -f 2)
+        dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n
+        sudo apt-get purge -y azure-cli || true
+        sudo apt-get purge -y google-cloud-cli microsoft-edge-stable dotnet-sdk-7.0 dotnet-sdk-6.0 google-chrome-stable firefox
+        sudo apt-get purge -y temurin-17-jdk temurin-11-jdk temurin-8-jdk
+        if [[ $ubuntu_ver == "20.04" ]]; then
+        sudo apt-get purge -y llvm-12-dev llvm-11-dev llvm-10-dev
+        sudo apt-get purge -y hhvm
+        sudo apt-get purge -y libgl1-mesa-dri
+        fi
+        if [[ $ubuntu_ver == "22.04" ]]; then
+        sudo apt-get purge -y llvm-13-dev llvm-14-dev llvm-15-dev
+        fi
+        sudo apt-get -y clean
+        sudo apt-get autoremove -y 
+        dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n
+        df -h
+        fi
+      shell: bash
+    - name: Setup cache
+      id: setup-cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/cache
+        key: ${{ matrix.folder}}-${{ matrix.ompi}}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001
+    - name: fetch cache
+      if: steps.setup-cache.outputs.cache-hit == 'true'
+      run: |
+        ls -lart ~/cache
+        if [[ -f ~/cache/ompi/lib/libmpi.so ]]; then \
+        echo "ompi cache present" ; \
+        fi
+        if [[ -f ~/cache/libext/lib/libnwc_openblas.a ]]; then \
+        echo "libext cache present" ; \
+        fi
+        if [[ -f ~/cache/simint.l5_p5_d1.install/lib/libnwc_simint.a ]]; then \
+        echo "simint cache present" ; \
+        fi
+        if [[ -f ~/cache/ubuntu_jammy.sif ]]; then \
+        cp ~/cache/ubuntu_jammy.sif ${{ matrix.folder }}/. ; \
+        fi
+    - name: Install apptainer
+      env:
+        APP_VER: 1.2.3
+      run: |
+        sudo apt-get install -y  libfuse2 libseccomp2 zlib1g uidmap squashfs-tools squashfuse fuse2fs fuse-overlayfs fakeroot
+        wget -q  https://github.com/apptainer/apptainer/releases/download/v${APP_VER}/apptainer_${APP_VER}_amd64.deb 
+        sudo dpkg -i apptainer_${APP_VER}_amd64.deb
+        which apptainer
+        apptainer version
+    - name: create sif from docker
+      if: steps.setup-cache.outputs.cache-hit != 'true'
+      run: |
+          cd ${{ matrix.folder }}
+          apptainer pull docker://ubuntu:jammy
+    - name: Checkout nwchem source
+      uses: actions/checkout@v4
+      with:
+        repository: nwchemgit/nwchem
+        ref: ${{ matrix.branch}}
+        clean: false
+        fetch-depth: 0
+        path: nwchem
+    - name: build an apptainer container
+      run: |
+        cd ${{ matrix.folder }}
+        OMPI=${{ matrix.ompi }} FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+    - name: store cache
+      run: |
+        mkdir -p ~/cache || true
+        cd ${{ matrix.folder }}
+        apptainer exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
+        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
+        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
+        cp ubuntu_jammy.sif ~/cache/.
+        echo "cache stored"
+        ls -l ~/cache
+    - name: builddate
+      id: build-date
+      run: |
+        echo "date=$(TZ=America/Los_Angeles date +%Y%m%d_%H%M%S)" >> $GITHUB_ENV
+    - name: push to ghcr.io
+      run: |
+        echo ${{ secrets.GITHUB_TOKEN }} | apptainer remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
+        apptainer remote list
+        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:${{ env.date }}
+        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:latest
+    - name: test image with apptainer
+      run: |
+        pwd
+        ls -la
+        apptainer pull -F ${{ env.tag }}:${{ env.date }}
+        cd nwchem/QA
+        export UCX_TLS=tcp,self
+        export UCX_POSIX_USE_PROC_LINK=n
+        export APPTAINERENV_OMPI_MCA_btl_vader_single_copy_mechanism=none
+        export OMPI_MCA_btl_vader_single_copy_mechanism=none 
+        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -x OMPI_MCA_btl_vader_single_copy_mechanism=none -n"
+        sudo apt-get install -y openmpi-bin openmpi-common libopenmpi-dev
+        which mpirun
+        ldd `which mpirun`
+        export NWCHEM_EXECUTABLE="apptainer exec ${{ env.tag }}:latest nwchem"
+        ./runtests.mpi.unix procs 2 dft_he2+
+        ./runtests.mpi.unix procs 2 h2o_opt
+    - name: Install Singularity CE
+      env:
+        SG_VER: 4.0.0
+      run: |
+        sudo apt-get purge -y apptainer
+        sudo apt-get update && sudo apt-get install -y \
+        squashfs-tools pkg-config cryptsetup-bin libseccomp2 runc libglib2.0-0 || true
+        wget -q https://github.com/sylabs/singularity/releases/download/v${SG_VER}/singularity-ce_${SG_VER}-focal_amd64.deb
+        sudo dpkg -i singularity-ce_${SG_VER}-focal_amd64.deb
+        which singularity
+        singularity version
+    - name: test image with singularity
+      run: |
+        singularity pull -F ${{ env.tag }}:${{ env.date }}
+        cd nwchem/QA
+        export UCX_TLS=tcp,self
+        export UCX_POSIX_USE_PROC_LINK=n
+        export PATH=/opt/ompi/bin:$PATH
+        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
+        export LD_LIBRARY_PATH=/opt/ompi/lib:$LD_LIBRARY_PATH
+        export NWCHEM_EXECUTABLE="singularity exec ${{ env.tag }}:latest nwchem"
+        ./runtests.mpi.unix procs 2 dft_he2+
+        ./runtests.mpi.unix procs 2 h2o_opt
