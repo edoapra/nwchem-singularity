@@ -116,7 +116,8 @@ fi \
 $FC -v \
 && export libfabric_version="1.19.0amzn4.0" \
 && echo using libfabric_version "$libfabric_version" \
-&& wget --progress=dot:giga  https://github.com/aws/libfabric/releases/download/v"$libfabric_version"/libfabric-"$libfabric_version".tar.gz -O - | tar xzf - \
+&& wget --progress=dot:giga  https://github.com/aws/libfabric/releases/download/v"$libfabric_version"/libfabric-"$libfabric_version".tar.gz \
+&& wget --progress=dot:giga  https://github.com/aws/libfabric/releases/download/v"$libfabric_version"/libfabric-"$libfabric_version".tar.gz -O - | tar --no-same-owner  -xzf - \
 && cd libfabric-$libfabric_version \
 && mkdir build && cd build \
 && ../configure --prefix=$OMPI_DIR --enable-efa  \
