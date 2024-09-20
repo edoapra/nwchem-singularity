@@ -143,7 +143,7 @@ $ompi_options \
 && if [ ! -f $OMPI_DIR//bin/fi_info ]; then echo fi_info\ not\ found ; exit 1 ; fi \
 && echo ' /opt/ompi/bin/fi_info --version ' `/opt/ompi/bin/fi_info --version|| true` \
 && echo ' Libfabric Providers' `/opt/ompi/bin/fi_info  -l ` \
-&& echo ' OMPI configuration `/opt/ompi/bin/ompi_info -c ` \
+&& echo ' OMPI configuration ' `/opt/ompi/bin/ompi_info -c ` \
 && if [ ! -f $OMPI_DIR/bin/mpif90 ]; then echo mpif90\ not\ found ; exit 1 ; fi \
 && echo '********'  \
 && export PATH=$OMPI_DIR/bin:$PATH\
