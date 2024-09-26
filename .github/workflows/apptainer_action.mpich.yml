@@ -27,6 +27,13 @@ jobs:
             - MPI3
           mpich_device:
             - ch4:ofi
+          include:
+            - mpich: 4.2.2
+              mpich_device: ch4:ofi
+              armci_network: MPI-PR
+              branch: master
+              fc: gfortran
+              folder: nwchem-dev.mpich3
     env:
         FC: ${{ matrix.fc }}
         MPICH: ${{ matrix.mpich }}
