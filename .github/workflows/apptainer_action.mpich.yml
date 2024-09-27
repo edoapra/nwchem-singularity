@@ -162,6 +162,16 @@ jobs:
         apptainer remote list
         apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:${{ env.date }}
         apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:latest
+    - name: ldd check
+      if: ${{ env.push_truefalse == 'true' }}
+      run: |
+        pwd
+        ls -la
+        apptainer pull -F ${{ env.tag }}:${{ env.date }}
+        sudo apt-get install -y libmpich-dev mpich
+        which mpirun
+        ldd `which mpirun`
+        apptainer exec ${{ env.tag }}:latest ldd /opt/nwchem/bin/nwchem
     - name: test image with apptainer
       run: |
         pwd
