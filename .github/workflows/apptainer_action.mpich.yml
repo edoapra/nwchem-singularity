@@ -163,7 +163,6 @@ jobs:
         apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:${{ env.date }}
         apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:latest
     - name: ldd check
-      if: ${{ env.push_truefalse == 'true' }}
       run: |
         pwd
         ls -la
