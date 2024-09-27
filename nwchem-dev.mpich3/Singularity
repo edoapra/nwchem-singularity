@@ -260,7 +260,7 @@ rm -rf ~/apps  /var/intel  l_*sh ; fi"   \
 &&  du -sk /tmp/* || true \
 &&  ls -lart /tmp ||true \
 &&  apt-get  -y purge cmake git  gcc-"$GCC_VERSION"  g++-"$GCC_VERSION"  gfortran-"$GCC_VERSION"  libstdc++-"$GCC_VERSION"-dev  libgcc-"$GCC_VERSION"-dev git \
-&& apt-get -y install libgcc-s1 libgfortran5 libatomic1 libquadmath \
+&& apt-get -y install libgcc-s1 libgfortran5 libatomic1 libquadmath0 \
 && apt-get -y autoremove && apt-get clean
 
 
