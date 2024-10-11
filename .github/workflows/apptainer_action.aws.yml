@@ -17,7 +17,7 @@ jobs:
           folder:
             - nwchem-dev.aws
           ompi:
-            - 5.0.3
+            - 5.0.5
             - 4.1.6
           fc:
             - gfortran
