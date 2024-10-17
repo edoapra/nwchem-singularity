@@ -26,6 +26,7 @@ jobs:
           armci_network:
             - MPI-PR
             - OPENIB
+            - MPI3
     env:
         FC: ${{ matrix.fc }}
         OMPI: ${{ matrix.ompi }}
