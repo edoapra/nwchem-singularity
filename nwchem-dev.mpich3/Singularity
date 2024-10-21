@@ -94,11 +94,8 @@ libpmi2-0-dev libpmi0-dev  \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers  \
  libhwloc-dev \
  pkg-config gawk  software-properties-common gdb\
-&& if [ $mpich_major = '5' ]; then
-    apt-get -y install -y libpmix-bin libpmix-dev libpmix2
-else
-    apt-get -y install -y libpmi2-0-dev libpmi0-dev
-fi \
+&&  apt-get -y install -y libpmix-bin libpmix-dev libpmix2 \
+&&    apt-get -y install -y libpmi2-0-dev libpmi0-dev \
 && add-apt-repository -y ppa:ubuntu-toolchain-r/test && apt-get update \
             && apt-get install -q=2 -y  gcc-"$GCC_VERSION"  g++-"$GCC_VERSION" gfortran-"$GCC_VERSION" libgfortran-"$GCC_VERSION"-dev  make patch curl rsync wget git file  bzip2 tar gnupg2  \
 && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-"$GCC_VERSION" 100 \
@@ -150,6 +147,9 @@ $FC -v \
 ./configure  --prefix=$MPICH_DIR   \
 \$mpich_options \
 --with-device=$MPICH_DEVICE  \
+--with-pmi=pmix \
+--with-pmix=/usr/lib/x86_64-linux-gnu/pmix2 \
+--with-slurm \
 --enable-fortran=all \
 --disable-opencl --enable-silent-rules \
 --disable-cuda \
