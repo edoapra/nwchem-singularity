@@ -37,6 +37,7 @@ jobs:
               armci_network: MPI-PR
               branch: master
               fc: gfortran
+              ofi: builtin
               folder: nwchem-dev.mpich3
     env:
         FC: ${{ matrix.fc }}
