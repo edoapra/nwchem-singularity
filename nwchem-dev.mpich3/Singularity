@@ -9,6 +9,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 &&     rm -f ${SINGULARITY_ROOTFS}/*.txt || true\
 &&     bash -c "if [[ -z '${FC}' ]]; then echo 'FC=gfortran ' >> ${SINGULARITY_ROOTFS}/fc.txt ; else echo 'FC is ${FC}'; echo 'FC=${FC} ' >> ${SINGULARITY_ROOTFS}/fc.txt ; fi"\
 &&     bash -c "if [[ -z '${MPICH}' ]]; then echo 'MPICH=3.4.2 ' >> ${SINGULARITY_ROOTFS}/MPICH.txt ; else echo 'MPICH is ${MPICH}'; echo 'MPICH=${MPICH} ' >> ${SINGULARITY_ROOTFS}/mpich.txt ; fi"\
+&&     bash -c "if [[ -z '${OFI}' ]]; then echo 'OFI=builtin ' >> ${SINGULARITY_ROOTFS}/OFI.txt ; else echo 'OFI is ${OFI}'; echo 'OFI=${OFI} ' >> ${SINGULARITY_ROOTFS}/ofi.txt ; fi"\
 &&     bash -c "if [[ -z '${MPICH_DEVICE}' ]]; then echo 'MPICH_DEVICE=ch4:ofi ' >> ${SINGULARITY_ROOTFS}/MPICH_DEVICE.txt ; else echo 'MPICH_DEVICE is ${MPICH_DEVICE}'; echo 'MPICH_DEVICE=${MPICH_DEVICE} ' >> ${SINGULARITY_ROOTFS}/mpich_device.txt ; fi"\
 &&     bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"\
 &&     bash -c "if [[ -z '${MPI_IMPL}' ]]; then echo 'MPI_IMPL=mpich ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; else echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"\
@@ -40,6 +41,7 @@ export DEBIAN_FRONTEND=noninteractive \
 && export SINGULARITY_LIBRARY_PATH=/root/apps/oneapi/compiler/latest/lib:/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/root/apps/oneapi/compiler/latest/linux/lib \
 && export `cat ./fc.txt`\
 && export `cat ./mpich.txt`\
+&& export `cat ./ofi.txt`\
 && export `cat ./armci_network.txt`\
 && export `cat ./mpi_impl.txt`\
 && export `cat ./branch.txt`\
@@ -47,6 +49,7 @@ export DEBIAN_FRONTEND=noninteractive \
 && export `cat ./mpich_device.txt`\
 && echo FC is $FC\
 && echo MPICH is $MPICH\
+&& echo OFI is $OFI\
 && echo MPICH_DEVICE is $MPICH_DEVICE\
 && export mpich_prefix=mpich-$MPICH\
 && echo mpich_prefix is $mpich_prefix \
@@ -144,11 +147,13 @@ $FC -v \
    make -j4 && make install ;\
    export mpich_options='$mpich_options --with-ucx=$MPICH_DIR' ; \
  if [ ! -f $MPICH_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi ;\
-else wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/download/v1.15.2/libfabric-1.15.2.tar.bz2 -O - | tar --no-same-owner  -xjf - ; \
-  cd libfabric-1.15.2 ;\
+elif [[ ${OFI} == builtin ]]; then echo 'builtin OFI - nothing to download'; \
+else wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/download/v'$OFI'/libfabric-'$OFI'.tar.bz2 -O - | tar --no-same-owner  -xjf - ; \
+  cd libfabric-'$OFI' ;\
  mkdir build && cd build ; \
  ../configure --prefix=$MPICH_DIR  ;\
  make -j4 && make install ; \
+ export mpich_options='$mpich_options --with-libfabric=$MPICH_DIR' ; \
 if [ ! -f $MPICH_DIR/bin/fi_info ]; then echo fi_info\ not\ found ; exit 1 ; fi \
    fi  \
 && cd .. \
@@ -158,7 +163,6 @@ if [ ! -f $MPICH_DIR/bin/fi_info ]; then echo fi_info\ not\ found ; exit 1 ; fi 
 ./configure  --prefix=$MPICH_DIR   \
 \$mpich_options \
 --with-device=$MPICH_DEVICE  \
---with-libfabric=$MPICH_DIR \
 --enable-fortran=all \
 --disable-opencl --enable-silent-rules \
 --disable-cuda \

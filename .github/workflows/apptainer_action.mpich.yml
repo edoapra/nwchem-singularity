@@ -27,6 +27,10 @@ jobs:
             - MPI3
           mpich_device:
             - ch4:ofi
+          ofi:
+            - builtin
+            - 1.15.2
+            - 1.10.1
           include:
             - mpich: 4.2.2
               mpich_device: ch4:ofi
@@ -54,12 +58,15 @@ jobs:
           dev_tag=$(echo ${{ matrix.mpich_device }} | sed  's/:/_/' )
           echo "mpich_device="${dev_tag} >> $GITHUB_ENV
         fi
+        if [[ ${{ matrix.ofi }} !=  builtin ]]; then
+          echo "ofi=.libfabric"${{ matrix.ofi }} >> $GITHUB_ENV
+        fi
     - name: tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}mpich${{ matrix.mpich }}${{ env.mpich_device }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}mpich${{ matrix.mpich }}${{ env.ofi }}${{ env.mpich_device }}" >> $GITHUB_ENV
         else
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}mpich${{ matrix.mpich }}.${{ matrix.fc }}device${{ matrix.mpich_device }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}mpich${{ matrix.mpich }}${{ env.ofi }}.${{ matrix.fc }}device${{ matrix.mpich_device }}" >> $GITHUB_ENV
         fi
     - name: echo-tag
       run: |
@@ -99,7 +106,7 @@ jobs:
       with:
         path: |
           ~/cache
-        key: ${{ matrix.folder}}-${{ matrix.mpich}}${{ matrix.mpich_device}}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001
+        key: ${{ matrix.folder}}-${{ matrix.mpich}}${{ matrix.ofi}}${{ matrix.mpich_device}}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v002
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
