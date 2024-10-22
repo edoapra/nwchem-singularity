@@ -144,8 +144,8 @@ $FC -v \
    make -j4 && make install ;\
    export mpich_options='$mpich_options --with-ucx=$MPICH_DIR' ; \
  if [ ! -f $MPICH_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi ;\
-else wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/download/v1.22.0/libfabric-1.22.0.tar.bz2 -O - | tar --no-same-owner  -xjf - ; \
-  cd libfabric-1.22.0 ;\
+else wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/download/v1.15.2/libfabric-1.15.2.tar.bz2 -O - | tar --no-same-owner  -xjf - ; \
+  cd libfabric-1.15.2 ;\
  mkdir build && cd build ; \
  ../configure --prefix=$MPICH_DIR  ;\
  make -j4 && make install ; \
