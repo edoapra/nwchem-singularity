@@ -203,7 +203,7 @@ fi	   \
 && export EACCSD=y \
 && export MRCC_METHODS=y \
 && export USE_SIMINT=y \
-&& export SIMINT_MAXAM=5\
+&& export SIMINT_MAXAM=6\
 && export SIMINT_VECTOR=AVX2 \
 && export USE_OPENMP=1 \
 && export PYTHONVERSION=$(python -V| cut -d ' ' -f 2 |cut -d . -f 1-2) \
