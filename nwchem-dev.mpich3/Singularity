@@ -19,12 +19,12 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 &&     ls -la  ${CACHEDIR}/ || true\
 &&     ls -la  ${CACHEDIR}/mpich || true\
 &&     ls -la  ${CACHEDIR}/mpich/lib || true\
-&&     ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libnwc_simint.a || true\
-&&     ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ||true\
+&&     ls -la  ${CACHEDIR}/simint_install/lib/libnwc_simint.a || true\
+&&     ls -la  ${CACHEDIR}/simint_install/lib/libsimint.a ||true\
 &&     bash -c "if [ ! -z "${GITHUB_WORKSPACE}" ]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/contrib; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/contrib/getmem.nwchem ${SINGULARITY_ROOTFS}/nwchem/contrib/. ;rsync -a ${GITHUB_WORKSPACE}/nwchem/travis ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/.git ${SINGULARITY_ROOTFS}/nwchem/. ; fi"\
 &&     bash -c "if [[  -f ${CACHEDIR}/mpich/lib/libmpi.a ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/mpich ${SINGULARITY_ROOTFS}/opt/. ; echo mpich cache fetched ;fi"\
 &&     bash -c "if [[  -f ${CACHEDIR}/libext/lib/libnwc_openblas.a ]]; then rsync -a ${CACHEDIR}/libext/* ${SINGULARITY_ROOTFS}/nwchem/src/libext/. ; echo libext cache fetched ;fi"\
-&&     bash -c "if [[  -f ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint.l5_p5_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
+&&     bash -c "if [[  -f ${CACHEDIR}/simint_install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint* ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
 
 ##%files
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
