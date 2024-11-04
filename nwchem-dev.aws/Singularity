@@ -45,8 +45,8 @@ export DEBIAN_FRONTEND=noninteractive \
 && export `cat ./myusername.txt`\
 && echo FC is $FC\
 && echo OMPI is $OMPI\
-&& export ric_version="1.22.0amzn2.0" \
-&& echo using ric_version "$ric_version" \
+&& export libfabric_version="1.22.0amzn2.0" \
+&& echo using libfabric_version "$libfabric_version" \
 && export ompi_prefix=openmpi-$OMPI\
 && echo ompi_prefix is $ompi_prefix \
 && export ompi_major=$(echo $OMPI | cut -d . -f1) \
@@ -114,8 +114,8 @@ fi \
 && echo 'ls -l /opt/ompi/lib/libmpi.so' $(ls -l /opt/ompi/lib/libmpi.so) || true \
 && bash -o pipefail -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
-&& export ric_version="1.22.0amzn2.0" \
-&& echo using ric_version "$ric_version" \
+&& export libfabric_version="1.22.0amzn2.0" \
+&& echo using libfabric_version "$libfabric_version" \
 && wget --progress=dot:giga  https://github.com/aws/libfabric/releases/download/v"$libfabric_version"/libfabric-"$libfabric_version".tar.gz -O - | tar --no-same-owner  -xzf - \
 && cd libfabric-$libfabric_version \
 && mkdir build && cd build \
