@@ -156,6 +156,7 @@ jobs:
         cd ${{ matrix.folder }}
         MPICH_DEVICE=${{ matrix.mpich_device }} MPICH=${{ matrix.mpich }} OFI=${{ matrix.ofi }} FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=mpich  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: store cache
+      if: steps.setup-cache.outputs.cache-hit != 'true'
       run: |
         mkdir -p ~/cache || true
         cd ${{ matrix.folder }}
