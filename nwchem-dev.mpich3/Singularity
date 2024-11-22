@@ -160,9 +160,9 @@ elif [[ ${OFI} == builtin ]]; then echo 'builtin OFI - nothing to download'; \
    cd shs-libcxi ; \
    sh autogen.sh ; \
    ./configure --prefix=$MPICH_DIR ;\
-   make CFLAGS="-I$MPICH_DIR/shs-cassini-headers/include/ -I$MPICH_DIR/shs-cxi-driver/include/" pkg_CFLAGS=-Wall -i  ;\
-   make CFLAGS="-I$MPICH_DIR/shs-cassini-headers/include/ -I$MPICH_DIR/shs-cxi-driver/include/" install-dist_cxi_yamlDATA install-man install-pkgconfigDATA install-pkgincludeHEADERS  install-exec   ;\
-   export libfabric_options=$libfabric_options" --enable-cxi="$MPICH_DIR"  --with-cassini-headers="$MPICH_DIR"/shs-cassini-headers --with-cxi-uapi-headers="$MPICH_DIR"/shs-cxi-driver "; echo mpich_options are $mpich_options;  cd $orgpwd ; \
+   make CFLAGS='-I$MPICH_DIR/shs-cassini-headers/include/ -I$MPICH_DIR/shs-cxi-driver/include/' pkg_CFLAGS=-Wall -i  ;\
+   make CFLAGS='-I$MPICH_DIR/shs-cassini-headers/include/ -I$MPICH_DIR/shs-cxi-driver/include/' install-dist_cxi_yamlDATA install-man install-pkgconfigDATA install-pkgincludeHEADERS  install-exec   ;\
+   export libfabric_options=$libfabric_options' --enable-cxi='$MPICH_DIR'  --with-cassini-headers='$MPICH_DIR'/shs-cassini-headers --with-cxi-uapi-headers='$MPICH_DIR'/shs-cxi-driver '; echo mpich_options are $mpich_options;  cd $orgpwd ; \
 else wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/download/v'$OFI'/libfabric-'$OFI'.tar.bz2 -O - | tar --no-same-owner  -xjf - ; \
   cd libfabric-'$OFI' ;\
  mkdir build && cd build ; \
