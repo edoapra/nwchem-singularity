@@ -148,14 +148,14 @@ $FC -v \
    export mpich_options='$mpich_options --with-ucx=$MPICH_DIR' ; \
  if [ ! -f $MPICH_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi ;\
 elif [[ ${OFI} == builtin ]]; then echo 'builtin OFI - nothing to download'; \
-    else \
-	if [[ ${OFI} == git ]]; then    git clone https://github.com/ofiwg/libfabric libfabric-git && cd libfabric-git && sh autogen.sh && cd ..  ;\
+  else if [[ ${OFI} == git ]]; then  git clone https://github.com/ofiwg/libfabric libfabric-git && cd libfabric-git && sh autogen.sh && cd ..  ;\
+   apt-get install -y libconfig-dev libsensors-dev libuv1-dev libfuse-dev libyaml-dev libjson-c-dev libcurl4-openssl-dev  ;\
    orgpwd=$(pwd) ; \
    mkdir -p $MPICH_DIR  ;\
    cd $MPICH_DIR ; \
    git clone https://github.com/HewlettPackard/shs-cassini-headers ;\
    git clone https://github.com/HewlettPackard/shs-cxi-driver ;\
-   cd $orgpwd ;
+   cd $orgpwd ; \
    git clone https://github.com/HewlettPackard/shs-libcxi ; \
    cd shs-libcxi ; \
    sh autogen.sh ; \
@@ -163,7 +163,7 @@ elif [[ ${OFI} == builtin ]]; then echo 'builtin OFI - nothing to download'; \
    make CFLAGS='-I$MPICH_DIR/shs-cassini-headers/include/ -I$MPICH_DIR/shs-cxi-driver/include/' pkg_CFLAGS=-Wall -i  ;\
    make CFLAGS='-I$MPICH_DIR/shs-cassini-headers/include/ -I$MPICH_DIR/shs-cxi-driver/include/' install-dist_cxi_yamlDATA install-man install-pkgconfigDATA install-pkgincludeHEADERS  install-exec   ;\
    export libfabric_options=$libfabric_options' --enable-cxi='$MPICH_DIR'  --with-cassini-headers='$MPICH_DIR'/shs-cassini-headers --with-cxi-uapi-headers='$MPICH_DIR'/shs-cxi-driver '; echo mpich_options are $mpich_options;  cd $orgpwd ; \
-else wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/download/v'$OFI'/libfabric-'$OFI'.tar.bz2 -O - | tar --no-same-owner  -xjf - ; \
+else wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/download/v'$OFI'/libfabric-'$OFI'.tar.bz2 -O - | tar --no-same-owner  -xjf - ; fi ;\
   cd libfabric-'$OFI' ;\
  mkdir build && cd build ; \
  ../configure --prefix=$MPICH_DIR  ;\
