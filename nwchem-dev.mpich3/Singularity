@@ -162,13 +162,13 @@ elif [[ ${OFI} == builtin ]]; then echo 'builtin OFI - nothing to download'; \
    ./configure --prefix=$MPICH_DIR ;\
    make CFLAGS='-I$MPICH_DIR/shs-cassini-headers/include/ -I$MPICH_DIR/shs-cxi-driver/include/' pkg_CFLAGS=-Wall -i  ;\
    make CFLAGS='-I$MPICH_DIR/shs-cassini-headers/include/ -I$MPICH_DIR/shs-cxi-driver/include/' install-dist_cxi_yamlDATA install-man install-pkgconfigDATA install-pkgincludeHEADERS  install-exec   ;\
-   export libfabric_options='$libfabric_options --enable-cxi=$MPICH_DIR  --with-cassini-headers=$MPICH_DIR/shs-cassini-headers --with-cxi-uapi-headers=$MPICH_DIR/shs-cxi-driver '; \
- echo 'libfabric_options are \$libfabric_options' ; \
+   export libfabric_options=' --enable-cxi=$MPICH_DIR  --with-cassini-headers=$MPICH_DIR/shs-cassini-headers --with-cxi-uapi-headers=$MPICH_DIR/shs-cxi-driver '; \
+ echo 'libfabric_options are' \$libfabric_options ; \
  cd / ; echo 'pwd ' $(pwd) ;ls -lrta ; \
-else wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/download/v'$OFI'/libfabric-'$OFI'.tar.bz2 -O - | tar --no-same-owner  -xjf - ; fi ;\
+else wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/download/v'$OFI'/libfabric-'$OFI'.tar.bz2 -O - | tar --no-same-owner  -xjf - ; export libfabric_options=' '; fi ;\
   cd libfabric-'$OFI' ;\
  mkdir build && cd build ; \
- ../configure --prefix=$MPICH_DIR \$libfabrics_options ;\
+ ../configure --prefix=$MPICH_DIR \$libfabric_options ;\
  make -j4 && make install ; \
  export mpich_options='$mpich_options --with-libfabric=$MPICH_DIR' ; \
  echo 'mpich_options are \$mpich_options' ;\
