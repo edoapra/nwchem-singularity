@@ -155,6 +155,7 @@ elif [[ ${OFI} == builtin ]]; then echo 'builtin OFI - nothing to download'; \
    cd $MPICH_DIR ; \
    git clone https://github.com/HewlettPackard/shs-cassini-headers ;\
    git clone https://github.com/HewlettPackard/shs-cxi-driver ;\
+   rm -rf shs*/.git ;\ 
    cd / ; \
    git clone https://github.com/HewlettPackard/shs-libcxi ; \
    cd shs-libcxi ; \
@@ -164,6 +165,7 @@ elif [[ ${OFI} == builtin ]]; then echo 'builtin OFI - nothing to download'; \
    make CFLAGS='-I$MPICH_DIR/shs-cassini-headers/include/ -I$MPICH_DIR/shs-cxi-driver/include/' install-dist_cxi_yamlDATA install-man install-pkgconfigDATA install-pkgincludeHEADERS  install-exec   ;\
    export libfabric_options=' --enable-cxi=$MPICH_DIR  --with-cassini-headers=$MPICH_DIR/shs-cassini-headers --with-cxi-uapi-headers=$MPICH_DIR/shs-cxi-driver '; \
  echo 'libfabric_options are' \$libfabric_options ; \
+ rm -rf shs-* ; \
  cd / ; echo 'pwd ' $(pwd) ;ls -lrta ; \
 else wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/download/v'$OFI'/libfabric-'$OFI'.tar.bz2 -O - | tar --no-same-owner  -xjf - ; export libfabric_options=' '; fi ;\
   cd libfabric-'$OFI' ;\
@@ -175,6 +177,7 @@ else wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/downl
 if [ ! -f $MPICH_DIR/bin/fi_info ]; then echo fi_info\ not\ found ; exit 1 ; fi \
    fi  \
 && cd .. \
+&& rm -rf libfabr* \
 && echo ' mpich_options is set to' \$mpich_options \
 && wget  --progress=dot:giga https://www.mpich.org/static/downloads/$MPICH/mpich-'$MPICH'.tar.gz  -O - | tar xzf -   \
 && cd $mpich_prefix                                                        && \
