@@ -132,7 +132,7 @@ jobs:
     - name: check if the nwchem binary is present
       run: |
         cd ${{ matrix.folder }}
-        apptainer exec ${{ matrix.folder }}.simg ldd /nwchem/bin/LINUX64/nwchem.z
+        apptainer exec ${{ matrix.folder }}.simg ldd /nwchem/bin/LINUX64/nwchem
     - name: store cache
       run: |
         mkdir -p ~/cache || true
