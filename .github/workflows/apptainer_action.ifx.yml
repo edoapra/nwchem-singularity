@@ -12,7 +12,7 @@ jobs:
   build_image:
     runs-on: ubuntu-20.04
     strategy:
-        fail-fast: false
+        fail-fast: true
         matrix:
           folder:
             - nwchem-dev.ompi41x.ifx
@@ -129,6 +129,10 @@ jobs:
       run: |
         cd ${{ matrix.folder }}
         FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+    - name: check if the nwchem binary is present
+      run: |
+        cd ${{ matrix.folder }}
+        apptainer exec ${{ matrix.folder }}.simg ldd /nwchem/bin/LINUX64/nwchem
     - name: store cache
       run: |
         mkdir -p ~/cache || true
