@@ -64,7 +64,7 @@ else
     export mpich_options=' '
 fi \
 && if [ $MPICH = '4.3.0rc3' ]; then
-    export mpich_options=' --disable-maintainer-mode --with-pm=no --enable-romio --with-slurm=no --with-pmi=pmix --with-pmix-include=/usr/lib/x86_64-linux-gnu/pmix2/include --with-pmix-lib=/usr/lib/x86_64-linux-gnu/pmix2/lib/ '
+    export mpich_options=' --disable-maintainer-mode --with-pm=no --enable-romio --with-slurm=no --with-pmi=pmix --with-pmix=/opt/pmix '
 fi \
 && export GCC_VERSION=11 \
 && echo mpich_options $mpich_options \
@@ -137,6 +137,16 @@ $FC -v \
 && make -j3 \
 && make install \
 && cd .. \
+&& if [ $MPICH = '4.3.0rc3' ]; then
+wget https://github.com/openpmix/openpmix/releases/download/v4.2.9/pmix-4.2.9.tar.gz \
+&& tar xzf pmix-4.2.9.tar.gz \
+&& cd pmix-4.2.9 \
+&& ./configure --prefix=/opt/pmix \
+&& make -j3 \
+&& make -j3 install \
+&& cd .. \
+&& rm -rf pmix-*.*
+fi \
 && if [[ ${MPICH_DEVICE} != ch4:ofi ]]; then echo 'installing ucx' ; \
    export ucx=1.11.0 ; \
    echo 'the ucx version is'  \$ucx ; \
