@@ -183,7 +183,7 @@ jobs:
         cd ${{ matrix.folder }}
         apptainer exec ${{ matrix.folder }}.simg cp -r /opt/mpich ~/cache
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
-        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint*install ~/cache/. ||true
+        apptainer exec ${{ matrix.folder }}.simg rsync -av --copy-links /nwchem/src/NWints/simint/libsimint_source/simint_install ~/cache/. ||true
         cp ubuntu_jammy.sif ~/cache/.
         echo "cache stored"
         ls -l ~/cache
@@ -214,7 +214,7 @@ jobs:
         cd nwchem/QA
         export MPIRUN_NPOPT=" -np"
         sudo apt-get install -y openmpi-bin libmpich-dev mpich
-        if [[ ${ matrix.mpich }} == aurora ]]; then export MPIRUN_PATH=`which mpirun.openmpi`; fi
+        if [[ ${{ matrix.mpich }} == aurora ]]; then export MPIRUN_PATH=`which mpirun.openmpi`; fi
         which mpirun
         ldd `which mpirun`
         export NWCHEM_EXECUTABLE="apptainer exec ${{ env.tag }}:latest nwchem"
