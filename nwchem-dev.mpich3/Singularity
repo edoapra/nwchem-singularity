@@ -32,6 +32,8 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 %post
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
 export DEBIAN_FRONTEND=noninteractive \
+&& export MPICH_AURORA="4.3.0" \
+&& export PMIX_VERSION="4.2.9" \
 && export MPICH_DIR=/opt/mpich\
 && export PATH=$MPICH_DIR/bin:/root/apps/oneapi/compiler/latest/bin:/root/apps/oneapi/compiler/latest/linux/bin/intel64:/root//apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
 && export LD_LIBRARY_PATH=$MPICH_DIR/lib:/root/apps/oneapi/compiler/latest/lib:/root/apps/oneapi/compiler/latest/linux/lib:/root/apps/oneapi/compiler/latest/linux/lib/x64:/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin \
@@ -49,13 +51,18 @@ export DEBIAN_FRONTEND=noninteractive \
 && export `cat ./mpich_device.txt`\
 && echo FC is $FC\
 && echo MPICH is $MPICH\
+&& if [ $MPICH = aurora ]; then
+    export MPICH_VERSION=4.3.0
+    	   else
+    export MPICH_VERSION=$MPICH
+fi \
 && echo OFI is $OFI\
 && echo MPICH_DEVICE is $MPICH_DEVICE\
-&& export mpich_prefix=mpich-$MPICH\
+&& export mpich_prefix=mpich-$MPICH_VERSION\
 && echo mpich_prefix is $mpich_prefix \
-&& export mpich_major=$(echo $MPICH | cut -d . -f1) \
+&& export mpich_major=$(echo $MPICH_VERSION | cut -d . -f1) \
 && echo mpich_major is $mpich_major \
-&& export mpich_minor=$(echo $MPICH | cut -d . -f2) \
+&& export mpich_minor=$(echo $MPICH_VERSION | cut -d . -f2) \
 && echo mpich_minor is $mpich_minor \
 && echo mpich_major is $mpich_major \
 && if [ $mpich_major = '4' ]; then
@@ -63,7 +70,7 @@ export DEBIAN_FRONTEND=noninteractive \
 else
     export mpich_options=' '
 fi \
-&& if [ $MPICH = '4.3.0rc3' ]; then
+&& if [ $MPICH = aurora ]; then
     export mpich_options=' --disable-maintainer-mode --with-pm=no --enable-romio --with-slurm=no --with-pmi=pmix --with-pmix=/opt/pmix '
 fi \
 && export GCC_VERSION=11 \
@@ -137,10 +144,10 @@ $FC -v \
 && make -j3 \
 && make install \
 && cd .. \
-&& if [ $MPICH = '4.3.0rc3' ]; then
-wget https://github.com/openpmix/openpmix/releases/download/v4.2.9/pmix-4.2.9.tar.gz \
-&& tar xzf pmix-4.2.9.tar.gz \
-&& cd pmix-4.2.9 \
+&& if [ $MPICH = aurora ]; then
+wget https://github.com/openpmix/openpmix/releases/download/v${PMIX_VERSION}/pmix-${PMIX_VERSION}.tar.gz \
+&& tar xzf pmix-${PMIX_VERSION}.tar.gz \
+&& cd pmix-${PMIX_VERSION} \
 && ./configure --prefix=/opt/pmix \
 && make -j3 \
 && make -j3 install \
@@ -192,7 +199,7 @@ if [ ! -f $MPICH_DIR/bin/fi_info ]; then echo fi_info\ not\ found ; exit 1 ; fi 
 && cd .. \
 && rm -rf libfabr* \
 && echo ' mpich_options is set to' \$mpich_options \
-&& wget  --progress=dot:giga https://www.mpich.org/static/downloads/$MPICH/mpich-'$MPICH'.tar.gz  -O - | tar xzf -   \
+&& wget  --progress=dot:giga https://www.mpich.org/static/downloads/${MPICH_VERSION}/mpich-'$MPICH_VERSION'.tar.gz  -O - | tar xzf -   \
 && cd $mpich_prefix                                                        && \
 ./configure  --prefix=$MPICH_DIR   \
 \$mpich_options \

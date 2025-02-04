@@ -37,12 +37,19 @@ jobs:
             - 1.10.1
             - git
           include:
-            - mpich: 4.3.0rc3
+            - mpich: aurora
               mpich_device: ch4:ofi
               armci_network: MPI-PR
               branch: master
               fc: gfortran
               ofi: builtin
+              folder: nwchem-dev.mpich3
+            - mpich: aurora
+              mpich_device: ch4:ofi
+              armci_network: MPI-PR
+              branch: master
+              fc: gfortran
+              ofi: git
               folder: nwchem-dev.mpich3
             - mpich: 4.2.2
               mpich_device: ch4:ofi
@@ -206,7 +213,8 @@ jobs:
         apptainer pull -F ${{ env.tag }}:${{ env.date }}
         cd nwchem/QA
         export MPIRUN_NPOPT=" -np"
-        sudo apt-get install -y libmpich-dev mpich
+        sudo apt-get install -y openmpi-bin libmpich-dev mpich
+        if [[ $${ matrix.mpich }} == aurora ]]; then export MPIRUN_PATH=`which mpirun.openmpi`; fi
         which mpirun
         ldd `which mpirun`
         export NWCHEM_EXECUTABLE="apptainer exec ${{ env.tag }}:latest nwchem"
