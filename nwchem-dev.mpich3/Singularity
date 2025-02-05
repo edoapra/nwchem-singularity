@@ -190,7 +190,7 @@ elif [[ ${OFI} == builtin ]]; then echo 'builtin OFI - nothing to download'; \
    cd $MPICH_DIR ; \
    set -x ;\ 
    export SHS_TAG="release/shs-12.0" ;\
-   echo "SHS_TAG is " ${SHS_TAG} ; \
+   echo "SHS_TAG value= " ${SHS_TAG} ; \
    ls -lrta ;\
    git clone https://github.com/HewlettPackard/shs-cassini-headers ;\
    echo "cloned shs-cassini-headers" ;\
