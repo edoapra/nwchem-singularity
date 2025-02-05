@@ -8,6 +8,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 &&     export CACHEDIR=${GITHUB_WORKSPACE}/../../../cache\
 &&     rm -f ${SINGULARITY_ROOTFS}/*.txt || true\
 &&     bash -c "if [[ -z '${FC}' ]]; then echo 'FC=gfortran ' >> ${SINGULARITY_ROOTFS}/fc.txt ; else echo 'FC is ${FC}'; echo 'FC=${FC} ' >> ${SINGULARITY_ROOTFS}/fc.txt ; fi"\
+&&     bash -c "if [[ -z '${CC}' ]]; then echo 'CC=gcc ' >> ${SINGULARITY_ROOTFS}/fc.txt ; else echo 'CC is ${CC}'; echo 'CC=${CC} ' >> ${SINGULARITY_ROOTFS}/fc.txt ; fi"\
 &&     bash -c "if [[ -z '${MPICH}' ]]; then echo 'MPICH=3.4.2 ' >> ${SINGULARITY_ROOTFS}/MPICH.txt ; else echo 'MPICH is ${MPICH}'; echo 'MPICH=${MPICH} ' >> ${SINGULARITY_ROOTFS}/mpich.txt ; fi"\
 &&     bash -c "if [[ -z '${OFI}' ]]; then echo 'OFI=builtin ' >> ${SINGULARITY_ROOTFS}/OFI.txt ; else echo 'OFI is ${OFI}'; echo 'OFI=${OFI} ' >> ${SINGULARITY_ROOTFS}/ofi.txt ; fi"\
 &&     bash -c "if [[ -z '${MPICH_DEVICE}' ]]; then echo 'MPICH_DEVICE=ch4:ofi ' >> ${SINGULARITY_ROOTFS}/MPICH_DEVICE.txt ; else echo 'MPICH_DEVICE is ${MPICH_DEVICE}'; echo 'MPICH_DEVICE=${MPICH_DEVICE} ' >> ${SINGULARITY_ROOTFS}/mpich_device.txt ; fi"\
@@ -44,6 +45,7 @@ export DEBIAN_FRONTEND=noninteractive \
 && export SINGULARITY_LD_LIBRARY_PATH=$MPICH_DIR/lib:/root/apps/oneapi/compiler/latest/lib:/root/apps/oneapi/compiler/latest/linux/lib:/root/apps/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin \
 && export SINGULARITY_LIBRARY_PATH=/root/apps/oneapi/compiler/latest/lib:/root/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/root/apps/oneapi/compiler/latest/linux/lib \
 && export `cat ./fc.txt`\
+&& export `cat ./cc.txt`\
 && export `cat ./mpich.txt`\
 && export `cat ./ofi.txt`\
 && export `cat ./armci_network.txt`\
@@ -52,6 +54,7 @@ export DEBIAN_FRONTEND=noninteractive \
 && export `cat ./myusername.txt`\
 && export `cat ./mpich_device.txt`\
 && echo FC is $FC\
+&& echo CC is $CC\
 && echo MPICH is $MPICH\
 && if [ $MPICH = aurora ]; then
     export MPICH_VERSION=4.3.0
@@ -88,6 +91,7 @@ fi \
 && echo ca_certificate=/etc/ssl/certs/ca-certificates.crt >  ~/.wgetrc \
 && echo        "cacert=/etc/ssl/certs/ca-certificates.crt" >> ~/.curlrc \
 && bash -o  pipefail -c "if [[ $(echo $FC | cut -c -8) == gfortran ]]; then apt-get -y install -y  ${FC}; fi" \
+&& bash -o  pipefail -c "if [[ $(echo $CC | cut -c -8) == gcc ]]; then apt-get -y install -y  ${CC}; fi" \
 && pwd \
 && echo '@@ ls -lart ' \
 && ls -lart  \
@@ -130,8 +134,7 @@ fi \
 && echo "LD_LIBRARY_PATH" $LD_LIBRARY_PATH \
 && echo FFFFF \
 && echo 'FC -v ' `$FC -v` \
-&& rm -f ./cc.txt || true \
-&& if [ -f ./cc.txt ]; then export `cat ./cc.txt` ; fi \
+&& echo 'CC -v ' `$CC -v` \
 && echo ' CC is ' "$CC" \
 && echo ' CXX is ' "$CXX" || true \
 && echo 'ls -l /opt/mpich/lib/libmpi.a' $(ls -l /opt/mpich/lib/libmpi.a) || true \
