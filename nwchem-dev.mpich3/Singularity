@@ -127,7 +127,7 @@ fi \
 && update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-"$GCC_VERSION" 100 \
             && apt-get install  -q=2 -y  autoconf automake libtool git \
 && apt-get clean \
-&& if [[ $FC == 'ifx' ]]; then \
+&& if [[ $FC == 'ifx' ]]; then 
     export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 \
     && export TERM=dumb \
     && wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | $MYSUDO tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null \
@@ -319,7 +319,7 @@ rsync -av /opt/intel/oneapi/compiler/latest/lib/lib*.so* $MPICH_DIR/lib/. ; fi \
 && cd ../.. \
 && du -sh nwchem \
 && du -sk *|sort -n  \
-&& bash -o pipefail -c "if [[ $FC == 'ifx' ]] || [[ $FC  == 'ifort' ]]; then \
+&& bash -o pipefail -c "if [[ $FC == 'ifx' ]] ; then \
 rm -rf ~/apps  /var/intel  l_*sh ; fi"   \
 && ls -lrth    \
 &&  ldd  /opt/nwchem/bin/nwchem  \
