@@ -188,12 +188,17 @@ elif [[ ${OFI} == builtin ]]; then echo 'builtin OFI - nothing to download'; \
    cd / ; ls -lrta  ;\
    mkdir -p $MPICH_DIR  ;\
    cd $MPICH_DIR ; \
+   set -x ;\ 
    export SHS_TAG="release/shs-12.0" ;\
+   echo "SHS_TAG is $SHS_TAG" ; \
+   ls -lrta ;\
    git clone https://github.com/HewlettPackard/shs-cassini-headers ;\
-   git clone --branch $SHS_TAG https://github.com/HewlettPackard/shs-cxi-driver ;\
-   rm -rf shs*/.git ;\ 
+   echo "cloned shs-cassini-headers" ;\
+   git clone --branch '$SHS_TAG' https://github.com/HewlettPackard/shs-cxi-driver ;\
+   echo "cloned shs-cxi-driver" ;\
+   rm -rf shs*/.git || true ;\ 
    cd / ; \
-   git clone --branch $SHS_TAG https://github.com/HewlettPackard/shs-libcxi ; \
+   git clone --branch '$SHS_TAG' https://github.com/HewlettPackard/shs-libcxi ; \
    cd shs-libcxi ; \
    sh autogen.sh ; \
    ./configure --prefix=$MPICH_DIR ;\
