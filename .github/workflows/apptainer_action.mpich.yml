@@ -182,6 +182,7 @@ jobs:
         mkdir -p ~/cache || true
         cd ${{ matrix.folder }}
         apptainer exec ${{ matrix.folder }}.simg cp -r /opt/mpich ~/cache
+        apptainer exec ${{ matrix.folder }}.simg cp -r /opt/pmix ~/cache/. || true
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
         apptainer exec ${{ matrix.folder }}.simg rsync -av --copy-links /nwchem/src/NWints/simint/libsimint_source/simint_install ~/cache/. ||true
         cp ubuntu_jammy.sif ~/cache/.
