@@ -57,7 +57,7 @@ export DEBIAN_FRONTEND=noninteractive \
 && echo CC is $CC\
 && echo MPICH is $MPICH\
 && if [ $MPICH = aurora ]; then
-    export MPICH_VERSION=4.3.0
+    export MPICH_VERSION=$MPICH_AURORA
     	   else
     export MPICH_VERSION=$MPICH
 fi \
@@ -76,7 +76,7 @@ else
     export mpich_options=' '
 fi \
 && if [ $MPICH = aurora ]; then
-    export mpich_options=' --disable-maintainer-mode --with-pm=no --enable-romio --with-slurm=no --with-pmi=pmix --with-pmix=/opt/pmix '
+    export mpich_options='$mpich_options --disable-maintainer-mode --with-pm=no --enable-romio --with-slurm=no --with-pmi=pmix --with-pmix=/opt/pmix '
 fi \
 && export GCC_VERSION=11 \
 && echo mpich_options $mpich_options \
@@ -127,13 +127,15 @@ fi \
 && update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-"$GCC_VERSION" 100 \
             && apt-get install  -q=2 -y  autoconf automake libtool git \
 && apt-get clean \
-&& bash -o  pipefail -c  ./nwchem/travis/build_env.sh || true \
+&& if [[ $FC == 'ifx' ]]; then \
+    export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 \
+    && export TERM=dumb \
+    && wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | $MYSUDO tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null \
+    && echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | $MYSUDO tee /etc/apt/sources.list.d/oneAPI.list \
+    && sudo apt-get update \
+    && sudo apt-get install -y intel-oneapi-compiler-fortran intel-oneapi-mkl intel-oneapi-compiler-dpcpp-cpp 
+fi \
 && set -x \
-&& ls -lrt /root || true \
-&& ls -lrt /root/apps || true \
-&& ls -lrt /opt/intel/oneapi || true \
-&& ls -lrt /opt || true \
-&& ls -lrt /opt/intel || true \
 && ls -lrt /opt/intel/oneapi || true \
 && echo TTTTT \
 && df -h \
@@ -186,11 +188,12 @@ elif [[ ${OFI} == builtin ]]; then echo 'builtin OFI - nothing to download'; \
    cd / ; ls -lrta  ;\
    mkdir -p $MPICH_DIR  ;\
    cd $MPICH_DIR ; \
+   exprt SHS_TAG="release/shs-12.0" ;\
    git clone https://github.com/HewlettPackard/shs-cassini-headers ;\
-   git clone https://github.com/HewlettPackard/shs-cxi-driver ;\
+   git clone --branch $SHS_TAG https://github.com/HewlettPackard/shs-cxi-driver ;\
    rm -rf shs*/.git ;\ 
    cd / ; \
-   git clone https://github.com/HewlettPackard/shs-libcxi ; \
+   git clone --branch $SHS_TAG https://github.com/HewlettPackard/shs-libcxi ; \
    cd shs-libcxi ; \
    sh autogen.sh ; \
    ./configure --prefix=$MPICH_DIR ;\
