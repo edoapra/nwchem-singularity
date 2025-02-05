@@ -127,15 +127,15 @@ fi \
 && update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-"$GCC_VERSION" 100 \
             && apt-get install  -q=2 -y  autoconf automake libtool git \
 && apt-get clean \
-&& if [[ $FC == 'ifx' ]]; then 
-    export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 \
-    && export TERM=dumb \
-    && wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | $MYSUDO tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null \
-    && echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | $MYSUDO tee /etc/apt/sources.list.d/oneAPI.list \
-    && sudo apt-get update \
-    && sudo apt-get install -y intel-oneapi-compiler-fortran intel-oneapi-mkl intel-oneapi-compiler-dpcpp-cpp 
-fi \
 && set -x \
+&& if [ $FC = 'ifx' ]; then
+    APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 \
+    && TERM=dumb \
+    && wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null \
+    && echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" |sudo tee /etc/apt/sources.list.d/oneAPI.list \
+    && sudo apt-get update \
+    && sudo apt-get install -y intel-oneapi-compiler-fortran intel-oneapi-mkl intel-oneapi-compiler-dpcpp-cpp
+fi \
 && ls -lrt /opt/intel/oneapi || true \
 && echo TTTTT \
 && df -h \
