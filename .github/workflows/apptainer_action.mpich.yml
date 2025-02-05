@@ -214,13 +214,15 @@ jobs:
         apptainer pull -F ${{ env.tag }}:${{ env.date }}
         cd nwchem/QA
         export MPIRUN_NPOPT=" -np"
+        set -x
         sudo apt-get install -y openmpi-bin libmpich-dev mpich
         if [[ ${{ matrix.mpich }} == aurora ]]; then
            export MPIRUN_PATH=`which mpirun.openmpi`
         else
            export MPIRUN_PATH=`which mpirun.mpich`
         fi
-        which mpirun
+        echo "MPIRUN_PATH is" $MPIRUN_PATH
+        mpirun --version || true
         ldd `which mpirun`
         export NWCHEM_EXECUTABLE="apptainer exec ${{ env.tag }}:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
@@ -242,6 +244,14 @@ jobs:
         cd nwchem/QA
         export PATH=/opt/mpich/bin:$PATH
         export MPIRUN_NPOPT=" -np"
+        set -x
+        if [[ ${{ matrix.mpich }} == aurora ]]; then
+           export MPIRUN_PATH=`which mpirun.openmpi`
+        else
+           export MPIRUN_PATH=`which mpirun.mpich`
+        fi
+        echo "MPIRUN_PATH is" $MPIRUN_PATH
+        mpirun --version || true
         export LD_LIBRARY_PATH=/opt/ompi/lib:$LD_LIBRARY_PATH
         export NWCHEM_EXECUTABLE="singularity exec ${{ env.tag }}:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
