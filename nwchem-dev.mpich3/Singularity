@@ -127,6 +127,7 @@ fi \
 && update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-"$GCC_VERSION" 100 \
             && apt-get install  -q=2 -y  autoconf automake libtool git \
 && apt-get clean \
+&& bash -o  pipefail -c  ./nwchem/travis/build_env.sh || true \
 && echo TTTTT \
 && df -h \
 && echo TTTTT \
