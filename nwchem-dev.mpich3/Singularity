@@ -183,7 +183,7 @@ fi \
    export mpich_options='$mpich_options --with-ucx=$MPICH_DIR' ; \
  if [ ! -f $MPICH_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi ;\
 elif [[ ${OFI} == builtin ]]; then echo 'builtin OFI - nothing to download'; \
-  else if [[ ${OFI} == git ]]; then export COMMIT=c3420a7402a10f5fe3f475ac5eb39b3f2837f8d1 
+  else if [[ ${OFI} == git ]]; then export COMMIT=c3420a7402a10f5fe3f475ac5eb39b3f2837f8d1 ; \
   curl -L https://github.com/ofiwg/libfabric/archive/\$COMMIT.tar.gz -o libfabric-\$COMMIT.tar.gz ; \
  && cd libfabric-git && sh autogen.sh;\
    apt-get install -y libconfig-dev libsensors-dev libuv1-dev libfuse-dev libyaml-dev libjson-c-dev libcurl4-openssl-dev  ;\
