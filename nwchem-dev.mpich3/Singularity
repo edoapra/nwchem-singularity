@@ -185,6 +185,9 @@ fi \
 elif [[ ${OFI} == builtin ]]; then echo 'builtin OFI - nothing to download'; \
   else if [[ ${OFI} == git ]]; then export COMMIT=c3420a7402a10f5fe3f475ac5eb39b3f2837f8d1  \
  && curl -L https://github.com/ofiwg/libfabric/archive/\$COMMIT.tar.gz -o libfabric-\$COMMIT.tar.gz  \
+ && tar xzf libfabric-\$COMMIT.tar.gz  \
+ && ls -lrt \
+ && mv libfabric-\$COMMIT libfabric-git \
  && cd libfabric-git && sh autogen.sh;\
    apt-get install -y libconfig-dev libsensors-dev libuv1-dev libfuse-dev libyaml-dev libjson-c-dev libcurl4-openssl-dev  ;\
    cd / ; ls -lrta  ;\
