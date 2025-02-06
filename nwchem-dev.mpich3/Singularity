@@ -180,7 +180,7 @@ fi \
    mkdir -p build && cd build ;\
    ../configure --prefix=\$MPICH_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check ;\
    make -j4 && make install ;\
-   export mpich_options=$mpich_options' --with-ucx=$MPICH_DIR' ; \
+   export mpich_options='$mpich_options --with-ucx=$MPICH_DIR' ; \
  if [ ! -f $MPICH_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi ;\
 elif [[ ${OFI} == builtin ]]; then echo 'builtin OFI - nothing to download'; \
   else if [[ ${OFI} == git ]]; then  git clone https://github.com/ofiwg/libfabric libfabric-git && cd libfabric-git && sh autogen.sh;\
@@ -207,7 +207,7 @@ else wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/downl
  mkdir build && cd build ; \
  ../configure --prefix=$MPICH_DIR \$libfabric_options ;\
  make -j4 && make install ; \
- export mpich_options=$mpich_options' --with-libfabric=$MPICH_DIR' ; \
+ export mpich_options='$mpich_options --with-libfabric=$MPICH_DIR' ; \
  echo 'mpich_options are \$mpich_options' ;\
 if [ ! -f $MPICH_DIR/bin/fi_info ]; then echo fi_info\ not\ found ; exit 1 ; fi \
    fi  \
