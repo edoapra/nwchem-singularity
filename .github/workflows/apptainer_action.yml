@@ -11,7 +11,7 @@ jobs:
   build_image:
     runs-on: ubuntu-20.04
     strategy:
-        fail-fast: false
+        fail-fast: true
         matrix:
           folder:
             - nwchem-dev.ompi41x
