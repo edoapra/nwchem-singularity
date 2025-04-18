@@ -158,6 +158,8 @@ fi	   \
 && pwd \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/largebasis.patch \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/gt.patch \
+&& wget https://github.com/nwchemgit/nwchem/commit/6fe523cd4fc9cc8eebbe1389a54088eb7aec3ff0.patch \
+&& if [ "$BRANCH" = "master" ]; then patch -p1 < 6fe523cd4fc9cc8eebbe1389a54088eb7aec3ff0.patch ; fi \
 && ls -l *patch \
 && patch -p1 < largebasis.patch \
 && export NWCHEM_TOP=`pwd` \
