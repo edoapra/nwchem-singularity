@@ -165,7 +165,7 @@ fi	   \
 && wget https://github.com/nwchemgit/nwchem/commit/cdca29cb79726228389266b57a575af94cb17d8a.patch -O p5.patch \
 && wget https://github.com/nwchemgit/nwchem/commit/3355e82837b6a0476426fb8bc54d2428014fea58.patch -O p6.patch \
 && wget https://github.com/nwchemgit/nwchem/commit/5cf2ad8e7b301953e909eca0601404ea1464529d.patch -O p7.patch \
-&& if [ "$BRANCH" = "master" ]; then cd src/nwpw ; git checkout `git rev-list -n 1 --before="2023-06-30 00:00" master` . ; cd ../.. ; fi \
+&& if [ "$BRANCH" = "master" ]; then cd src/nwpw ; git checkout `git rev-list -n 1 --before="2023-06-15 00:00" master` . ; cd ../.. ; fi \
 && ls -l *patch \
 && patch -p1 < largebasis.patch \
 && export NWCHEM_TOP=`pwd` \
