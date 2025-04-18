@@ -154,20 +154,15 @@ fi	   \
 && echo 'ls nwchem/src' $(ls -lrta nwchem/src) \
 && bash -o pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/$MYUSERNAME/nwchem.git; fi" \
 && cd nwchem \
+
 && echo "output of git describe  --always " `git describe  --always` || true \
 && pwd \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/largebasis.patch \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/gt.patch \
-&& wget https://github.com/nwchemgit/nwchem/commit/6fe523cd4fc9cc8eebbe1389a54088eb7aec3ff0.patch -O p1.patch \
-&& wget https://github.com/nwchemgit/nwchem/commit/fc851ed857980c9fa03432d8f76e05fb830f7a60.patch -O p2.patch \
-&& wget https://github.com/nwchemgit/nwchem/commit/6b92a6bdba26aae624dac4e6a8c7eaabd853e4d5.patch -O p3.patch \
-&& wget https://github.com/nwchemgit/nwchem/commit/5db78321d80b594f91b3f7586d4b8a8dce4dbc66.patch -O p4.patch \
-&& wget https://github.com/nwchemgit/nwchem/commit/cdca29cb79726228389266b57a575af94cb17d8a.patch -O p5.patch \
-&& wget https://github.com/nwchemgit/nwchem/commit/3355e82837b6a0476426fb8bc54d2428014fea58.patch -O p6.patch \
-&& wget https://github.com/nwchemgit/nwchem/commit/5cf2ad8e7b301953e909eca0601404ea1464529d.patch -O p7.patch \
-&& if [ "$BRANCH" = "master" ]; then cd src ; git checkout `git rev-list -n 1 --before="2023-01-01 00:00" master` . ; cd .. ; fi \
+&& wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/pspw_noomp.patch \
 && ls -l *patch \
 && patch -p1 < largebasis.patch \
+&& patch -p1 < noomp.patch \
 && export NWCHEM_TOP=`pwd` \
 && echo 'ls -lrta ' $(ls -lrta) \
 && echo 'pwd ' $(pwd) \

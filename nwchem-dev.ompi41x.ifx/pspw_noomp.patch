@@ -1,0 +1,13 @@
+--- a/src/nwpw/GNUmakefile.org	2025-04-18 15:29:26.884730564 -0700
++++ a/src/nwpw/GNUmakefile	2025-04-18 15:29:49.035871456 -0700
+@@ -15,10 +15,8 @@
+ 
+ ifdef USE_OPENMP
+ # QA issues
+-ifeq ($(FC),ifx)
+ override undefine USE_OPENMP
+ endif
+-endif
+ 
+ $(info USE_OPENMP $(origin USE_OPENMP))
+ 
