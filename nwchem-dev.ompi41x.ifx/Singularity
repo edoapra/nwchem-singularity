@@ -158,8 +158,12 @@ fi	   \
 && pwd \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/largebasis.patch \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/gt.patch \
-&& wget https://github.com/nwchemgit/nwchem/commit/6fe523cd4fc9cc8eebbe1389a54088eb7aec3ff0.patch \
-&& if [ "$BRANCH" = "master" ]; then patch -p1 -R < 6fe523cd4fc9cc8eebbe1389a54088eb7aec3ff0.patch ; fi \
+&& wget https://github.com/nwchemgit/nwchem/commit/6fe523cd4fc9cc8eebbe1389a54088eb7aec3ff0.patch -O p1.patch \
+&& wget https://github.com/nwchemgit/nwchem/commit/fc851ed857980c9fa03432d8f76e05fb830f7a60.patch -O p2.patch \
+&& wget https://github.com/nwchemgit/nwchem/commit/6b92a6bdba26aae624dac4e6a8c7eaabd853e4d5.patch -O p3.patch \
+&& if [ "$BRANCH" = "master" ]; then patch -p1 -R < p1.patch ; fi \
+&& if [ "$BRANCH" = "master" ]; then patch -p1 -R < p2.patch ; fi \
+&& if [ "$BRANCH" = "master" ]; then patch -p1 -R < p3.patch ; fi \
 && ls -l *patch \
 && patch -p1 < largebasis.patch \
 && export NWCHEM_TOP=`pwd` \
