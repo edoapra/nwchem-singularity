@@ -20,7 +20,6 @@ jobs:
             - master
             - hotfix/release-7-2-0
           fc:
-            - ifx
             - gfortran
           armci_network:
             - MPI-PR
