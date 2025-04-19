@@ -157,11 +157,8 @@ fi	   \
 && echo "output of git describe  --always " `git describe  --always` || true \
 && pwd \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/largebasis.patch \
-&& wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/gt.patch \
-&& wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/pspw_noomp.patch \
 && ls -l *patch \
 && patch -p1 < largebasis.patch \
-&& if [ "$BRANCH" = "master" ]; then patch -p1 < pspw_noomp.patch ; fi \
 && export NWCHEM_TOP=`pwd` \
 && echo 'ls -lrta ' $(ls -lrta) \
 && echo 'pwd ' $(pwd) \
