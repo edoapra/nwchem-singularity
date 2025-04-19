@@ -21,9 +21,9 @@ jobs:
             - hotfix/release-7-2-0
           fc:
             - gfortran
+            - ifx
           armci_network:
             - MPI-PR
-            - MPI-TS
     env:
         FC: ${{ matrix.fc }}
     steps:
