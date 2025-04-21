@@ -71,7 +71,7 @@ export DEBIAN_FRONTEND=noninteractive \
 && bash -o  pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH  https://github.com/$MYUSERNAME/nwchem.git; fi " \
 && apt-get -y install -y   tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
  g++ gfortran   make ssh patch   unzip perl-base file \
- python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
+ python3 python3-dev python-is-python3 cmake  unzip zip perl automake libtool autoconf flex  \
  libnuma-dev libslurm-dev libpmi2-0-dev libpmi0-dev  libnl-3-dev libnl-route-3-dev udev \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers  \
  libhwloc-dev \
