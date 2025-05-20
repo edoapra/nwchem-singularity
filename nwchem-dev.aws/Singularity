@@ -192,17 +192,17 @@ fi	   \
 && echo 'pwd ' $(pwd) \
 && ls -lrt libext/lib || true \
 && make nwchem_config || { echo "config Failure"; exit 1; } \
-&& bash -o pipefail -c " \
-echo 'ls ~/' `ls -lrt ~/` \
+&& echo 'ls ~/' `ls -lrt ~/` \
 && echo '222 PATH is ' `/usr/bin/env | grep PATH` \
 && echo '111 which FC ' `which $FC` || true \
 && mpif90 -show \
 && echo FC is $FC \
 && $FC -v \
+&7 sync \
 && make FC=$FC V=1 -j1 -l0.0001 || { echo 'Compilation Failure' && echo 'ls tools $(ls -Rl $NWCHEM_TOP/src/tools)' || true &&  cat $(find $NWCHEM_TOP/src/tools/build -name config.log) || true && echo ga net libs $(tools/install/bin/ga-config  --network_libs) || true && exit 1; } \
 && FC=$FC ../contrib/getmem.nwchem 2000   \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
-&& ldd  ../bin/LINUX64/nwchem  "\
+&& ldd  ../bin/LINUX64/nwchem  \
 && if [ -f /opt/intel/oneapi/compiler/latest/env/vars.sh ]; then  \
 rsync -av /opt/intel/oneapi/compiler/latest/lib/lib*.so* $OMPI_DIR/lib/. ; fi \
 &&  rm -rf /opt/intel/oneapi/  /opt/nwchem/src/tce /opt/nwchem/src/NWints/simint/libsimint_source/simint.l?_p?_d? || true \
