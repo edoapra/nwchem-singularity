@@ -199,7 +199,7 @@ echo 'ls ~/' `ls -lrt ~/` \
 && mpif90 -show \
 && echo FC is $FC \
 && $FC -v \
-&& make FC=$FC V=1 -j1 -l0.0001 || { echo 'Compilation Failure && echo 'ls tools $(ls -Rl $NWCHEM_TOP/src/tools)' || true &&  cat $(find $NWCHEM_TOP/src/tools/build -name config.log) || true && echo ga net libs $(tools/install/bin/ga-config  --network_libs) || true && exit 1; } \
+&& make FC=$FC V=1 -j1 -l0.0001 || { echo 'Compilation Failure' && echo 'ls tools $(ls -Rl $NWCHEM_TOP/src/tools)' || true &&  cat $(find $NWCHEM_TOP/src/tools/build -name config.log) || true && echo ga net libs $(tools/install/bin/ga-config  --network_libs) || true && exit 1; } \
 && FC=$FC ../contrib/getmem.nwchem 2000   \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
 && ldd  ../bin/LINUX64/nwchem  "\
