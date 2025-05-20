@@ -185,8 +185,6 @@ fi	   \
 && patch -p1 < largebasis.patch \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/okeep.patch \
 && patch -p1 < okeep.patch \
-&& wget https://github.com/nwchemgit/nwchem/commit/572f220cfd014dfab00b932adef1286720d2dba0.patch \
-&& patch -p1 -s -N < 572f220cfd014dfab00b932adef1286720d2dba0.patch \
 && export NWCHEM_TOP=`pwd` \
 && echo 'ls -lrta ' $(ls -lrta) \
 && echo 'pwd ' $(pwd) \
@@ -201,7 +199,7 @@ fi	   \
 && mpif90 -show \
 && echo FC is $FC \
 && $FC -v \
-&& make FC=$FC V=1 -j1 -l0.0001 || { echo 'Compilation Failure' && echo 'ls tools $(ls -Rl $NWCHEM_TOP/src/tools)' || true &&  cat $(find $NWCHEM_TOP/src/tools/build -name config.log) || true && echo ga net libs $(tools/install/bin/ga-config  --network_libs) || true && exit 1; } \
+&& make FC=$FC V=1 -j1 -l0.0001 || { echo 'Compilation Failure' && echo 'ls tools $(ls -Rl $NWCHEM_TOP/src/tools)' || true &&  cat $(find $NWCHEM_TOP/src/tools/build -name config.log) || true && echo ga net libs $(tools/install/bin/ga-config  --network_libs) || true ; } \
 && FC=$FC ../contrib/getmem.nwchem 2000   \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
 && ldd  ../bin/LINUX64/nwchem  \
