@@ -208,6 +208,7 @@ rsync -av /opt/intel/oneapi/compiler/latest/lib/lib*.so* $OMPI_DIR/lib/. ; fi \
 &&  rm -rf /opt/intel/oneapi/  /opt/nwchem/src/tce /opt/nwchem/src/NWints/simint/libsimint_source/simint.l?_p?_d? || true \
 && DEBIAN_FRONTEND=noninteractive apt-get clean -y \
 && DEBIAN_FRONTEND=noninteractive apt-get -y install localepurge \
+&& echo 'ls tools $(ls -Rl $NWCHEM_TOP/src/tools)' || true &&  cat $(find $NWCHEM_TOP/src/tools/build -name config.log) || true && echo ga net libs $(tools/install/bin/ga-config  --network_libs) || true  \
 && echo MANDELETE >  /etc/locale.nopurge \
 && echo DONTBOTHERNEWLOCALE >> /etc/locale.nopurge \
 && echo en_US.UTF-8 >> /etc/locale.nopurge \
