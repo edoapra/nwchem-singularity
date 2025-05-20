@@ -166,7 +166,7 @@ fi	   \
 && export USE_NOIO=y\
 && export IPCCSD=y \
 && export EACCSD=y \
-&& export MRCC_METHODS=y \
+&& export MRCC_METHODS__=y \
 && export USE_SIMINT=y\
 && export SIMINT_MAXAM=5\
 && export PYTHONVERSION=$(python -V| cut -d ' ' -f 2 |cut -d . -f 1-2) \
