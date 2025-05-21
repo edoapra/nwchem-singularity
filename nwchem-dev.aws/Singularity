@@ -84,7 +84,7 @@ fi \
 && bash -o  pipefail -c "if [[ ! -f nwchem/src/GNUmakefile ]]; then git clone -b $BRANCH --depth 1  https://github.com/$MYUSERNAME/nwchem.git; fi " \
 && apt-get -y install -y   tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
  g++ gfortran   make ssh patch   unzip perl-base file \
- python3 python3-minimal python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
+ python3 python3-minimal python3-dev python-is-python3 cmake  unzip zip perl automake libtool autoconf flex  \
  libnuma-dev libslurm-dev \
 libpmix-bin libpmix-dev libpmix2 \
 libpmi2-0-dev libpmi0-dev  \
@@ -199,7 +199,7 @@ fi	   \
 && mpif90 -show \
 && echo FC is $FC \
 && $FC -v \
-&& make FC=$FC V=1 -j1 -l0.0001 || { echo 'Compilation Failure' && echo 'ls tools $(ls -Rl $NWCHEM_TOP/src/tools)' || true &&  cat $(find $NWCHEM_TOP/src/tools/build -name config.log) || true && echo ga net libs $(tools/install/bin/ga-config  --network_libs) || true ; } \
+&& make FC=$FC V=-1 -j3 || { echo 'Compilation Failure' && echo 'ls tools $(ls -Rl $NWCHEM_TOP/src/tools)' || true &&  cat $(find $NWCHEM_TOP/src/tools/build -name config.log) || true && echo ga net libs $(tools/install/bin/ga-config  --network_libs) || true ; } \
 && FC=$FC ../contrib/getmem.nwchem 2000   \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
 && ldd  ../bin/LINUX64/nwchem  \
