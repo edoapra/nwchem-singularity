@@ -86,7 +86,7 @@ jobs:
       with:
         path: |
           ~/cache
-        key: ${{ matrix.folder}}-${{ matrix.ompi}}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001
+        key: ${{ matrix.folder}}-${{ matrix.ompi}}${{ env.ucx_version }}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
