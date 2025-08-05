@@ -17,8 +17,8 @@ jobs:
           folder:
             - nwchem-dev.ompi5x
           ompi:
-            - 5.0.3
-            - 4.1.6
+            - 5.0.8
+            - 4.1.8
           fc:
             - ifx
             - gfortran
