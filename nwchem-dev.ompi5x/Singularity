@@ -118,7 +118,7 @@ $FC -v \
 && cd ucx-$UCX \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/ucx1181_malloc.patch \
-&& if [ $ucx == 1.14.1 ]; then patch -p0 < ./ucx_malloc.patch ; else patch -p0 < ./ucx1181_malloc.patch; fi \
+&& if [[ $UCX == 1.14.1 ]]; then patch -p0 < ./ucx_malloc.patch ; else patch -p0 < ./ucx1181_malloc.patch; fi \
 && mkdir build && cd build \
 && ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check \
 && make -j4 && make install \
