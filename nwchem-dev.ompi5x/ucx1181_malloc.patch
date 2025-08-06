@@ -1,0 +1,41 @@
+--- src/ucm/ptmalloc286/malloc.c	2023-03-24 14:31:14.036791893 -0700
++++ src/ucm/ptmalloc286/malloc.c	2023-03-24 14:32:08.453060375 -0700
+@@ -3997,7 +3997,9 @@
+   msegmentptr ss = (msegmentptr)(chunk2mem(sp));
+   mchunkptr tnext = chunk_plus_offset(sp, ssize);
+   mchunkptr p = tnext;
++#if 0
+   int UCS_V_UNUSED nfences = 0;
++#endif
+ 
+   /* reset top to new space */
+   init_top(m, (mchunkptr)tbase, tsize - TOP_FOOT_SIZE);
+@@ -4015,13 +4017,17 @@
+   for (;;) {
+     mchunkptr nextp = chunk_plus_offset(p, SIZE_T_SIZE);
+     p->head = FENCEPOST_HEAD;
++#if 0
+     ++nfences;
++#endif    
+     if ((char*)(&(nextp->head)) < old_end)
+       p = nextp;
+     else
+       break;
+   }
++#if 0
+   assert(nfences >= 2);
++#endif
+ 
+   /* Insert the rest of old top into a bin as an ordinary free chunk */
+   if (csp != old_top) {
+--- configure	2023-03-24 16:38:52.718191491 -0700
++++ configure	2023-03-24 16:39:26.218354708 -0700
+@@ -20343,7 +20343,7 @@
+ #
+ # Initialize CFLAGS
+ #
+-BASE_CFLAGS="-g -Wall -Werror"
++BASE_CFLAGS="-Wall"
+ 
+ 
+ #
