@@ -43,6 +43,18 @@ jobs:
               branch: master
               armci_network: MPI3
               folder: nwchem-dev.ompi5x
+            - ompi: 5.0.8
+              ucx: 1.19.0
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.ompi5x
+            - ompi: 5.0.8
+              ucx: 1.19.0
+              fc: gfortran
+              branch: master
+              armci_network: MPI3
+              folder: nwchem-dev.ompi5x
               
     env:
         FC: ${{ matrix.fc }}
@@ -147,8 +159,12 @@ jobs:
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | apptainer remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
         apptainer remote list
-        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:${{ env.date }}
-        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:latest
+        tries=0 ; until [ "$tries" -ge 5 ] ; do \
+        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:${{ env.date }} && break ; \
+        tries=$((tries+1)) ; echo push1 attempt no.  $tries    ; sleep 30 ; done
+        tries=0 ; until [ "$tries" -ge 5 ] ; do \
+        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:latest && break ; \
+        tries=$((tries+1)) ; echo push2 attempt no.  $tries    ; sleep 30 ; done
     - name: test image with apptainer
       run: |
         pwd
