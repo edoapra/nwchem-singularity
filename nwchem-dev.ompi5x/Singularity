@@ -8,6 +8,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 &&     export CACHEDIR=${GITHUB_WORKSPACE}/../../../cache\
 &&     rm -f ${SINGULARITY_ROOTFS}/*.txt || true\
 &&     bash -c "if [[ -z '${FC}' ]]; then echo 'FC=gfortran ' >> ${SINGULARITY_ROOTFS}/fc.txt ; else echo 'FC is ${FC}'; echo 'FC=${FC} ' >> ${SINGULARITY_ROOTFS}/fc.txt ; fi"\
+&&     bash -c "if [[ -z '${USE_SYSV}' ]]; then echo 'USE_SYSV=N ' >> ${SINGULARITY_ROOTFS}/use_sysv.txt ; else echo 'USE_SYSV is ${USE_SYSV}'; echo 'USE_SYSV=${USE_SYSV} ' >> ${SINGULARITY_ROOTFS}/use_sysv.txt ; fi"\
 &&     bash -c "if [[ -z '${OMPI}' ]]; then echo 'OMPI=4.1.6 ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; else echo 'OMPI is ${OMPI}'; echo 'OMPI=${OMPI} ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; fi"\
 &&     bash -c "if [[ -z '${UCX}' ]]; then echo 'UCX=1.14.1 ' >> ${SINGULARITY_ROOTFS}/ucx.txt ; else echo 'UCX is ${UCX}'; echo 'UCX=${UCX} ' >> ${SINGULARITY_ROOTFS}/ucx.txt ; fi"\
 &&     bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"\
@@ -39,6 +40,7 @@ export DEBIAN_FRONTEND=noninteractive \
 && export SINGULARITY_LD_LIBRARY_PATH=$OMPI_DIR/lib:/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/lib:/opt/intel/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin \
 && export SINGULARITY_LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/opt/intel/oneapi/compiler/latest/linux/lib \
 && export `cat ./fc.txt`\
+&& export `cat ./uses_sysv.txt`\
 && export `cat ./ompi.txt`\
 && export `cat ./ucx.txt`\
 && export `cat ./armci_network.txt`\
@@ -61,6 +63,7 @@ else
 fi \
 && echo ompi_options $ompi_options \
 && echo ARMCI_NETWORK is $ARMCI_NETWORK\
+&& echo USE_SYSV is $USE_SYSV \
 && echo MPI_IMPL is $MPI_IMPL\
 && echo BRANCH is $BRANCH\
 && pwd \
@@ -172,6 +175,12 @@ fi	   \
 && export USE_SIMINT=y\
 && export SIMINT_MAXAM=5\
 && export PYTHONVERSION=$(python -V| cut -d ' ' -f 2 |cut -d . -f 1-2) \
+&& if [ $USE_SYSV = 'Y' ]; then
+    MAYBE_SYSVSHMEM="ARMCI_DEFAULT_SHMMAX_UBOUND=131072 --enable-sysv"
+else
+    MAYBE_SYSVSHMEM="ARMCI_DEFAULT_SHMMAX_UBOUND=131072 "
+fi \
+&& echo MAYBE_SYSVSHMEM is $MAYBE_SYSVSHMEM \
 && ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
 && echo " ==========" \
@@ -201,9 +210,10 @@ echo 'ls ~/' `ls -lrt ~/` \
 && mpif90 -show \
 && echo FC is $FC \
 && $FC -v \
-&& make FC=$FC -j6 || { echo 'Compilation Failure'; exit 1; } \
+&& make MAYBE_SYSVSHMEM=$MAYBE_SYSVSHMEM FC=$FC -j6 || { echo 'Compilation Failure'; exit 1; } \
 && FC=$FC ../contrib/getmem.nwchem 2000   \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
+&& grep SYSV tools/build/comex/config.log \
 && ldd  ../bin/LINUX64/nwchem  "\
 && if [ -f /opt/intel/oneapi/compiler/latest/env/vars.sh ]; then  \
 rsync -av /opt/intel/oneapi/compiler/latest/lib/lib*.so* $OMPI_DIR/lib/. ; fi \

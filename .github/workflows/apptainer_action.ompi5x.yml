@@ -26,30 +26,43 @@ jobs:
             - gfortran
           branch:
             - master
+          use_sysv:
+            - N
           armci_network:
             - MPI-PR
             - MPI3
             - OPENIB
           include:
             - ompi: 5.0.8
+              use_sysv: N
               ucx: 1.18.1
               fc: gfortran
               branch: master
               armci_network: MPI-PR
               folder: nwchem-dev.ompi5x
             - ompi: 5.0.8
+              use_sysv: Y
+              ucx: 1.18.1
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.ompi5x
+            - ompi: 5.0.8
+              use_sysv: N
               ucx: 1.18.1
               fc: gfortran
               branch: master
               armci_network: MPI3
               folder: nwchem-dev.ompi5x
             - ompi: 5.0.8
+              use_sysv: N
               ucx: 1.19.0
               fc: gfortran
               branch: master
               armci_network: MPI-PR
               folder: nwchem-dev.ompi5x
             - ompi: 5.0.8
+              use_sysv: N
               ucx: 1.19.0
               fc: gfortran
               branch: master
@@ -69,7 +82,11 @@ jobs:
         fi
         if [[ ${{ matrix.armci_network }} !=  MPI-PR ]]; then
           net_tag=$(echo ${{ matrix.armci_network }} | tr '[:upper:]' '[:lower:]')
+          if [[ ${{ matrix.use_sysv }} =  Y ]]; then
+          echo "armci_network="${net_tag}".sysv." >> $GITHUB_ENV
+          else
           echo "armci_network="${net_tag}"." >> $GITHUB_ENV
+          fi
         fi
         if [[ ${{ matrix.ucx }} !=  1.14.1 ]]; then
           echo "ucx_version=.ucx"${{ matrix.ucx }} >> $GITHUB_ENV
@@ -140,7 +157,7 @@ jobs:
     - name: build an apptainer container
       run: |
         cd ${{ matrix.folder }}
-        OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+        USE_SYSV=${{ matrix.use_sysv }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: store cache
       run: |
         mkdir -p ~/cache || true
