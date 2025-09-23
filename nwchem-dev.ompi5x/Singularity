@@ -40,7 +40,7 @@ export DEBIAN_FRONTEND=noninteractive \
 && export SINGULARITY_LD_LIBRARY_PATH=$OMPI_DIR/lib:/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/lib:/opt/intel/oneapi/compiler/latest/linux/lib/x64:~/apps/oneapi/compiler/latest/linux/compiler/lib/intel64_lin \
 && export SINGULARITY_LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/opt/intel/oneapi/compiler/latest/linux/lib \
 && export `cat ./fc.txt`\
-&& export `cat ./uses_sysv.txt`\
+&& export `cat ./use_sysv.txt`\
 && export `cat ./ompi.txt`\
 && export `cat ./ucx.txt`\
 && export `cat ./armci_network.txt`\
