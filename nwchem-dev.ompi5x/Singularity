@@ -197,6 +197,12 @@ fi	   \
 && echo 'pwd ' $(pwd) \
 && ls -lrt libext/lib || true \
 && make nwchem_config || { echo "config Failure"; exit 1; } \
+&& if [ $USE_SYSV = 'Y' ]; then
+    export M_S='ARMCI_DEFAULT_SHMMAX_UBOUND=131072 --enable-sysv '
+else
+    export M_S='ARMCI_DEFAULT_SHMMAX_UBOUND=131072 '
+fi \
+&& echo M_S is $M_S \
 && bash -o pipefail -c " \
 echo 'ls ~/' `ls -lrt ~/` \
 && echo '222 PATH is ' `/usr/bin/env | grep PATH` \
@@ -204,11 +210,6 @@ echo 'ls ~/' `ls -lrt ~/` \
 && mpif90 -show \
 && echo FC is $FC \
 && $FC -v \
-&& if [ $USE_SYSV = 'Y' ]; then
-    export M_S='ARMCI_DEFAULT_SHMMAX_UBOUND=131072 --enable-sysv '
-else
-    export M_S='ARMCI_DEFAULT_SHMMAX_UBOUND=131072 '
-fi \
 && echo MAYBE_SYSVSHMEM is $M_S \
 && make MAYBE_SYSVSHMEM='$M_S' FC=$FC -j6 || { echo 'Compilation Failure'; exit 1; } \
 && FC=$FC ../contrib/getmem.nwchem 2000   \
