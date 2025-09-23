@@ -205,12 +205,12 @@ echo 'ls ~/' `ls -lrt ~/` \
 && echo FC is $FC \
 && $FC -v \
 && if [ $USE_SYSV = 'Y' ]; then
-    MAYBE_SYSVSHMEM="ARMCI_DEFAULT_SHMMAX_UBOUND=131072 --enable-sysv"
+    export M_S="ARMCI_DEFAULT_SHMMAX_UBOUND=131072 --enable-sysv"
 else
-    MAYBE_SYSVSHMEM="ARMCI_DEFAULT_SHMMAX_UBOUND=131072 "
+    export M_S="ARMCI_DEFAULT_SHMMAX_UBOUND=131072 "
 fi \
-&& echo MAYBE_SYSVSHMEM is $MAYBE_SYSVSHMEM \
-&& make MAYBE_SYSVSHMEM="$MAYBE_SYSVSHMEM" FC=$FC -j6 || { echo 'Compilation Failure'; exit 1; } \
+&& echo MAYBE_SYSVSHMEM is "$M_S" \
+&& make MAYBE_SYSVSHMEM="$M_S" FC=$FC -j6 || { echo 'Compilation Failure'; exit 1; } \
 && FC=$FC ../contrib/getmem.nwchem 2000   \
 && make FC=$FC install INSTALL_PREFIX=/opt/nwchem \
 && grep SYSV tools/build/comex/config.log \
