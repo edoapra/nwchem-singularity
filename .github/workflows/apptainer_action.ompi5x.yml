@@ -62,6 +62,13 @@ jobs:
               armci_network: MPI-PR
               folder: nwchem-dev.ompi5x
             - ompi: 5.0.8
+              use_sysv: Y
+              ucx: 1.19.0
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.ompi5x
+            - ompi: 5.0.8
               use_sysv: N
               ucx: 1.19.0
               fc: gfortran
