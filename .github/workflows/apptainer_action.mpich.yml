@@ -74,7 +74,7 @@ jobs:
             - mpich: 3.4.2
               mpich_device: ch4:ofi
               armci_network: MPI-PR
-              branch: hotfix/release-7-2-0
+              branch: hotfix/release-7-3-0
               fc: gfortran
               cc: gcc
               ofi: builtin
@@ -90,7 +90,7 @@ jobs:
         if [[ ${{ matrix.branch }} ==  master ]]; then
           echo "nwversion=dev" >> $GITHUB_ENV
         else
-          echo "nwversion=720" >> $GITHUB_ENV
+          echo "nwversion=730" >> $GITHUB_ENV
         fi
         if [[ ${{ matrix.armci_network }} !=  MPI-PR ]]; then
           net_tag=$(echo ${{ matrix.armci_network }} | tr '[:upper:]' '[:lower:]')
