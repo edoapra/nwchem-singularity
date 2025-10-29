@@ -220,8 +220,11 @@ if [ ! -f $MPICH_DIR/bin/fi_info ]; then echo fi_info\ not\ found ; exit 1 ; fi 
 && rm -rf libfabr* \
 && echo ' mpich_options is set to' \$mpich_options \
 && wget  --progress=dot:giga https://www.mpich.org/static/downloads/${MPICH_VERSION}/mpich-'$MPICH_VERSION'.tar.gz  -O - | tar xzf -   \
-&& cd $mpich_prefix                                                        && \
-./configure  --prefix=$MPICH_DIR   \
+&& cd $mpich_prefix                                                         \
+&& if [ $mpich_major = '3' ]; then
+wget https://raw.githubusercontent.com/pmodels/mpich/refs/tags/v4.3.2/src/pm/hydra/lib/tools/bootstrap/external/slurm_query_node_list.c ; \
+    mv slurm_query_node_list.c src/pm/hydra/tools/bootstrap/external/slurm_query_node_list.c ; fi \
+&& ./configure  --prefix=$MPICH_DIR   \
 \$mpich_options \
 --with-device=$MPICH_DEVICE  \
 --enable-fortran=all \
