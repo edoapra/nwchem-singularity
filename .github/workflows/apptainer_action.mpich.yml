@@ -114,7 +114,7 @@ jobs:
       run: |
         echo ' the apptainer tag is ' "${{ env.tag }}"
     - name: Checkout nwchem-singularity source
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         repository: edoapra/nwchem-singularity
         clean: false
@@ -162,7 +162,7 @@ jobs:
           cd ${{ matrix.folder }}
           apptainer pull docker://ubuntu:noble
     - name: Checkout nwchem source
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         repository: nwchemgit/nwchem
         ref: ${{ matrix.branch}}
