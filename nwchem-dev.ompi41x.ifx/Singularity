@@ -16,12 +16,12 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 &&     ls -la  ${CACHEDIR}/ || true\
 &&     ls -la  ${CACHEDIR}/ompi || true\
 &&     ls -la  ${CACHEDIR}/ompi/lib || true\
-&&     ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libnwc_simint.a || true\
-&&     ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ||true\
+&&     ls -la  ${CACHEDIR}/simint.l7_p7_d1.install/lib/libnwc_simint.a || true\
+&&     ls -la  ${CACHEDIR}/simint.l7_p7_d1.install/lib/libsimint.a ||true\
 &&     bash -c "if [ ! -z "${GITHUB_WORKSPACE}" ]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/contrib; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/contrib/getmem.nwchem ${SINGULARITY_ROOTFS}/nwchem/contrib/. ;rsync -a ${GITHUB_WORKSPACE}/nwchem/travis ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/.git ${SINGULARITY_ROOTFS}/nwchem/. ; fi"\
 &&     bash -c "if [[  -f ${CACHEDIR}/ompi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/ompi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"\
 &&     bash -c "if [[  -f ${CACHEDIR}/libext/lib/libnwc_openblas.a ]]; then rsync -a ${CACHEDIR}/libext/* ${SINGULARITY_ROOTFS}/nwchem/src/libext/. ; echo libext cache fetched ;fi"\
-&&     bash -c "if [[  -f ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint.l5_p5_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
+&&     bash -c "if [[  -f ${CACHEDIR}/simint.l7_p7_d1.install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint.l7_p7_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l7_p7_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
 
 ##%files
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
@@ -75,7 +75,7 @@ export DEBIAN_FRONTEND=noninteractive \
  libnuma-dev libslurm-dev libpmi2-0-dev libpmi0-dev  libnl-3-dev libnl-route-3-dev udev \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers  \
  libhwloc-dev \
- pkg-config gawk  software-properties-common \
+ pkg-config gawk  software-properties-common gdb \
 && apt-get clean \
 && echo TTTTT \
 && df -h \
@@ -143,7 +143,7 @@ fi	   \
 && export EACCSD=y \
 && export MRCC_METHODS=y \
 && export USE_SIMINT=y\
-&& export SIMINT_MAXAM=5\
+&& export SIMINT_MAXAM=7\
 && export PYTHONVERSION=$(python -V| cut -d ' ' -f 2 |cut -d . -f 1-2) \
 && ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
