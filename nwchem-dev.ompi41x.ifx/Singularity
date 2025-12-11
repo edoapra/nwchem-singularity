@@ -144,6 +144,7 @@ fi	   \
 && export MRCC_METHODS=y \
 && export USE_SIMINT=y\
 && export SIMINT_MAXAM=7\
+&& export GENERATOR_PROCESSES=4\
 && export PYTHONVERSION=$(python -V| cut -d ' ' -f 2 |cut -d . -f 1-2) \
 && ls -l nwchem* || true \
 && /usr/bin/env|egrep BUILD_ \
