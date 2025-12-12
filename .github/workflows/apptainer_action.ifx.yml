@@ -73,7 +73,7 @@ jobs:
         if [[ -f ~/cache/libext/lib/libnwc_openblas.a ]]; then \
         echo "libext cache present" ; \
         fi
-        if [[ -f ~/cache/simint.l5_p5_d1.install/lib/libnwc_simint.a ]]; then \
+        if [[ -f ~/cache/simint.l7_p7_d1.install/lib/libnwc_simint.a ]]; then \
         echo "simint cache present" ; \
         fi
         if [[ -f ~/cache/ubuntu_jammy.sif ]]; then \
@@ -115,7 +115,7 @@ jobs:
         cd ${{ matrix.folder }}
         apptainer exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
-        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
+        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l7_p7_d1.install ~/cache/. ||true
         cp ubuntu_jammy.sif ~/cache/.
         echo "cache stored"
         ls -l ~/cache
