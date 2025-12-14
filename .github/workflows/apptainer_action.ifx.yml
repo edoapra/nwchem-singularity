@@ -21,9 +21,21 @@ jobs:
             - hotfix/release-7-3-0
           fc:
             - gfortran
-            - ifx
           armci_network:
             - MPI-PR
+          simint_maxam:
+            - 7
+          include:
+            - folder: nwchem-dev.ompi41x.ifx
+              branch: master
+              fc: ifx
+              armci_network: MPI-PR
+              simint_maxam: 5
+            - folder: nwchem-dev.ompi41x.ifx
+              branch: hotfix/release-7-3-0
+              fc: ifx
+              armci_network: MPI-PR
+              simint_maxam: 5
     env:
         FC: ${{ matrix.fc }}
     steps:
@@ -73,7 +85,7 @@ jobs:
         if [[ -f ~/cache/libext/lib/libnwc_openblas.a ]]; then \
         echo "libext cache present" ; \
         fi
-        if [[ -f ~/cache/simint.l7_p7_d1.install/lib/libnwc_simint.a ]]; then \
+        if [[ -f ~/cache/simint.l${{ matrix.simint_maxam }}_p${{ matrix.simint_maxam }}_d1.install/lib/libnwc_simint.a ]]; then \
         echo "simint cache present" ; \
         fi
         if [[ -f ~/cache/ubuntu_jammy.sif ]]; then \
@@ -104,7 +116,7 @@ jobs:
     - name: build an apptainer container
       run: |
         cd ${{ matrix.folder }}
-        FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+        FC=${{ matrix.fc }} SIMINT_MAXAM=${{ matrix.simint_maxam}} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: check if the nwchem binary is present
       run: |
         cd ${{ matrix.folder }}
@@ -115,7 +127,7 @@ jobs:
         cd ${{ matrix.folder }}
         apptainer exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
-        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l7_p7_d1.install ~/cache/. ||true
+        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l${{ matrix.simint_maxam }}_p${{ matrix.simint_maxam }}_d1.install ~/cache/. ||true
         cp ubuntu_jammy.sif ~/cache/.
         echo "cache stored"
         ls -l ~/cache

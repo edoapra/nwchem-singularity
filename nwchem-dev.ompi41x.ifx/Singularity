@@ -11,17 +11,18 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 &&     bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"\
 &&     bash -c "if [[ -z '${MPI_IMPL}' ]]; then echo 'MPI_IMPL=ompi ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; else echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"\
 &&     bash -c "if [[ -z '${BRANCH}' ]]; then echo 'BRANCH=master ' >> ${SINGULARITY_ROOTFS}/branch.txt ; else echo 'BRANCH is ${BRANCH}'; echo 'BRANCH=${BRANCH} ' >> ${SINGULARITY_ROOTFS}/branch.txt ; fi"\
+&&     bash -c "if [[ -z '${SIMINT_MAXAM}' ]]; then echo 'SIMINT_MAXAM=master ' >> ${SINGULARITY_ROOTFS}/simint_maxam.txt ; else echo 'SIMINT_MAXAM is ${SIMINT_MAXAM}'; echo 'SIMINT_MAXAM=${SIMINT_MAXAM} ' >> ${SINGULARITY_ROOTFS}/simint_maxam.txt ; fi"\
 &&     bash -c "if [[ -z '${MYUSERNAME}' ]]; then echo 'MYUSERNAME=nwchemgit ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; else echo 'MYUSERNAME is ${MYUSERNAME}'; echo 'MYUSERNAME=${MYUSERNAME} ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; fi"\
 &&     ls -lrt ${CACHEDIR} || true\
 &&     ls -la  ${CACHEDIR}/ || true\
 &&     ls -la  ${CACHEDIR}/ompi || true\
 &&     ls -la  ${CACHEDIR}/ompi/lib || true\
-&&     ls -la  ${CACHEDIR}/simint.l7_p7_d1.install/lib/libnwc_simint.a || true\
-&&     ls -la  ${CACHEDIR}/simint.l7_p7_d1.install/lib/libsimint.a ||true\
+&&     ls -la  ${CACHEDIR}/simint.l${SIMINT_MAXAM}_p${SIMINT_MAXAM}_d1.install/lib/libnwc_simint.a || true\
+&&     ls -la  ${CACHEDIR}/simint.l${SIMINT_MAXAM}_p${SIMINT_MAXAM}_d1.install/lib/libsimint.a ||true\
 &&     bash -c "if [ ! -z "${GITHUB_WORKSPACE}" ]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/contrib; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/contrib/getmem.nwchem ${SINGULARITY_ROOTFS}/nwchem/contrib/. ;rsync -a ${GITHUB_WORKSPACE}/nwchem/travis ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/.git ${SINGULARITY_ROOTFS}/nwchem/. ; fi"\
 &&     bash -c "if [[  -f ${CACHEDIR}/ompi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/ompi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"\
 &&     bash -c "if [[  -f ${CACHEDIR}/libext/lib/libnwc_openblas.a ]]; then rsync -a ${CACHEDIR}/libext/* ${SINGULARITY_ROOTFS}/nwchem/src/libext/. ; echo libext cache fetched ;fi"\
-&&     bash -c "if [[  -f ${CACHEDIR}/simint.l7_p7_d1.install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint.l7_p7_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l7_p7_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
+&&     bash -c "if [[  -f ${CACHEDIR}/simint.l${SIMINT_MAXAM}_p${SIMINT_MAXAM}_d1.install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint.l${SIMINT_MAXAM}_p${SIMINT_MAXAM}_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l${SIMINT_MAXAM}_p${SIMINT_MAXAM}_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
 
 ##%files
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
@@ -45,11 +46,13 @@ export DEBIAN_FRONTEND=noninteractive \
 && export `cat ./armci_network.txt`\
 && export `cat ./mpi_impl.txt`\
 && export `cat ./branch.txt`\
+&& export `cat ./simint_maxam.txt`\
 && export `cat ./myusername.txt`\
 && echo FC is $FC\
 && echo ARMCI_NETWORK is $ARMCI_NETWORK\
 && echo MPI_IMPL is $MPI_IMPL\
 && echo BRANCH is $BRANCH\
+&& echo SIMINT_MAXAM is $SIMINT_MAXAM\
 && pwd \
 && apt-get -y update \
 && apt-get -y install -y tzdata git moreutils  wget rsync  sudo ca-certificates \
@@ -143,7 +146,6 @@ fi	   \
 && export EACCSD=y \
 && export MRCC_METHODS=y \
 && export USE_SIMINT=y\
-&& export SIMINT_MAXAM=7\
 && export GENERATOR_PROCESSES=2\
 && export CCSDTQ=y \
 && export PYTHONVERSION=$(python -V| cut -d ' ' -f 2 |cut -d . -f 1-2) \
