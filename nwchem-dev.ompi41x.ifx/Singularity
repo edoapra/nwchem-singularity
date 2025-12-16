@@ -163,6 +163,8 @@ fi	   \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/largebasis.patch \
 && ls -l *patch \
 && patch -p1 < largebasis.patch \
+&& wget https://github.com/nwchemgit/nwchem/commit/62ee6c31a16c1cce916a521914ca4217cbe00d65.patch \
+&& patch -p1 < 62ee6c31a16c1cce916a521914ca4217cbe00d65.patch || true \
 && export NWCHEM_TOP=`pwd` \
 && echo 'ls -lrta ' $(ls -lrta) \
 && echo 'pwd ' $(pwd) \
