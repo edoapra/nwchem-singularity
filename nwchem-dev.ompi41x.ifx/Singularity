@@ -21,8 +21,9 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 &&     ls -la  ${CACHEDIR}/simint.l${SIMINT_MAXAM}_p${SIMINT_MAXAM}_d1.install/lib/libsimint.a ||true\
 &&     bash -c "if [ ! -z "${GITHUB_WORKSPACE}" ]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/contrib; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/contrib/getmem.nwchem ${SINGULARITY_ROOTFS}/nwchem/contrib/. ;rsync -a ${GITHUB_WORKSPACE}/nwchem/travis ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/.git ${SINGULARITY_ROOTFS}/nwchem/. ; fi"\
 &&     bash -c "if [[  -f ${CACHEDIR}/ompi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/ompi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"\
-&&     bash -c "if [[  -f ${CACHEDIR}/libext/lib/libnwc_openblas.a ]]; then rsync -a ${CACHEDIR}/libext/* ${SINGULARITY_ROOTFS}/nwchem/src/libext/. ; echo libext cache fetched ;fi"\
-&&     bash -c "if [[  -f ${CACHEDIR}/simint.l${SIMINT_MAXAM}_p${SIMINT_MAXAM}_d1.install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint.l${SIMINT_MAXAM}_p${SIMINT_MAXAM}_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l${SIMINT_MAXAM}_p${SIMINT_MAXAM}_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
+&&     bash -c "if [[  -f ${CACHEDIR}/libext/lib/libnwc_openblas.a ]]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/src/libext; rsync -a ${CACHEDIR}/libext/* ${SINGULARITY_ROOTFS}/nwchem/src/libext/. ; echo libext cache fetched ;fi"\
+&&     bash -c "if [[  -f ${CACHEDIR}/simint.l${SIMINT_MAXAM}_p${SIMINT_MAXAM}_d1.install/lib/libsimint.a ]]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/li\
+bsimint_source ; rsync -av ${CACHEDIR}/simint.l${SIMINT_MAXAM}_p${SIMINT_MAXAM}_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l${SIMINT_MAXAM}_p${SIMINT_MAXAM}_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
 
 ##%files
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
@@ -126,10 +127,9 @@ $FC -v \
 && echo ARMCI_NETWORK is $ARMCI_NETWORK\
 && export NWCHEM_TARGET=LINUX64\
 && export NWCHEM_MODULES="all python gwmol xtb"\
-&& export USE_OPENMP=1 \
 && export USE_TBLITE=1 \
 && if [ "$FC" = "gfortran" ]; then 
-   export BUILD_PLUMED=1;    export PYTHON_BIN=python3;   export BUILD_ELPA=1
+ export USE_OPENMP=1 ; export BUILD_PLUMED=1;    export PYTHON_BIN=python3;   export BUILD_ELPA=1
 fi	   \
 && export USE_LIBXC=1\
 && export BUILD_OPENBLAS=1\
@@ -160,11 +160,10 @@ fi	   \
 && cd nwchem \
 && echo "output of git describe  --always " `git describe  --always` || true \
 && pwd \
+&& echo lsls $(ls -lart src) \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/largebasis.patch \
 && ls -l *patch \
 && patch -p1 < largebasis.patch \
-&& wget https://github.com/nwchemgit/nwchem/commit/62ee6c31a16c1cce916a521914ca4217cbe00d65.patch \
-&& patch -p1 < 62ee6c31a16c1cce916a521914ca4217cbe00d65.patch || true \
 && export NWCHEM_TOP=`pwd` \
 && echo 'ls -lrta ' $(ls -lrta) \
 && echo 'pwd ' $(pwd) \
@@ -202,12 +201,10 @@ rsync -av /opt/intel/oneapi/compiler/latest/lib/lib*.so* $OMPI_DIR/lib/. ; fi \
 && du -sh * |sort -n \
 && cd ../.. \
 && du -sh nwchem \
-&& du -sk *|sort -n  \
 && bash -o pipefail -c "if [[ $FC == 'ifx' ]] || [[ $FC  == 'ifort' ]]; then \
 rm -rf ~/apps  /var/intel  l_*sh ; fi"   \
 && ls -lrth    \
 &&  ldd  /opt/nwchem/bin/nwchem  \
-&& du -sk *|sort -n \
 && echo "dddddddddddd"  \
 && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100 \
 && echo "dddddddddddd" \
