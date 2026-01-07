@@ -57,7 +57,7 @@ export DEBIAN_FRONTEND=noninteractive \
 && echo ompi_minor is $ompi_minor \
 && echo ompi_major is $ompi_major \
 && if [ $ompi_major = '5' ]; then
-    export ompi_options=' --with-pmix --with-pmix-libdir=/usr/lib/x86_64-linux-gnu --enable-mca-no-build=coll-han '
+    export ompi_options=' --with-pmix --with-pmix-libdir=/usr/lib/x86_64-linux-gnu --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --enable-mca-no-build=coll-han '
 else
     export ompi_options=' --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --without-verbs '
 fi \
@@ -96,7 +96,7 @@ libpmi2-0-dev libpmi0-dev  \
  libhwloc-dev libfuse3-dev\
  pkg-config gawk  software-properties-common \
 && if [ $ompi_major = '5' ]; then
-    apt-get -y install -y libpmix-bin libpmix-dev libpmix2
+    apt-get -y install -y libpmix-bin libpmix-dev libpmix2 libpmi2-0-dev libpmi0-dev
 else
     apt-get -y install -y libpmi2-0-dev libpmi0-dev
 fi \
