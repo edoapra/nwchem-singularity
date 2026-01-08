@@ -68,20 +68,6 @@ jobs:
               branch: master
               armci_network: MPI3
               folder: nwchem-dev.ompi5x
-            - ompi: 5.0.9
-              use_sysv: N
-              ucx: 1.20.0
-              fc: gfortran
-              branch: master
-              armci_network: MPI-PR
-              folder: nwchem-dev.ompi5x
-            - ompi: 5.0.9
-              use_sysv: N
-              ucx: 1.20.0
-              fc: gfortran
-              branch: master
-              armci_network: MPI3
-              folder: nwchem-dev.ompi5x
               
     env:
         FC: ${{ matrix.fc }}
