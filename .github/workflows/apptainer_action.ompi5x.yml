@@ -17,7 +17,7 @@ jobs:
           folder:
             - nwchem-dev.ompi5x
           ompi:
-            - 5.0.8
+            - 5.0.9
             - 4.1.8
           ucx:
             - 1.14.1
@@ -33,44 +33,51 @@ jobs:
             - MPI3
             - OPENIB
           include:
-            - ompi: 5.0.8
+            - ompi: 5.0.9
               use_sysv: N
               ucx: 1.18.1
               fc: gfortran
               branch: master
               armci_network: MPI-PR
               folder: nwchem-dev.ompi5x
-            - ompi: 5.0.8
+            - ompi: 5.0.9
               use_sysv: Y
               ucx: 1.18.1
               fc: gfortran
               branch: master
               armci_network: MPI-PR
               folder: nwchem-dev.ompi5x
-            - ompi: 5.0.8
+            - ompi: 5.0.9
               use_sysv: N
               ucx: 1.18.1
               fc: gfortran
               branch: master
               armci_network: MPI3
               folder: nwchem-dev.ompi5x
-            - ompi: 5.0.8
+            - ompi: 5.0.9
               use_sysv: N
-              ucx: 1.19.0
+              ucx: 1.19.1
               fc: gfortran
               branch: master
               armci_network: MPI-PR
               folder: nwchem-dev.ompi5x
-            - ompi: 5.0.8
-              use_sysv: Y
-              ucx: 1.19.0
+            - ompi: 5.0.9
+              use_sysv: N
+              ucx: 1.19.1
+              fc: gfortran
+              branch: master
+              armci_network: MPI3
+              folder: nwchem-dev.ompi5x
+            - ompi: 5.0.9
+              use_sysv: N
+              ucx: 1.20.0
               fc: gfortran
               branch: master
               armci_network: MPI-PR
               folder: nwchem-dev.ompi5x
-            - ompi: 5.0.8
+            - ompi: 5.0.9
               use_sysv: N
-              ucx: 1.19.0
+              ucx: 1.20.0
               fc: gfortran
               branch: master
               armci_network: MPI3
