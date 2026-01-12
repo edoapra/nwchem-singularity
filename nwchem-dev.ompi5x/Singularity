@@ -114,7 +114,8 @@ fi \
 && bash -o pipefail -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
 && ucx_vtag=v$UCX \
-&& if [[ $UCX == 1.20.0 ]]; then ucx_vtag=$UCX ; fi \
+&& if [[ ${UCX} == 1.20.0 ]]; then ucx_vtag=${UCX} ; fi \
+&& echo UCX is ${UCX} ucx_vtag is ${ucx_vtag} \
 && wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/${ucx_vtag}/ucx-$UCX.tar.gz -O - | tar xzf - \
 && cd ucx-$UCX \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch \
