@@ -62,6 +62,10 @@ else
     export ompi_options=' --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --without-verbs '
 fi \
 && echo ompi_options $ompi_options \
+&& export UCXVTAG=v$UCX \
+&& echo standard UCXVTAG is $UCXVTAG \
+&& if [ $UCX == 1.20.0 ]; then export UCXVTAG=$UCX ; fi \
+&& echo UCX is $UCX UCXVTAG is $UCXVTAG \
 && echo ARMCI_NETWORK is $ARMCI_NETWORK\
 && echo USE_SYSV is $USE_SYSV \
 && echo MPI_IMPL is $MPI_IMPL\
@@ -113,10 +117,6 @@ fi \
 && echo 'ls -l /opt/ompi/lib/libmpi.so' $(ls -l /opt/ompi/lib/libmpi.so) || true \
 && bash -o pipefail -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
-&& export UCXVTAG=v$UCX \
-&& echo standard UCXVTAG is $UCXVTAG \
-&& if [ $UCX == 1.20.0 ]; then export UCXVTAG=$UCX ; fi \
-&& echo UCX is $UCX UCXVTAG is $UCXVTAG \
 && wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/$UCXVTAG/ucx-$UCX.tar.gz -O - | tar xzf - \
 && cd ucx-$UCX \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch \
