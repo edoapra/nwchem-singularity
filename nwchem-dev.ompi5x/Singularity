@@ -113,7 +113,9 @@ fi \
 && echo 'ls -l /opt/ompi/lib/libmpi.so' $(ls -l /opt/ompi/lib/libmpi.so) || true \
 && bash -o pipefail -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
-&& wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/v$UCX/ucx-$UCX.tar.gz -O - | tar xzf - \
+&& ucx_vtag=v$UCX \
+&& if [[ $UCX == 1.20.0 ]]; then ucx_vtag=$UCX ; fi \
+&& wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/${ucx_vtag}/ucx-$UCX.tar.gz -O - | tar xzf - \
 && cd ucx-$UCX \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/ucx1181_malloc.patch \
