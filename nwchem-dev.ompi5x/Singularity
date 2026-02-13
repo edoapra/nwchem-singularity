@@ -219,6 +219,8 @@ fi	   \
 && patch -p1 < largebasis.patch \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/okeep.patch \
 && patch -p1 < okeep.patch \
+&& wget https://github.com/nwchemgit/nwchem/commit/6bd7f90f40faa1d7558787c1134fe6b1b1d22daf.patch -O elpanv.patch \
+&& patch -p1 < elpanv.patch || true \
 && export NWCHEM_TOP=`pwd` \
 && echo 'ls -lrta ' $(ls -lrta) \
 && echo 'pwd ' $(pwd) \
