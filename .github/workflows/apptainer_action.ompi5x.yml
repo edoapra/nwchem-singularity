@@ -114,16 +114,22 @@ jobs:
         if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
           echo "cuda-cc=.cuda-cc"${{ matrix.cuda-cc }} >> $GITHUB_ENV
         fi
-    - name: tag
+    - name: tags
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
           echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucx_version }}" >> $GITHUB_ENV
         else
           echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucx_version }}.${{ matrix.fc }}${{ matrix.cuda-cc }}" >> $GITHUB_ENV
         fi
-    - name: echo-tag
+        if [[ ${{ matrix.cuda-cc }} != "cpu" ]]; then
+          echo "cache_tag=${{ matrix.folder}}-${{ matrix.ompi}}${{ env.ucx_version }}{{ env.cuda-cc }}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001" >> $GITHUB_ENV
+        else
+          echo "cache_tag=${{ matrix.folder}}-${{ matrix.ompi}}${{ env.ucx_version }}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001" >> $GITHUB_ENV
+        fi
+    - name: echo-tags
       run: |
         echo ' the apptainer tag is ' "${{ env.tag }}"
+        echo ' the cache tag is ' "${{ env.cache_tag }}"
     - name: Checkout nwchem-singularity source
       uses: actions/checkout@v6
       with:
@@ -138,7 +144,7 @@ jobs:
       with:
         path: |
           ~/cache
-        key: ${{ matrix.folder}}-${{ matrix.ompi}}${{ env.ucx_version }}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001
+        key: "${{ env.cache_tag }}"
     - name: fetch cache
       if: steps.setup-cache.outputs.cache-hit == 'true'
       run: |
