@@ -28,6 +28,8 @@ jobs:
             - master
           use_sysv:
             - N
+          cuda-cc:
+            - cpu
           armci_network:
             - MPI-PR
             - MPI3
@@ -40,6 +42,15 @@ jobs:
               branch: master
               armci_network: MPI-PR
               folder: nwchem-dev.ompi5x
+              cuda-cc: cpu
+            - ompi: 4.1.8
+              use_sysv: N
+              ucx: 1.15.0
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.ompi5x
+              cuda-cc: 90
             - ompi: 5.0.9
               use_sysv: N
               ucx: 1.20.0
@@ -47,6 +58,7 @@ jobs:
               branch: master
               armci_network: MPI-PR
               folder: nwchem-dev.ompi5x
+              cuda-cc: cpu
             - ompi: 5.0.9
               use_sysv: N
               ucx: 1.20.0
@@ -54,6 +66,7 @@ jobs:
               branch: master
               armci_network: MPI3
               folder: nwchem-dev.ompi5x
+              cuda-cc: cpu
             - ompi: 5.0.9
               use_sysv: N
               ucx: 1.19.1
@@ -61,6 +74,7 @@ jobs:
               branch: master
               armci_network: MPI-PR
               folder: nwchem-dev.ompi5x
+              cuda-cc: cpu
             - ompi: 5.0.9
               use_sysv: N
               ucx: 1.19.1
@@ -68,10 +82,12 @@ jobs:
               branch: master
               armci_network: MPI3
               folder: nwchem-dev.ompi5x
+              cuda-cc: cpu
               
     env:
         FC: ${{ matrix.fc }}
         OMPI: ${{ matrix.ompi }}
+        CUDA_CC: ${{ matrix.cuda-cc }}
     steps:
     - name: nwchem version tag
       run: |
@@ -95,12 +111,15 @@ jobs:
         if [[ ${{ matrix.ucx }} !=  1.14.1 ]]; then
           echo "ucx_version=.ucx"${{ matrix.ucx }} >> $GITHUB_ENV
         fi
+        if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
+          echo "cuda-cc=.cuda-cc"${{ matrix.cuda-cc }} >> $GITHUB_ENV
+        fi
     - name: tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
           echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucx_version }}" >> $GITHUB_ENV
         else
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucx_version }}.${{ matrix.fc }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucx_version }}.${{ matrix.fc }}${{ matrix.cuda-cc }}" >> $GITHUB_ENV
         fi
     - name: echo-tag
       run: |

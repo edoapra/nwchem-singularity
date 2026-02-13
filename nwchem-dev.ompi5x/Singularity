@@ -13,6 +13,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 &&     bash -c "if [[ -z '${UCX}' ]]; then echo 'UCX=1.14.1 ' >> ${SINGULARITY_ROOTFS}/ucx.txt ; else echo 'UCX is ${UCX}'; echo 'UCX=${UCX} ' >> ${SINGULARITY_ROOTFS}/ucx.txt ; fi"\
 &&     bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"\
 &&     bash -c "if [[ -z '${MPI_IMPL}' ]]; then echo 'MPI_IMPL=ompi ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; else echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"\
+&&     bash -c "if [[ -z '${CUDA_CC}' ]]; then echo 'CUDA_CC=90 ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; else echo 'CUDA_CC is ${CUDA_CC}'; echo 'CUDA_CC=${CUDA_CC} ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; fi"
 &&     bash -c "if [[ -z '${BRANCH}' ]]; then echo 'BRANCH=master ' >> ${SINGULARITY_ROOTFS}/branch.txt ; else echo 'BRANCH is ${BRANCH}'; echo 'BRANCH=${BRANCH} ' >> ${SINGULARITY_ROOTFS}/branch.txt ; fi"\
 &&     bash -c "if [[ -z '${MYUSERNAME}' ]]; then echo 'MYUSERNAME=nwchemgit ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; else echo 'MYUSERNAME is ${MYUSERNAME}'; echo 'MYUSERNAME=${MYUSERNAME} ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; fi"\
 &&     ls -lrt ${CACHEDIR} || true\
@@ -45,10 +46,12 @@ export DEBIAN_FRONTEND=noninteractive \
 && export `cat ./ucx.txt`\
 && export `cat ./armci_network.txt`\
 && export `cat ./mpi_impl.txt`\
+&& export `cat ./cuda_cc.txt` \
 && export `cat ./branch.txt`\
 && export `cat ./myusername.txt`\
 && echo FC is $FC\
 && echo OMPI is $OMPI\
+&& echo CUDA_CC $CUDA_CC \
 && export ompi_prefix=openmpi-$OMPI\
 && echo ompi_prefix is $ompi_prefix \
 && export ompi_major=$(echo $OMPI | cut -d . -f1) \
@@ -113,7 +116,37 @@ fi \
 && if [ -f ./cc.txt ]; then export `cat ./cc.txt` ; fi \
 && if [ -f ./cxx.txt ]; then export `cat ./cxx.txt` ; fi \
 && echo ' CC is ' "$CC" \
-&& echo ' CXX is ' "$CXX" || true \
+&& echo ' CXX is ' "$CXX" || true
+
+if [ $CUDA_CC != "cpu" ]; then
+export ELPA_NVIDIA=1
+export CUDA_VERSION_MAJOR=12 ; export CUDA_VERSION_MINOR=4
+ curl -LJO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-archive-keyring.gpg \
+ && cp cuda-archive-keyring.gpg /usr/share/keyrings/cuda-archive-keyring.gpg \
+ && echo 'deb [signed-by=/usr/share/keyrings/cuda-archive-keyring.gpg] https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /' |  tee /etc/apt/sources.list.d/cuda-ubuntu2204-x86_64.list \
+ &&  curl -LJO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin \
+ && mv cuda-*.pin /etc/apt/preferences.d/cuda-repository-pin-600 \
+ && apt-get  update \
+&& apt-get  -y install cuda-nvcc-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-cudart-dev-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-libraries-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-libraries-dev-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} libcublas-dev-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-libraries-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-nvml-dev-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} ; fi " \
+#figure out CUDA_RUNTIME
+export CUDA_ROOT=/usr/local/cuda-${CUDA_VERSION_MAJOR}.${CUDA_VERSION_MINOR}
+export PATH=${CUDA_ROOT}/bin:$PATH
+echo ls cudaroot/bin $(ls -lart ${CUDA_ROOT}/bin)
+export LD_LIBRARY_PATH=${CUDA_ROOT}/lib64:"$LD_LIBRARY_PATH" 
+echo "ls cuda rt available" $(ls /opt/nvidia/hpc_sdk/Linux_"$arch"/"$nverdot"/cuda/)
+CUDA_RUNTIME=$(nvcc --version |grep Cuda\ compilation | cut -d " " -f 5|sed -e s'/,//')
+echo gpu archs available $(nvcc --list-gpu-arch)
+echo CUDA_RUNTIME is $CUDA_RUNTIME
+#need to add nvcc compiler flags option  -arch=sm_${CUDA_CC}
+export NVCC_APPEND_FLAGS=-arch=sm_${CUDA_CC}
+echo "looking for libcuda.so" $(find $CUDA_ROOT -name libcuda.so)
+
+ 
+ dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100 
+ apt-get clean && rm -rf /var/lib/apt/lists/*
+fi
+
+echo check ompi install \
 && echo 'ls -l /opt/ompi/lib/libmpi.so' $(ls -l /opt/ompi/lib/libmpi.so) || true \
 && bash -o pipefail -c "if [[ ! -f /opt/ompi/lib/libmpi.so ]]; then  \
 $FC -v \
@@ -258,13 +291,9 @@ rm -rf ~/apps  /var/intel  l_*sh ; fi"   \
 #cd /data
 %environment
 export OMPI_DIR=/opt/ompi
-export SINGULARITY_OMPI_DIR=$OMPI_DIR
-export SINGULARITYENV_APPEND_PATH=$OMPI_DIR/bin
-export SINGULARITYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib
 export OMP_NUM_THREADS=1
 export SINGULARITY_OMP_NUM_THREADS=1
 export COMEX_MAX_NB_OUTSTANDING=12
-export SINGULARITY_COMEX_MAX_NB_OUTSTANDING=12
 #export nwchem_hash=77ba3a6e1dd6f9ba26879d0416bb93b302f1f4f7
 #export NWCHEM_TOP=/opt/nwchem
 export NWCHEM_SHARE=/opt/nwchem/share/
@@ -280,6 +309,7 @@ export PATH=$PATH:/opt/nwchem/bin/
 export PATH=$OMPI_DIR/bin:$PATH
 export NWCHEM_BASIS_LIBRARY=${NWCHEM_SHARE}//libraries/
 export NWCHEM_NWPW_LIBRARY=${NWCHEM_SHARE}//libraryps/
+export LD_LIBRARY_PATH=${CUDA_ROOT}/lib64:"$LD_LIBRARY_PATH" 
 export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
 #%runscript
 #exec /bin/bash "$@"
