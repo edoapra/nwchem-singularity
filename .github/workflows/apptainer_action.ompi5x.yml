@@ -112,10 +112,10 @@ jobs:
           echo "ucx_version=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
         fi
         if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
-          echo "cuda-cc=.cuda-cc${{ matrix.cuda-cc }} >> $GITHU"B_ENV
-          echo "ucxncuda=${{ matrix.ucx }}${{ matrix.cuda-cc }}" >> $GITHUB_ENV
+          echo "cuda-cc=.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
+          echo "ucxncuda=.ucx${{ matrix.ucx }}.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
         else
-          echo "ucxncuda=${{ matrix.ucx }}" >> $GITHUB_ENV
+          echo "ucxncuda=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
         fi
     - name: tags
       run: |
