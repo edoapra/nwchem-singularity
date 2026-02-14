@@ -53,7 +53,7 @@ jobs:
               cuda-cc: 90
             - ompi: 5.0.9
               use_sysv: N
-              ucx: 1.20.0
+              ucx: 1.18.1
               fc: gfortran
               branch: master
               armci_network: MPI-PR
@@ -61,7 +61,7 @@ jobs:
               cuda-cc: cpu
             - ompi: 5.0.9
               use_sysv: N
-              ucx: 1.20.0
+              ucx: 1.18.1
               fc: gfortran
               branch: master
               armci_network: MPI3
