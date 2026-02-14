@@ -109,23 +109,22 @@ jobs:
           fi
         fi
         if [[ ${{ matrix.ucx }} !=  1.14.1 ]]; then
-          echo "ucx_version=.ucx"${{ matrix.ucx }} >> $GITHUB_ENV
+          echo "ucx_version=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
         fi
         if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
-          echo "cuda-cc=.cuda-cc"${{ matrix.cuda-cc }} >> $GITHUB_ENV
+          echo "cuda-cc=.cuda-cc${{ matrix.cuda-cc }} >> $GITHU"B_ENV
+          echo "ucxncuda=${{ matrix.ucx }}${{ matrix.cuda-cc }}" >> $GITHUB_ENV
+        else
+          echo "ucxncuda=${{ matrix.ucx }}" >> $GITHUB_ENV
         fi
     - name: tags
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucx_version }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucxncuda }}" >> $GITHUB_ENV
         else
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucx_version }}.${{ matrix.fc }}${{ matrix.cuda-cc }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucxncuda }}.${{ matrix.fc }}" >> $GITHUB_ENV
         fi
-        if [[ ${{ matrix.cuda-cc }} != "cpu" ]]; then
-          echo "cache_tag=${{ matrix.folder}}-${{ matrix.ompi}}${{ env.ucx_version }}{{ env.cuda-cc }}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001" >> $GITHUB_ENV
-        else
-          echo "cache_tag=${{ matrix.folder}}-${{ matrix.ompi}}${{ env.ucx_version }}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001" >> $GITHUB_ENV
-        fi
+        echo "cache_tag=${{ matrix.folder}}-${{ matrix.ompi}}${{ env.ucxxncuda }}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001" >> $GITHUB_ENV
     - name: echo-tags
       run: |
         echo ' the apptainer tag is ' "${{ env.tag }}"
