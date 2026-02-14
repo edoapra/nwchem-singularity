@@ -124,7 +124,7 @@ jobs:
         else
           echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucxncuda }}.${{ matrix.fc }}" >> $GITHUB_ENV
         fi
-        echo "cache_tag=${{ matrix.folder}}-${{ matrix.ompi}}${{ env.ucxxncuda }}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001" >> $GITHUB_ENV
+        echo "cache_tag=${{ matrix.folder}}-${{ matrix.ompi}}${{ env.ucxncuda }}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001" >> $GITHUB_ENV
     - name: echo-tags
       run: |
         echo ' the apptainer tag is ' "${{ env.tag }}"
@@ -196,6 +196,10 @@ jobs:
         cp ubuntu_jammy.sif ~/cache/.
         echo "cache stored"
         ls -l ~/cache
+    - name: check if the nwchem binary is present
+      run: |
+        cd ${{ matrix.folder }}
+        apptainer exec ${{ matrix.folder }}.simg ldd /nwchem/bin/LINUX64/nwchem
     - name: builddate
       id: build-date
       run: |
