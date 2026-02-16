@@ -50,6 +50,22 @@ jobs:
               branch: master
               armci_network: MPI-PR
               folder: nwchem-dev.ompi5x
+              cuda-cc: 70
+            - ompi: 4.1.8
+              use_sysv: N
+              ucx: 1.15.0
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.ompi5x
+              cuda-cc: 80
+            - ompi: 4.1.8
+              use_sysv: N
+              ucx: 1.15.0
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.ompi5x
               cuda-cc: 90
             - ompi: 5.0.9
               use_sysv: N
