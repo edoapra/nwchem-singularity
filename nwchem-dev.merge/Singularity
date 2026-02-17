@@ -109,7 +109,7 @@ set -ex
  if [  -f ./ucx.txt ]; then
      export `cat ./ucx.txt`
      echo UCX is $UCX
- elif [  -f ./ofi.txt ];
+ elif [  -f ./ofi.txt ]; then
       export `cat ./ofi.txt`
       echo OFI is $OFI
  else
