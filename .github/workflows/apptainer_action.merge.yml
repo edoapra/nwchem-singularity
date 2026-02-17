@@ -99,6 +99,7 @@ jobs:
           echo "ucxncuda=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
         fi
         fi
+        echo OFI is $OFI
         if [[ ! -n $OFI ]]; then
         if [[ ${{ matrix.ofi }} !=  "builtin" ]]; then
           echo "ofi_version=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
