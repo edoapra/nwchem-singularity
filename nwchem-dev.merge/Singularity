@@ -34,12 +34,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
 
 %post
-#https://sylabs.io/guides/3.6/user-guide/mpi.html
-export DEBIAN_FRONTEND=noninteractive 
- export OMPI_DIR=/opt/ompi
- export PATH=$OMPI_DIR/bin:/opt/intel/oneapi/compiler/latest/bin:/opt/intel/oneapi/compiler/latest/linux/bin/intel64:/root//apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
- export LD_LIBRARY_PATH=$OMPI_DIR/lib:/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/lib:/opt/intel/oneapi/compiler/latest/linux/lib/x64:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
- export LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/opt/intel/oneapi/compiler/latest/linux/lib 
+set -ex
  export `cat ./fc.txt`
  export `cat ./use_sysv.txt`
  if [ ! -f ./mpi_impl.txt ]; then
@@ -57,6 +52,23 @@ export DEBIAN_FRONTEND=noninteractive
 	 export `cat ./ompi.txt`
 	 echo OMPI is $OMPI
      fi
+     export ompi_prefix=openmpi-$OMPI
+     echo ompi_prefix is $ompi_prefix 
+     export ompi_major=$(echo $OMPI | cut -d . -f1) 
+     echo ompi_major is $ompi_major 
+     export ompi_minor=$(echo $OMPI | cut -d . -f2) 
+     echo ompi_minor is $ompi_minor 
+     echo ompi_major is $ompi_major 
+     if [ $ompi_major = '5' ]; then
+	 export ompi_options=' --enable-mca-no-build=coll-han '
+     else
+	 export ompi_options=' --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --without-verbs '
+     fi 
+     echo ompi_options $ompi_options 
+     export UCXVTAG=v$UCX 
+     echo standard UCXVTAG is $UCXVTAG 
+     if [ $UCX = 1.20.0 ]; then export UCXVTAG=$UCX ; fi 
+     echo UCX is $UCX UCXVTAG is $UCXVTAG 
  fi
  if [ $MPI_IMPL = "mpich" ]; then
      if [ -f ./mpich.txt]; then
@@ -66,6 +78,11 @@ export DEBIAN_FRONTEND=noninteractive
 	 export `cat ./mpich.txt`
 	 echo MPICH is $MPICH
      fi
+     if [ $MPICH = aurora ]; then
+	 export MPICH_VERSION=$MPICH_AURORA
+     else
+	 export MPICH_VERSION=$MPICH
+     fi
      if [ ! -f ./mpich_device.txt ]; then
 	 echo MPICH_DEVICE not defined
 	 exit 1
@@ -73,6 +90,21 @@ export DEBIAN_FRONTEND=noninteractive
 	 export `cat ./mpich_device.txt`
 	 echo MPICH_DEVICE is $MPICH_DEVICE
      fi
+     export mpich_prefix=mpich-$MPICH_VERSION
+     echo mpich_prefix is $mpich_prefix 
+     export mpich_major=$(echo $MPICH_VERSION | cut -d . -f1) 
+     echo mpich_major is $mpich_major 
+     export mpich_minor=$(echo $MPICH_VERSION | cut -d . -f2) 
+     echo mpich_minor is $mpich_minor 
+     echo mpich_major is $mpich_major 
+     if [ $mpich_major = '4' ]; then
+	 export mpich_options=' '
+     else
+	 export mpich_options=' '
+     fi 
+     if [ $MPICH = aurora ]; then
+	 export mpich_options=$mpich_options' --disable-maintainer-mode --with-pm=no --enable-romio --with-slurm=no --with-pmi=pmix --with-pmix=/opt/pmix '
+     fi 
  fi
  if [  -f ./ucx.txt ]; then
      export `cat ./ucx.txt`
@@ -91,27 +123,15 @@ export DEBIAN_FRONTEND=noninteractive
  export `cat ./myusername.txt`
  echo FC is $FC
  echo CUDA_CC $CUDA_CC 
- export ompi_prefix=openmpi-$OMPI
- echo ompi_prefix is $ompi_prefix 
- export ompi_major=$(echo $OMPI | cut -d . -f1) 
- echo ompi_major is $ompi_major 
- export ompi_minor=$(echo $OMPI | cut -d . -f2) 
- echo ompi_minor is $ompi_minor 
- echo ompi_major is $ompi_major 
- if [ $ompi_major = '5' ]; then
-    export ompi_options=' --enable-mca-no-build=coll-han '
-else
-    export ompi_options=' --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --without-verbs '
-fi 
- echo ompi_options $ompi_options 
- export UCXVTAG=v$UCX 
- echo standard UCXVTAG is $UCXVTAG 
- if [ $UCX = 1.20.0 ]; then export UCXVTAG=$UCX ; fi 
- echo UCX is $UCX UCXVTAG is $UCXVTAG 
  echo ARMCI_NETWORK is $ARMCI_NETWORK
  echo USE_SYSV is $USE_SYSV 
  echo MPI_IMPL is $MPI_IMPL
  echo BRANCH is $BRANCH
+export DEBIAN_FRONTEND=noninteractive 
+export OMPI_DIR=/opt/ompi
+export PATH=$OMPI_DIR/bin:/opt/intel/oneapi/compiler/latest/bin:/opt/intel/oneapi/compiler/latest/linux/bin/intel64:/root//apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+ export LD_LIBRARY_PATH=$OMPI_DIR/lib:/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/lib:/opt/intel/oneapi/compiler/latest/linux/lib/x64:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
+ export LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/opt/intel/oneapi/compiler/latest/linux/lib 
  pwd 
  apt-get -y update 
  apt-get -y install -y tzdata git moreutils curl wget rsync  sudo ca-certificates 
