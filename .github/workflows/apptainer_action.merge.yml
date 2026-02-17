@@ -186,7 +186,10 @@ jobs:
     - name: build an apptainer container
       run: |
         cd ${{ matrix.folder }}
-        USE_SYSV=${{ matrix.use_sysv }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=${{ matrix.mpi_impl }}  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+        USE_SYSV=${{ matrix.use_sysv }} \
+        MPI_IMPL=${{ matrix.mpi_impl }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} OFI=${{ matrix.ofi }} \
+        FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} \
+        apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: store cache
       run: |
         mkdir -p ~/cache || true

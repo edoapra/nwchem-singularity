@@ -4,6 +4,7 @@ From: ubuntu_jammy.sif
 MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 
 %setup
+    set -ex
     ls -la  ${GITHUB_WORKSPACE} 
      export CACHEDIR=${GITHUB_WORKSPACE}/../../../cache
      rm -f ${SINGULARITY_ROOTFS}/*.txt || true
@@ -36,7 +37,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
      bash -c "if [[  -f ${CACHEDIR}/libext/lib/libnwc_openblas.a ]]; then rsync -a ${CACHEDIR}/libext/* ${SINGULARITY_ROOTFS}/nwchem/src/libext/. ; echo libext cache fetched ;fi"
      bash -c "if [[  -f ${CACHEDIR}/pmix/etc/pmix-mca-params.conf ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/pmix ${SINGULARITY_ROOTFS}/opt/. ; echo pmix cache fetched ;fi"
      bash -c "if [[  -f ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint.l5_p5_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
-
+     set +ex
 ##%files
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
 
