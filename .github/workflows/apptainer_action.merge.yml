@@ -89,7 +89,7 @@ jobs:
           echo "armci_network=sysv." >> $GITHUB_ENV
           fi
         fi
-        if [[ ! -n $UCX ]]; then
+        if [[ $UCX != "" ]]; then
         if [[ ${{ matrix.ucx }} !=  1.14.1 ]]; then
           echo "ucx_version=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
         fi
@@ -100,7 +100,8 @@ jobs:
         fi
         fi
         echo OFI is ${OFI}
-        if [[ ! -n $OFI ]]; then
+        if [[ $OFI != "" ]]; then
+        echo OFI is set as ${OFI}
           if [[ ${{ matrix.ofi }} !=  "builtin" ]]; then
             echo "ofi_version=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
             if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
