@@ -13,7 +13,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
      bash -c "if [[ -z '${OMPI}' ]]; then echo 'OMPI=4.1.6 ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; else echo 'OMPI is ${OMPI}'; echo 'OMPI=${OMPI} ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; fi"
      bash -c "if [[ ! -z '${UCX}' ]]; then  echo 'UCX is ${UCX}'; echo 'UCX=${UCX} ' >> ${SINGULARITY_ROOTFS}/ucx.txt ; fi"
      bash -c "if [[ ! -z '${OFI}' ]]; then  echo 'OFI is ${OFI}'; echo 'OFI=${OFI} ' >> ${SINGULARITY_ROOTFS}/ofi.txt ; fi"
-     bash -c "if [[ ! -z '${MPICH_DEVICE}' ]]; then  echo 'MPICH_DEVICE=${MPICH_DEVICE} ' >> ${SINGULARITY_ROOTFS}/mpich_device.txt ; fi"
+     bash -c "if [[ -z '${MPICH_DEVICE}' ]]; then echo 'MPICH_DEVICE=ch4:ofi '  >> ${SINGULARITY_ROOTFS}/mpich_device.txt; else echo 'MPICH_DEVICE=${MPICH_DEVICE} ' >> ${SINGULARITY_ROOTFS}/mpich_device.txt ; fi"
      bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"
      bash -c "if [[ ! -z '${MPI_IMPL}' ]]; then echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"
      bash -c "if [[ -z '${CUDA_CC}' ]]; then echo 'CUDA_CC=cpu ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; else echo 'CUDA_CC is ${CUDA_CC}'; echo 'CUDA_CC=${CUDA_CC} ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; fi" 

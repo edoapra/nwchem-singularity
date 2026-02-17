@@ -14,24 +14,27 @@ jobs:
     strategy:
         fail-fast: true
         matrix:
-          folder:
-            - nwchem-dev.merge
-          ompi:
-            - 5.0.9
-          ucx:
-            - 1.14.1
-          fc:
-            - gfortran
-          branch:
-            - master
-          use_sysv:
-            - N
-          cuda-cc:
-            - cpu
-          armci_network:
-            - MPI-PR
           include:
-            - ompi: 4.1.8
+            - mpi_impl: ompi
+              ompi: 5.0.9
+              use_sysv: N
+              ucx: 1.14.1
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.merge
+              cuda-cc: cpu
+            - mpi_impl: mpich
+              mpich: 3.4.2
+              use_sysv: N
+              ofi: builtin
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.merge
+              cuda-cc: cpu
+            - mpi_impl: ompi
+              ompi: 4.1.8
               use_sysv: N
               ucx: 1.15.0
               fc: gfortran
@@ -39,7 +42,8 @@ jobs:
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
-            - ompi: 4.1.8
+            - mpi_impl: ompi
+              ompi: 4.1.8
               use_sysv: N
               ucx: 1.15.0
               fc: gfortran
@@ -50,8 +54,16 @@ jobs:
               
     env:
         FC: ${{ matrix.fc }}
+        MPI_IMPL: ${{ matrix.mpi_impl }}
         OMPI: ${{ matrix.ompi }}
+        MPICH: ${{ matrix.mpich }}
+        MPICH_DEVICE: ${{ matrix.mpich_device }}
+        UCX: ${{ matrix.ucx }}
+        OFI: ${{ matrix.ofi }}
         CUDA_CC: ${{ matrix.cuda-cc }}
+        BRANCH: ${{ matrix.branch }}
+        ARMCI_NETWORK: ${{ matrix.armci_network }}
+        USE_SYSV: ${{ matrix.use_sysv }}
     steps:
     - name: nwchem version tag
       run: |
@@ -76,19 +88,28 @@ jobs:
           echo "ucx_version=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
         fi
         if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
-          echo "cuda-cc=.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
           echo "ucxncuda=.ucx${{ matrix.ucx }}.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
         else
           echo "ucxncuda=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
         fi
-    - name: tags
+        if [[ ${{ matrix.ofi }} !=  builtin ]]; then
+          echo "ofi_version=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
+        fi
+        if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
+          echo "ofincuda=.ofi${{ matrix.ofi }}.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
+        else
+          echo "ofincuda=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
+        fi
+    - name: github action tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucxncuda }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}${{ matrix.mpi_impl }}${{ matrix.ompi }}${{ matrix.mpich }}${{ env.ucxncuda }}" >> $GITHUB_ENV
         else
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucxncuda }}.${{ matrix.fc }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}${{ matrix.mpi_impl }}${{ matrix.ompi }}${{ matrix.mpich }}${{ env.ucxncuda }}${{ env.ofincuda }}.${{ matrix.fc }}" >> $GITHUB_ENV
         fi
-        echo "cache_tag=${{ matrix.folder}}-${{ matrix.ompi}}${{ env.ucxncuda }}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001" >> $GITHUB_ENV
+    - name: cache tag
+      run: |
+        echo "cache_tag=${{ env.tag }}-v001" >> $GITHUB_ENV
     - name: echo-tags
       run: |
         echo ' the apptainer tag is ' "${{ env.tag }}"
@@ -149,12 +170,12 @@ jobs:
     - name: build an apptainer container
       run: |
         cd ${{ matrix.folder }}
-        USE_SYSV=${{ matrix.use_sysv }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+        USE_SYSV=${{ matrix.use_sysv }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=${{ matrix.mpi_impl }}  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: store cache
       run: |
         mkdir -p ~/cache || true
         cd ${{ matrix.folder }}
-        apptainer exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
+        apptainer exec ${{ matrix.folder }}.simg cp -r /opt/mpi ~/cache
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
         cp ubuntu_jammy.sif ~/cache/.
@@ -212,9 +233,9 @@ jobs:
         cd nwchem/QA
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
-        export PATH=/opt/ompi/bin:$PATH
+        export PATH=/opt/mpi/bin:$PATH
         export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
-        export LD_LIBRARY_PATH=/opt/ompi/lib:$LD_LIBRARY_PATH
+        export LD_LIBRARY_PATH=/opt/mpi/lib:$LD_LIBRARY_PATH
         export NWCHEM_EXECUTABLE="singularity exec ${{ env.tag }}:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
