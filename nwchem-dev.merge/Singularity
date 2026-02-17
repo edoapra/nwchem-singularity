@@ -9,10 +9,13 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
      rm -f ${SINGULARITY_ROOTFS}/*.txt || true
      bash -c "if [[ -z '${FC}' ]]; then echo 'FC=gfortran ' >> ${SINGULARITY_ROOTFS}/fc.txt ; else echo 'FC is ${FC}'; echo 'FC=${FC} ' >> ${SINGULARITY_ROOTFS}/fc.txt ; fi"
      bash -c "if [[ -z '${USE_SYSV}' ]]; then echo 'USE_SYSV=N ' >> ${SINGULARITY_ROOTFS}/use_sysv.txt ; else echo 'USE_SYSV is ${USE_SYSV}'; echo 'USE_SYSV=${USE_SYSV} ' >> ${SINGULARITY_ROOTFS}/use_sysv.txt ; fi"
+     bash -c "if [[ -z '${MPICH}' ]]; then echo 'MPICH=3.4.2 ' >> ${SINGULARITY_ROOTFS}/MPICH.txt ; else echo 'MPICH is ${MPICH}'; echo 'MPICH=${MPICH} ' >> ${SINGULARITY_ROOTFS}/mpich.txt ; fi"
      bash -c "if [[ -z '${OMPI}' ]]; then echo 'OMPI=4.1.6 ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; else echo 'OMPI is ${OMPI}'; echo 'OMPI=${OMPI} ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; fi"
-     bash -c "if [[ -z '${UCX}' ]]; then echo 'UCX=1.14.1 ' >> ${SINGULARITY_ROOTFS}/ucx.txt ; else echo 'UCX is ${UCX}'; echo 'UCX=${UCX} ' >> ${SINGULARITY_ROOTFS}/ucx.txt ; fi"
+     bash -c "if [[ ! -z '${UCX}' ]]; then  echo 'UCX is ${UCX}'; echo 'UCX=${UCX} ' >> ${SINGULARITY_ROOTFS}/ucx.txt ; fi"
+     bash -c "if [[ ! -z '${OFI}' ]]; then  echo 'OFI is ${OFI}'; echo 'OFI=${OFI} ' >> ${SINGULARITY_ROOTFS}/ofi.txt ; fi"
+     bash -c "if [[ ! -z '${MPICH_DEVICE}' ]]; then  echo 'MPICH_DEVICE=${MPICH_DEVICE} ' >> ${SINGULARITY_ROOTFS}/mpich_device.txt ; fi"
      bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"
-     bash -c "if [[ -z '${MPI_IMPL}' ]]; then echo 'MPI_IMPL=ompi ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; else echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"
+     bash -c "if [[ ! -z '${MPI_IMPL}' ]]; then echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"
      bash -c "if [[ -z '${CUDA_CC}' ]]; then echo 'CUDA_CC=90 ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; else echo 'CUDA_CC is ${CUDA_CC}'; echo 'CUDA_CC=${CUDA_CC} ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; fi" 
      bash -c "if [[ -z '${BRANCH}' ]]; then echo 'BRANCH=master ' >> ${SINGULARITY_ROOTFS}/branch.txt ; else echo 'BRANCH is ${BRANCH}'; echo 'BRANCH=${BRANCH} ' >> ${SINGULARITY_ROOTFS}/branch.txt ; fi"
      bash -c "if [[ -z '${MYUSERNAME}' ]]; then echo 'MYUSERNAME=nwchemgit ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; else echo 'MYUSERNAME is ${MYUSERNAME}'; echo 'MYUSERNAME=${MYUSERNAME} ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; fi"
@@ -39,15 +42,54 @@ export DEBIAN_FRONTEND=noninteractive
  export LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/opt/intel/oneapi/compiler/latest/linux/lib 
  export `cat ./fc.txt`
  export `cat ./use_sysv.txt`
- export `cat ./ompi.txt`
- export `cat ./ucx.txt`
+ if [ ! -f ./mpi_impl.txt ]; then
+     echo MPI_IMPL not defined
+     exit 1
+ else
+     export `cat ./mpi_impl.txt`
+     echo MPI_IMPL is $MPI_IMPL
+ fi
+ if [ $MPI_IMPL = "ompi" ]; then
+     if [ -f ./ompi.txt]; then
+	 echo OMPI not defined
+	 exit 1
+     else
+	 export `cat ./ompi.txt`
+	 echo OMPI is $OMPI
+     fi
+ fi
+ if [ $MPI_IMPL = "mpich" ]; then
+     if [ -f ./mpich.txt]; then
+	 echo MPICH not defined
+	 exit 1
+     else
+	 export `cat ./mpich.txt`
+	 echo MPICH is $MPICH
+     fi
+     if [ ! -f ./mpich_device.txt ]; then
+	 echo MPICH_DEVICE not defined
+	 exit 1
+     else
+	 export `cat ./mpich_device.txt`
+	 echo MPICH_DEVICE is $MPICH_DEVICE
+     fi
+ fi
+ if [  -f ./ucx.txt ]; then
+     export `cat ./ucx.txt`
+     echo UCX is $UCX
+ elif [  -f ./ofi.txt ];
+      export `cat ./ofi.txt`
+      echo OFI is $OFI
+ else
+     echo neither UCX nor OFI defined
+     echo exiting
+     exit 1
+ fi
  export `cat ./armci_network.txt`
- export `cat ./mpi_impl.txt`
  export `cat ./cuda_cc.txt` 
  export `cat ./branch.txt`
  export `cat ./myusername.txt`
  echo FC is $FC
- echo OMPI is $OMPI
  echo CUDA_CC $CUDA_CC 
  export ompi_prefix=openmpi-$OMPI
  echo ompi_prefix is $ompi_prefix 
