@@ -119,8 +119,10 @@ set -ex
      ompi_minor=-1
  fi
  if [  -f ./ucx.txt ]; then
+     echo cat ucx `cat ./ucx.txt`
      export `cat ./ucx.txt`
      echo UCX is $UCX
+     echo @@@@@@@@@
      export UCXVTAG=v$UCX 
      echo standard UCXVTAG is $UCXVTAG 
      if [ $UCX = 1.20.0 ]; then export UCXVTAG=$UCX ; fi 
