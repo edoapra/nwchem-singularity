@@ -166,7 +166,7 @@ export PATH=$MPI_DIR/bin:/opt/intel/oneapi/compiler/latest/bin:/opt/intel/oneapi
  pwd 
  apt-get -y install -y   tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
  g++ gfortran   make ssh patch   unzip perl-base file \
- python3 python3-dev cmake  unzip zip perl automake libtool autoconf flex  \
+ python3 python3-dev python-is-python3 cmake  unzip zip perl automake libtool autoconf flex  \
  libnuma-dev libslurm-dev \
  libnl-3-dev  libnl-route-3-dev udev \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers  \
@@ -355,7 +355,7 @@ if [ -n "${MPICH+1}" ]; then
 	    wget https://raw.githubusercontent.com/pmodels/mpich/refs/tags/v4.3.2/src/pm/hydra/lib/tools/bootstrap/external/slurm_query_node_list.c 
 	    mv slurm_query_node_list.c src/pm/hydra/tools/bootstrap/external/slurm_query_node_list.c
 	fi 
-	./configure  --prefix=$MPICH_DIR   
+	./configure  --prefix=$MPICH_DIR   \
 	$mpich_options \
 	    --with-device=$MPICH_DEVICE  \
 	    --enable-fortran=all \
@@ -404,7 +404,6 @@ fi
  export USE_SIMINT=y
  export SIMINT_MAXAM=5
  export PYTHONVERSION=$(python -V| cut -d ' ' -f 2 |cut -d . -f 1-2) 
- ls -l nwchem* || true 
  /usr/bin/env|egrep BUILD_ 
  echo " ==========" 
  pwd 
