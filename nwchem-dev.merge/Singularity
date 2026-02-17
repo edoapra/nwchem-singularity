@@ -7,18 +7,18 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
     ls -la  ${GITHUB_WORKSPACE} 
      export CACHEDIR=${GITHUB_WORKSPACE}/../../../cache
      rm -f ${SINGULARITY_ROOTFS}/*.txt || true
-     bash -c "if [[ -z '${FC}' ]]; then echo 'FC=gfortran ' >> ${SINGULARITY_ROOTFS}/fc.txt ; else echo 'FC is ${FC}'; echo 'FC=${FC} ' >> ${SINGULARITY_ROOTFS}/fc.txt ; fi"
-     bash -c "if [[ -z '${USE_SYSV}' ]]; then echo 'USE_SYSV=N ' >> ${SINGULARITY_ROOTFS}/use_sysv.txt ; else echo 'USE_SYSV is ${USE_SYSV}'; echo 'USE_SYSV=${USE_SYSV} ' >> ${SINGULARITY_ROOTFS}/use_sysv.txt ; fi"
-     bash -c "if [[ -z '${MPICH}' ]]; then echo 'MPICH=3.4.2 ' >> ${SINGULARITY_ROOTFS}/mpich.txt ; else echo 'MPICH is ${MPICH}'; echo 'MPICH=${MPICH} ' >> ${SINGULARITY_ROOTFS}/mpich.txt ; fi"
-     bash -c "if [[ -z '${OMPI}' ]]; then echo 'OMPI=4.1.6 ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; else echo 'OMPI is ${OMPI}'; echo 'OMPI=${OMPI} ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; fi"
-     bash -c "if [[ ! -z '${UCX}' ]]; then  echo 'UCX is ${UCX}'; echo 'UCX=${UCX} ' >> ${SINGULARITY_ROOTFS}/ucx.txt ; fi"
-     bash -c "if [[ ! -z '${OFI}' ]]; then  echo 'OFI is ${OFI}'; echo 'OFI=${OFI} ' >> ${SINGULARITY_ROOTFS}/ofi.txt ; fi"
-     bash -c "if [[ -z '${MPICH_DEVICE}' ]]; then echo 'MPICH_DEVICE=ch4:ofi '  >> ${SINGULARITY_ROOTFS}/mpich_device.txt; else echo 'MPICH_DEVICE=${MPICH_DEVICE} ' >> ${SINGULARITY_ROOTFS}/mpich_device.txt ; fi"
-     bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"
-     bash -c "if [[ ! -z '${MPI_IMPL}' ]]; then echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"
-     bash -c "if [[ -z '${CUDA_CC}' ]]; then echo 'CUDA_CC=cpu ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; else echo 'CUDA_CC is ${CUDA_CC}'; echo 'CUDA_CC=${CUDA_CC} ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; fi" 
-     bash -c "if [[ -z '${BRANCH}' ]]; then echo 'BRANCH=master ' >> ${SINGULARITY_ROOTFS}/branch.txt ; else echo 'BRANCH is ${BRANCH}'; echo 'BRANCH=${BRANCH} ' >> ${SINGULARITY_ROOTFS}/branch.txt ; fi"
-     bash -c "if [[ -z '${MYUSERNAME}' ]]; then echo 'MYUSERNAME=nwchemgit ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; else echo 'MYUSERNAME is ${MYUSERNAME}'; echo 'MYUSERNAME=${MYUSERNAME} ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; fi"
+     bash -c "if [[ -n '${FC}' ]]; then echo 'FC=gfortran ' >> ${SINGULARITY_ROOTFS}/fc.txt ; else echo 'FC is ${FC}'; echo 'FC=${FC} ' >> ${SINGULARITY_ROOTFS}/fc.txt ; fi"
+     bash -c "if [[ -n '${USE_SYSV}' ]]; then echo 'USE_SYSV=N ' >> ${SINGULARITY_ROOTFS}/use_sysv.txt ; else echo 'USE_SYSV is ${USE_SYSV}'; echo 'USE_SYSV=${USE_SYSV} ' >> ${SINGULARITY_ROOTFS}/use_sysv.txt ; fi"
+     bash -c "if [[ -n '${MPICH}' ]]; then echo 'MPICH=3.4.2 ' >> ${SINGULARITY_ROOTFS}/mpich.txt ; else echo 'MPICH is ${MPICH}'; echo 'MPICH=${MPICH} ' >> ${SINGULARITY_ROOTFS}/mpich.txt ; fi"
+     bash -c "if [[ -n '${OMPI}' ]]; then echo 'OMPI=4.1.6 ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; else echo 'OMPI is ${OMPI}'; echo 'OMPI=${OMPI} ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; fi"
+     bash -c "if [[ ! -n '${UCX}' ]]; then  echo 'UCX is ${UCX}'; echo 'UCX=${UCX} ' >> ${SINGULARITY_ROOTFS}/ucx.txt ; fi"
+     bash -c "if [[ ! -n '${OFI}' ]]; then  echo 'OFI is ${OFI}'; echo 'OFI=${OFI} ' >> ${SINGULARITY_ROOTFS}/ofi.txt ; fi"
+     bash -c "if [[ -n '${MPICH_DEVICE}' ]]; then echo 'MPICH_DEVICE=ch4:ofi '  >> ${SINGULARITY_ROOTFS}/mpich_device.txt; else echo 'MPICH_DEVICE=${MPICH_DEVICE} ' >> ${SINGULARITY_ROOTFS}/mpich_device.txt ; fi"
+     bash -c "if [[ -n '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"
+     bash -c "if [[ ! -n '${MPI_IMPL}' ]]; then echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"
+     bash -c "if [[ -n '${CUDA_CC}' ]]; then echo 'CUDA_CC=cpu ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; else echo 'CUDA_CC is ${CUDA_CC}'; echo 'CUDA_CC=${CUDA_CC} ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; fi" 
+     bash -c "if [[ -n '${BRANCH}' ]]; then echo 'BRANCH=master ' >> ${SINGULARITY_ROOTFS}/branch.txt ; else echo 'BRANCH is ${BRANCH}'; echo 'BRANCH=${BRANCH} ' >> ${SINGULARITY_ROOTFS}/branch.txt ; fi"
+     bash -c "if [[ -n '${MYUSERNAME}' ]]; then echo 'MYUSERNAME=nwchemgit ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; else echo 'MYUSERNAME is ${MYUSERNAME}'; echo 'MYUSERNAME=${MYUSERNAME} ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; fi"
      ls -lrt ${CACHEDIR} || true
      ls -la  ${CACHEDIR}/ || true
      ls -la  ${CACHEDIR}/mpi || true
@@ -26,7 +26,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
      ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libnwc_simint.a || true
      ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ||true
      ls -la  ${CACHEDIR}/pmix || true
-     bash -c "if [ ! -z "${GITHUB_WORKSPACE}" ]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/contrib; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/contrib/getmem.nwchem ${SINGULARITY_ROOTFS}/nwchem/contrib/. ;rsync -a ${GITHUB_WORKSPACE}/nwchem/travis ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/.git ${SINGULARITY_ROOTFS}/nwchem/. ; fi"
+     bash -c "if [ ! -n "${GITHUB_WORKSPACE}" ]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/contrib; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/contrib/getmem.nwchem ${SINGULARITY_ROOTFS}/nwchem/contrib/. ;rsync -a ${GITHUB_WORKSPACE}/nwchem/travis ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/.git ${SINGULARITY_ROOTFS}/nwchem/. ; fi"
      if [ $MPI_IMPL = "ompi" ]; then
 	 bash -c "if [[  -f ${CACHEDIR}/mpi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/mpi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"
      fi
