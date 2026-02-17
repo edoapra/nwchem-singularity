@@ -97,7 +97,7 @@ jobs:
         else
           echo "ucxncuda=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
         fi
-        if [[ ${{ matrix.ofi }} !=  builtin ]]; then
+        if [[ ${{ matrix.ofi }} !=  "builtin" ]]; then
           echo "ofi_version=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
         fi
         if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
