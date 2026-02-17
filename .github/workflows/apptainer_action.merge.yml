@@ -99,16 +99,16 @@ jobs:
           echo "ucxncuda=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
         fi
         fi
-        echo OFI is $OFI
+        echo OFI is ${OFI}
         if [[ ! -n $OFI ]]; then
-        if [[ ${{ matrix.ofi }} !=  "builtin" ]]; then
-          echo "ofi_version=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
-        fi
-        if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
-          echo "ofincuda=.ofi${{ matrix.ofi }}.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
-        else
-          echo "ofincuda=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
-        fi
+          if [[ ${{ matrix.ofi }} !=  "builtin" ]]; then
+            echo "ofi_version=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
+            if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
+              echo "ofincuda=.ofi${{ matrix.ofi }}.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
+            else
+              echo "ofincuda=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
+            fi
+          fi
         fi
         set +ex
     - name: github action tag
