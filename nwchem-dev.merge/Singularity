@@ -52,7 +52,7 @@ set -ex
      echo MPI_IMPL is $MPI_IMPL
  fi
  if [ $MPI_IMPL = "ompi" ]; then
-     if [ -f ./ompi.txt]; then
+     if [ ! -f ./ompi.txt]; then
 	 echo OMPI not defined
 	 exit 1
      else
@@ -185,16 +185,16 @@ fi
 fi 
  export GCC_VERSION=11 
  add-apt-repository -y ppa:ubuntu-toolchain-r/test && apt-get update 
- apt-get install -q=2 -y  gcc-"$GCC_VERSION"  g++-"$GCC_VERSION" gfortran-"$GCC_VERSION" libgfortran-"$GCC_VERSION"-dev   file  bzip2  gnupg2  
- update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-"$GCC_VERSION" 100 
- update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-"$GCC_VERSION" 100 
- update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-"$GCC_VERSION" 100 
- apt-get clean 
- echo TTTTT 
- df -h 
- bash -o  pipefail -c  ./nwchem/travis/build_env.sh || true 
- echo TTTTT 
- echo "PATH" $PATH 
+ apt-get install -q=2 -y  gcc-"$GCC_VERSION"  g++-"$GCC_VERSION" gfortran-"$GCC_VERSION" libgfortran-"$GCC_VERSION"-dev bzip2 gnupg2
+ update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-"$GCC_VERSION" 100
+ update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-"$GCC_VERSION" 100
+ update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-"$GCC_VERSION" 100
+ apt-get clean
+ echo TTTTT
+ df -h
+ bash -o  pipefail -c  ./nwchem/travis/build_env.sh || true
+ echo TTTTT
+ echo "PATH" $PATH
  echo "LD_LIBRARY_PATH" $LD_LIBRARY_PATH 
  echo FFFFF 
  echo 'FC -v ' `$FC -v` 
