@@ -89,6 +89,7 @@ jobs:
           echo "armci_network=sysv." >> $GITHUB_ENV
           fi
         fi
+        if [[ ! -z $UCX ]]; then
         if [[ ${{ matrix.ucx }} !=  1.14.1 ]]; then
           echo "ucx_version=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
         fi
@@ -97,6 +98,8 @@ jobs:
         else
           echo "ucxncuda=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
         fi
+        fi
+        if [[ ! -z $OFI ]]; then
         if [[ ${{ matrix.ofi }} !=  "builtin" ]]; then
           echo "ofi_version=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
         fi
@@ -104,6 +107,7 @@ jobs:
           echo "ofincuda=.ofi${{ matrix.ofi }}.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
         else
           echo "ofincuda=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
+        fi
         fi
         set +ex
     - name: github action tag
