@@ -9,25 +9,32 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
      rm -f ${SINGULARITY_ROOTFS}/*.txt || true
      bash -c "if [[ -z '${FC}' ]]; then echo 'FC=gfortran ' >> ${SINGULARITY_ROOTFS}/fc.txt ; else echo 'FC is ${FC}'; echo 'FC=${FC} ' >> ${SINGULARITY_ROOTFS}/fc.txt ; fi"
      bash -c "if [[ -z '${USE_SYSV}' ]]; then echo 'USE_SYSV=N ' >> ${SINGULARITY_ROOTFS}/use_sysv.txt ; else echo 'USE_SYSV is ${USE_SYSV}'; echo 'USE_SYSV=${USE_SYSV} ' >> ${SINGULARITY_ROOTFS}/use_sysv.txt ; fi"
-     bash -c "if [[ -z '${MPICH}' ]]; then echo 'MPICH=3.4.2 ' >> ${SINGULARITY_ROOTFS}/MPICH.txt ; else echo 'MPICH is ${MPICH}'; echo 'MPICH=${MPICH} ' >> ${SINGULARITY_ROOTFS}/mpich.txt ; fi"
+     bash -c "if [[ -z '${MPICH}' ]]; then echo 'MPICH=3.4.2 ' >> ${SINGULARITY_ROOTFS}/mpich.txt ; else echo 'MPICH is ${MPICH}'; echo 'MPICH=${MPICH} ' >> ${SINGULARITY_ROOTFS}/mpich.txt ; fi"
      bash -c "if [[ -z '${OMPI}' ]]; then echo 'OMPI=4.1.6 ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; else echo 'OMPI is ${OMPI}'; echo 'OMPI=${OMPI} ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; fi"
      bash -c "if [[ ! -z '${UCX}' ]]; then  echo 'UCX is ${UCX}'; echo 'UCX=${UCX} ' >> ${SINGULARITY_ROOTFS}/ucx.txt ; fi"
      bash -c "if [[ ! -z '${OFI}' ]]; then  echo 'OFI is ${OFI}'; echo 'OFI=${OFI} ' >> ${SINGULARITY_ROOTFS}/ofi.txt ; fi"
      bash -c "if [[ ! -z '${MPICH_DEVICE}' ]]; then  echo 'MPICH_DEVICE=${MPICH_DEVICE} ' >> ${SINGULARITY_ROOTFS}/mpich_device.txt ; fi"
      bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"
      bash -c "if [[ ! -z '${MPI_IMPL}' ]]; then echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"
-     bash -c "if [[ -z '${CUDA_CC}' ]]; then echo 'CUDA_CC=90 ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; else echo 'CUDA_CC is ${CUDA_CC}'; echo 'CUDA_CC=${CUDA_CC} ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; fi" 
+     bash -c "if [[ -z '${CUDA_CC}' ]]; then echo 'CUDA_CC=cpu ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; else echo 'CUDA_CC is ${CUDA_CC}'; echo 'CUDA_CC=${CUDA_CC} ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; fi" 
      bash -c "if [[ -z '${BRANCH}' ]]; then echo 'BRANCH=master ' >> ${SINGULARITY_ROOTFS}/branch.txt ; else echo 'BRANCH is ${BRANCH}'; echo 'BRANCH=${BRANCH} ' >> ${SINGULARITY_ROOTFS}/branch.txt ; fi"
      bash -c "if [[ -z '${MYUSERNAME}' ]]; then echo 'MYUSERNAME=nwchemgit ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; else echo 'MYUSERNAME is ${MYUSERNAME}'; echo 'MYUSERNAME=${MYUSERNAME} ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; fi"
      ls -lrt ${CACHEDIR} || true
      ls -la  ${CACHEDIR}/ || true
-     ls -la  ${CACHEDIR}/ompi || true
-     ls -la  ${CACHEDIR}/ompi/lib || true
+     ls -la  ${CACHEDIR}/mpi || true
+     ls -la  ${CACHEDIR}/mpi/lib || true
      ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libnwc_simint.a || true
      ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ||true
+     ls -la  ${CACHEDIR}/pmix || true
      bash -c "if [ ! -z "${GITHUB_WORKSPACE}" ]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/contrib; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/contrib/getmem.nwchem ${SINGULARITY_ROOTFS}/nwchem/contrib/. ;rsync -a ${GITHUB_WORKSPACE}/nwchem/travis ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/.git ${SINGULARITY_ROOTFS}/nwchem/. ; fi"
-     bash -c "if [[  -f ${CACHEDIR}/ompi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/ompi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"
+     if [ $MPI_IMPL = "ompi" ]; then
+	 bash -c "if [[  -f ${CACHEDIR}/mpi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/mpi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"
+     fi
+     if [ $MPI_IMPL = "mpich" ]; then
+	 bash -c "if [[  -f ${CACHEDIR}/mpi/lib/libmpi.a ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/mpich ${SINGULARITY_ROOTFS}/opt/. ; echo mpich cache fetched ;fi"
+     fi
      bash -c "if [[  -f ${CACHEDIR}/libext/lib/libnwc_openblas.a ]]; then rsync -a ${CACHEDIR}/libext/* ${SINGULARITY_ROOTFS}/nwchem/src/libext/. ; echo libext cache fetched ;fi"
+     bash -c "if [[  -f ${CACHEDIR}/pmix/etc/pmix-mca-params.conf ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/pmix ${SINGULARITY_ROOTFS}/opt/. ; echo pmix cache fetched ;fi"
      bash -c "if [[  -f ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint.l5_p5_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
 
 ##%files
@@ -52,6 +59,8 @@ set -ex
 	 export `cat ./ompi.txt`
 	 echo OMPI is $OMPI
      fi
+     export OMPI_DIR=/opt/mpi
+     export MPI_DIR=/opt/mpi
      export ompi_prefix=openmpi-$OMPI
      echo ompi_prefix is $ompi_prefix 
      export ompi_major=$(echo $OMPI | cut -d . -f1) 
@@ -69,15 +78,20 @@ set -ex
      echo standard UCXVTAG is $UCXVTAG 
      if [ $UCX = 1.20.0 ]; then export UCXVTAG=$UCX ; fi 
      echo UCX is $UCX UCXVTAG is $UCXVTAG 
+     mpich_major=-1
+     mpich_minor=-1
  fi
  if [ $MPI_IMPL = "mpich" ]; then
-     if [ -f ./mpich.txt]; then
+     if [ ! -f ./mpich.txt ]; then
+	 ls -lrt *txt
 	 echo MPICH not defined
 	 exit 1
      else
 	 export `cat ./mpich.txt`
 	 echo MPICH is $MPICH
      fi
+     export MPICH_DIR=/opt/mpi
+     export MPI_DIR=/opt/mpi
      if [ $MPICH = aurora ]; then
 	 export MPICH_VERSION=$MPICH_AURORA
      else
@@ -104,7 +118,9 @@ set -ex
      fi 
      if [ $MPICH = aurora ]; then
 	 export mpich_options=$mpich_options' --disable-maintainer-mode --with-pm=no --enable-romio --with-slurm=no --with-pmi=pmix --with-pmix=/opt/pmix '
-     fi 
+     fi
+     ompi_major=-1
+     ompi_minor=-1
  fi
  if [  -f ./ucx.txt ]; then
      export `cat ./ucx.txt`
@@ -128,9 +144,8 @@ set -ex
  echo MPI_IMPL is $MPI_IMPL
  echo BRANCH is $BRANCH
 export DEBIAN_FRONTEND=noninteractive 
-export OMPI_DIR=/opt/ompi
-export PATH=$OMPI_DIR/bin:/opt/intel/oneapi/compiler/latest/bin:/opt/intel/oneapi/compiler/latest/linux/bin/intel64:/root//apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
- export LD_LIBRARY_PATH=$OMPI_DIR/lib:/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/lib:/opt/intel/oneapi/compiler/latest/linux/lib/x64:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
+export PATH=$MPI_DIR/bin:/opt/intel/oneapi/compiler/latest/bin:/opt/intel/oneapi/compiler/latest/linux/bin/intel64:/root//apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+ export LD_LIBRARY_PATH=$MPI_DIR/lib:/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/lib:/opt/intel/oneapi/compiler/latest/linux/lib/x64:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
  export LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/opt/intel/oneapi/compiler/latest/linux/lib 
  pwd 
  apt-get -y update 
@@ -161,9 +176,18 @@ export PATH=$OMPI_DIR/bin:/opt/intel/oneapi/compiler/latest/bin:/opt/intel/oneap
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers  \
  libhwloc-dev libfuse3-dev\
  pkg-config gawk  software-properties-common 
- if [ $ompi_major = '4' ]; then
+ if [ $ompi_major = '4' ] || [ $mpich_major = '3' ] || [ $mpich_major = '4' ]; then
     apt-get -y install -y libpmi2-0-dev libpmi0-dev
 fi 
+ if [ $mpich_major = '5' ] || [ $ompi_major = '5' ]; then
+    apt-get -y install -y libpmix-bin libpmix-dev libpmix2
+fi 
+ export GCC_VERSION=11 
+ add-apt-repository -y ppa:ubuntu-toolchain-r/test && apt-get update 
+ apt-get install -q=2 -y  gcc-"$GCC_VERSION"  g++-"$GCC_VERSION" gfortran-"$GCC_VERSION" libgfortran-"$GCC_VERSION"-dev   file  bzip2  gnupg2  
+ update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-"$GCC_VERSION" 100 
+ update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-"$GCC_VERSION" 100 
+ update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-"$GCC_VERSION" 100 
  apt-get clean 
  echo TTTTT 
  df -h 
@@ -198,56 +222,68 @@ echo CUDA_RUNTIME is $CUDA_RUNTIME
 #need to add nvcc compiler flags option  -arch=sm_${CUDA_CC}
 export NVCC_APPEND_FLAGS=-arch=sm_${CUDA_CC}
 echo "looking for libcuda.so" $(find $CUDA_ROOT -name libcuda.so)
-
- 
  dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100 
  apt-get clean
 fi
+     
+if [ ! -z $UCX ]; then
+    echo check ucx install 
+    echo 'ls -l /opt/ompi/lib/libuct.so' $(ls -l /opt/ompi/lib/libuct.so) || true 
+    if [ ! -f /opt/ompi/lib/libuct.so ]; then  
+	$FC -v 
+	wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/$UCXVTAG/ucx-$UCX.tar.gz -O - | tar xzf - 
+	cd ucx-$UCX 
+	wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch 
+	wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/ucx1181_malloc.patch 
+	if [ $UCX = 1.14.1 ] || [ $UCX = 1.15.0 ]; then
+	    patch -p0 < ./ucx_malloc.patch
+	else
+	    patch -p0 < ./ucx1181_malloc.patch
+	fi 
+	mkdir build && cd build 
+	../configure --prefix=$MPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check || { echo "UCX config Failure"; exit 1; }
+	make -j4 || { echo "UCX Compilation Failure"; exit 1; }
+	make install || { echo "UCX Installation Failure"; exit 1; }
+	if [ ! -f $MPI_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi 
+	cd ../..
+    else
+	echo "using UCX cached installtation"
+    fi
+    echo ' check ucx' 
+    if [ ! -f $MPI_DIR//bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi 
+    echo ' /opt/mpi/bin/ucx_info -v ' `/opt/mpi/bin/ucx_info -v|| true` 
+    echo ' ucx Transports' `/opt/mpi/bin/ucx_info  -d |grep Transport |cut -c 19- || true` 
+fi
 
-echo check ompi install 
- echo 'ls -l /opt/ompi/lib/libmpi.so' $(ls -l /opt/ompi/lib/libmpi.so) || true 
- if [ ! -f /opt/ompi/lib/libmpi.so ]; then  
-     $FC -v 
-     wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/$UCXVTAG/ucx-$UCX.tar.gz -O - | tar xzf - 
-     cd ucx-$UCX 
-     wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch 
-     wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/ucx1181_malloc.patch 
-     if [ $UCX = 1.14.1 ] || [ $UCX = 1.15.0 ]; then
-	 patch -p0 < ./ucx_malloc.patch
-     else
-	 patch -p0 < ./ucx1181_malloc.patch
-     fi 
-     mkdir build && cd build 
-     ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check || { echo "UCX config Failure"; exit 1; }
-     make -j4 || { echo "UCX Compilation Failure"; exit 1; }
-     make install || { echo "UCX Installation Failure"; exit 1; }
-     if [ ! -f $OMPI_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi 
-     cd ../.. 
-     wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v$ompi_major.$ompi_minor/openmpi-$OMPI.tar.gz  -O - | tar xzf -
-     cd $ompi_prefix                                                       
-     ./configure  --prefix=$OMPI_DIR --with-ucx=$OMPI_DIR --enable-mca-no-build=btl-uct   \
-		  $ompi_options \
-		  --enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
-		  --without-sge --without-alps --without-lustre --disable-memchecker \
-		  --without-hcoll --disable-static  \
-		  --disable-mpi-java --enable-dlopen --without-cuda  \
-		  FC=$FC || { echo "OMPI config Failure"; exit 1; }
-     head config.log 
-     make FC=$FC -j 6  || { echo "OMPI Compilation Failure"; exit 1; }                              
-     make install      || { echo "OMPI Installation Failure"; exit 1; }            
-     if [ ! -f $OMPI_DIR/bin/mpif90 ]; then echo mpif90\ not\ found ; exit 1 ; fi 
-     echo mpif90 show is $($OMPI_DIR/bin/mpif90 -show) 
-     cd .. ; rm -rf *tar*gz openmpi-* ucx-*
- fi 
 
-echo ' check ucx' 
- if [ ! -f $OMPI_DIR//bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi 
- echo ' /opt/ompi/bin/ucx_info -v ' `/opt/ompi/bin/ucx_info -v|| true` 
- echo ' ucx Transports' `/opt/ompi/bin/ucx_info  -d |grep Transport |cut -c 19- || true` 
- if [ ! -f $OMPI_DIR/bin/mpif90 ]; then echo mpif90\ not\ found ; exit 1 ; fi 
+if [ ! -z $OMPI ]; then
+    echo check ompi install 
+    echo 'ls -l /opt/mpi/lib/libmpi.so' $(ls -l /opt/mpi/lib/libmpi.so) || true 
+    if [ ! -f /opt/mpi/lib/libmpi.so ]; then
+	wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v$ompi_major.$ompi_minor/openmpi-$OMPI.tar.gz  -O - | tar xzf -
+	cd $ompi_prefix                                                       
+	./configure  --prefix=$MPI_DIR --with-ucx=$MPI_DIR --enable-mca-no-build=btl-uct   \
+		     $ompi_options \
+		     --enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
+		     --without-sge --without-alps --without-lustre --disable-memchecker \
+		     --without-hcoll --disable-static  \
+		     --disable-mpi-java --enable-dlopen --without-cuda  \
+		     FC=$FC || { echo "OMPI config Failure"; exit 1; }
+	head config.log 
+	make FC=$FC -j 6  || { echo "OMPI Compilation Failure"; exit 1; }                              
+	make install      || { echo "OMPI Installation Failure"; exit 1; }            
+	if [ ! -f $MPI_DIR/bin/mpif90 ]; then echo mpif90\ not\ found ; exit 1 ; fi 
+	echo mpif90 show is $($MPI_DIR/bin/mpif90 -show) 
+	cd .. ; rm -rf *tar*gz openmpi-* ucx-*
+    else
+	echo using cached OMPI installation
+    fi
+fi
+
+ if [ ! -f $MPI_DIR/bin/mpif90 ]; then echo mpif90\ not\ found ; exit 1 ; fi 
  echo '********'  
- export PATH=$OMPI_DIR/bin:$PATH
- export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
+ export PATH=$MPI_DIR/bin:$PATH
+ export LD_LIBRARY_PATH=$MPI_DIR/lib:$LD_LIBRARY_PATH
  echo ARMCI_NETWORK is $ARMCI_NETWORK
  export NWCHEM_TARGET=LINUX64
  export NWCHEM_MODULES="all python gwmol xtb"
@@ -316,7 +352,7 @@ echo 'ls ~/' `ls -lrt ~/`
  grep SYSV tools/build/comex/config.log 
  ldd  ../bin/LINUX64/nwchem  
 if [ -f /opt/intel/oneapi/compiler/latest/env/vars.sh ]; then  
-    rsync -av /opt/intel/oneapi/compiler/latest/lib/lib*.so* $OMPI_DIR/lib/.
+    rsync -av /opt/intel/oneapi/compiler/latest/lib/lib*.so* $MPI_DIR/lib/.
 fi 
   rm -rf /opt/intel/oneapi/  /opt/nwchem/src/tce /opt/nwchem/src/NWints/simint/libsimint_source/simint.l?_p?_d? || true 
  DEBIAN_FRONTEND=noninteractive apt-get clean -y 
@@ -360,7 +396,7 @@ rm -rf /var/lib/apt/lists/*
 
 #cd /data
 %environment
-export OMPI_DIR=/opt/ompi
+export MPI_DIR=/opt/mpi
 export OMP_NUM_THREADS=1
 export SINGULARITY_OMP_NUM_THREADS=1
 export COMEX_MAX_NB_OUTSTANDING=12
@@ -376,10 +412,10 @@ export SPCE=${NWCHEM_SHARE}/data/solvents/spce.rst
 export CHARMM_S=$NWCHEM_SHARE/data/charmm_s/
 export CHARMM_X=$NWCHEM_SHARE/data/charmm_x/
 export PATH=$PATH:/opt/nwchem/bin/
-export PATH=$OMPI_DIR/bin:$PATH
+export PATH=$MPI_DIR/bin:$PATH
 export NWCHEM_BASIS_LIBRARY=${NWCHEM_SHARE}//libraries/
 export NWCHEM_NWPW_LIBRARY=${NWCHEM_SHARE}//libraryps/
 export LD_LIBRARY_PATH=${CUDA_ROOT}/lib64:"$LD_LIBRARY_PATH" 
-export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$MPI_DIR/lib:$LD_LIBRARY_PATH
 #%runscript
 #exec /bin/bash "$@"
