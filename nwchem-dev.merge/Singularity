@@ -150,7 +150,7 @@ echo check ompi install
      cd ucx-$UCX 
      wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch 
      wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/ucx1181_malloc.patch 
-     if [[ $UCX == 1.14.1 ]] || [[ $UCX == 1.15.0 ]]; then patch -p0 < ./ucx_malloc.patch ; else patch -p0 < ./ucx1181_malloc.patch; fi 
+     if [ $UCX == 1.14.1 ] || [ $UCX == 1.15.0 ]; then patch -p0 < ./ucx_malloc.patch ; else patch -p0 < ./ucx1181_malloc.patch; fi 
      mkdir build && cd build 
      ../configure --prefix=$OMPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check || { echo "UCX config Failure"; exit 1; }
      make -j4 || { echo "UCX Compilation Failure"; exit 1; }
