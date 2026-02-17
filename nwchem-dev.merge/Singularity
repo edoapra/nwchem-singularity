@@ -161,7 +161,7 @@ echo check ompi install
      make install || { echo "UCX Installation Failure"; exit 1; }
      if [ ! -f $OMPI_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi 
      cd ../.. 
-     wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v'$ompi_major'.'$ompi_minor'/openmpi-'$OMPI'.tar.gz  -O - | tar xzf -
+     wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v$ompi_major.$ompi_minor/openmpi-$OMPI.tar.gz  -O - | tar xzf -
      cd $ompi_prefix                                                       
      ./configure  --prefix=$OMPI_DIR --with-ucx=$OMPI_DIR --enable-mca-no-build=btl-uct   \
 		  $ompi_options \
@@ -279,7 +279,7 @@ fi
   ldd  /opt/nwchem/bin/nwchem  
  du -sk *|sort -n 
  echo "dddddddddddd"  
- dpkg-query -Wf '${Installed-Size}t${Package}\n' | sort -n | tail -n 100 \
+ dpkg-query -Wf '${Installed-Size}t${Package}\n' | sort -n | tail -n 100 
  echo "dddddddddddd" 
   du -sk /tmp/* || true 
   ls -lart /tmp ||true 
