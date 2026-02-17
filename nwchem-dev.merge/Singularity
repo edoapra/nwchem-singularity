@@ -262,9 +262,9 @@ if [ -n "${OFI+1}" ]; then
     #install cxi
     export SHSTAG=release/shs-12.0
     git clone https://github.com/HewlettPackard/shs-cassini-headers 
-    git clone --branch \$SHSTAG https://github.com/HewlettPackard/shs-cxi-driver 
+    git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-cxi-driver 
     cd / 
-    git clone --branch \$SHSTAG https://github.com/HewlettPackard/shs-libcxi 
+    git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-libcxi 
     cd shs-libcxi 
     sh autogen.sh 
     ./configure --prefix=$MPI_DIR 
