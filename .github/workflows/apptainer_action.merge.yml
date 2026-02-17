@@ -234,8 +234,11 @@ jobs:
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
         export PATH=/opt/mpi/bin:$PATH
+        if [[ $MPI_IMPL == ompi ]]; then
         export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
+        fi
         export LD_LIBRARY_PATH=/opt/mpi/lib:$LD_LIBRARY_PATH
         export NWCHEM_EXECUTABLE="singularity exec ${{ env.tag }}:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
+     shell: bash
