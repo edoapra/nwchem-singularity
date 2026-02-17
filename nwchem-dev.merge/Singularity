@@ -15,12 +15,14 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
      bash -c "if [[ -n '${OMPI}' ]]; then echo 'OMPI=4.1.6 ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; else echo 'OMPI is ${OMPI}'; echo 'OMPI=${OMPI} ' >> ${SINGULARITY_ROOTFS}/ompi.txt ; fi"
      bash -c "if [[ ! -n '${UCX}' ]]; then  echo 'UCX is ${UCX}'; echo 'UCX=${UCX} ' >> ${SINGULARITY_ROOTFS}/ucx.txt ; fi"
      bash -c "if [[ ! -n '${OFI}' ]]; then  echo 'OFI is ${OFI}'; echo 'OFI=${OFI} ' >> ${SINGULARITY_ROOTFS}/ofi.txt ; fi"
+     ls -lrt ${SINGULARITY_ROOTFS}/*txt
      bash -c "if [[ -n '${MPICH_DEVICE}' ]]; then echo 'MPICH_DEVICE=ch4:ofi '  >> ${SINGULARITY_ROOTFS}/mpich_device.txt; else echo 'MPICH_DEVICE=${MPICH_DEVICE} ' >> ${SINGULARITY_ROOTFS}/mpich_device.txt ; fi"
      bash -c "if [[ -n '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"
-     bash -c "if [[ ! -n '${MPI_IMPL}' ]]; then echo 'MPI_IMPL is ${MPI_IMPL}'; echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"
+     bash -c "if [[ -n '${MPI_IMPL}' ]]; then echo 'MPI_IMPL=ompi '>> ${SINGULARITY_ROOTFS}/mpi_impl.txt; else echo 'MPI_IMPL=${MPI_IMPL} ' >> ${SINGULARITY_ROOTFS}/mpi_impl.txt ; fi"
      bash -c "if [[ -n '${CUDA_CC}' ]]; then echo 'CUDA_CC=cpu ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; else echo 'CUDA_CC is ${CUDA_CC}'; echo 'CUDA_CC=${CUDA_CC} ' >> ${SINGULARITY_ROOTFS}/cuda_cc.txt ; fi" 
      bash -c "if [[ -n '${BRANCH}' ]]; then echo 'BRANCH=master ' >> ${SINGULARITY_ROOTFS}/branch.txt ; else echo 'BRANCH is ${BRANCH}'; echo 'BRANCH=${BRANCH} ' >> ${SINGULARITY_ROOTFS}/branch.txt ; fi"
      bash -c "if [[ -n '${MYUSERNAME}' ]]; then echo 'MYUSERNAME=nwchemgit ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; else echo 'MYUSERNAME is ${MYUSERNAME}'; echo 'MYUSERNAME=${MYUSERNAME} ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; fi"
+     ls -lrt ${SINGULARITY_ROOTFS}/*txt
      ls -lrt ${CACHEDIR} || true
      ls -la  ${CACHEDIR}/ || true
      ls -la  ${CACHEDIR}/mpi || true
