@@ -72,7 +72,7 @@ fi
  echo BRANCH is $BRANCH
  pwd 
  apt-get -y update 
- apt-get -y install -y tzdata git moreutils  wget rsync  sudo ca-certificates 
+ apt-get -y install -y tzdata git moreutils curl wget rsync  sudo ca-certificates 
  echo ca_certificate=/etc/ssl/certs/ca-certificates.crt >  ~/.wgetrc 
  echo        "cacert=/etc/ssl/certs/ca-certificates.crt" >> ~/.curlrc 
  if [ $(echo $FC | cut -c -8) = gfortran ]; then
