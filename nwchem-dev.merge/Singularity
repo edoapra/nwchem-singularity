@@ -74,10 +74,6 @@ set -ex
 	 export ompi_options=' --with-pmi --with-pmi-libdir=/usr/lib/x86_64-linux-gnu --without-verbs '
      fi 
      echo ompi_options $ompi_options 
-     export UCXVTAG=v$UCX 
-     echo standard UCXVTAG is $UCXVTAG 
-     if [ $UCX = 1.20.0 ]; then export UCXVTAG=$UCX ; fi 
-     echo UCX is $UCX UCXVTAG is $UCXVTAG 
      mpich_major=-1
      mpich_minor=-1
  fi
@@ -125,6 +121,10 @@ set -ex
  if [  -f ./ucx.txt ]; then
      export `cat ./ucx.txt`
      echo UCX is $UCX
+     export UCXVTAG=v$UCX 
+     echo standard UCXVTAG is $UCXVTAG 
+     if [ $UCX = 1.20.0 ]; then export UCXVTAG=$UCX ; fi 
+     echo UCX is $UCX UCXVTAG is $UCXVTAG 
  elif [  -f ./ofi.txt ]; then
       export `cat ./ofi.txt`
       echo OFI is $OFI
@@ -269,9 +269,9 @@ if [ -n "${OFI+1}" ]; then
     cd shs-libcxi 
     sh autogen.sh 
     ./configure --prefix=$MPI_DIR 
-    make CFLAGS='-I$MPI_DIR/shs-cassini-headers/include/ -I$MPI_DIR/shs-cxi-driver/include/' pkg_CFLAGS=-Wall -i 
-    make CFLAGS='-I$MPI_DIR/shs-cassini-headers/include/ -I$MPI_DIR/shs-cxi-driver/include/' install-dist_cxi_yamlDATA install-man install-pkgconfigDATA install-pkgincludeHEADERS  install-exec   
-    export libfabric_options=' --enable-cxi=$MPI_DIR  --with-cassini-headers=$MPI_DIR/shs-cassini-headers --with-cxi-uapi-headers=$MPI_DIR/shs-cxi-driver '
+    make CFLAGS=-I$MPI_DIR/shs-cassini-headers/include/\ -I$MPI_DIR/shs-cxi-driver/include/ pkg_CFLAGS=-Wall -i 
+    make CFLAGS=-I$MPI_DIR/shs-cassini-headers/include/\ -I$MPI_DIR/shs-cxi-driver/include/ install-dist_cxi_yamlDATA install-man install-pkgconfigDATA install-pkgincludeHEADERS  install-exec   
+    export libfabric_options=--enable-cxi=$MPI_DIR\ --with-cassini-headers=$MPI_DIR/shs-cassini-headers\ --with-cxi-uapi-headers=$MPI_DIR/shs-cxi-driver
     echo 'libfabric_options are' $libfabric_options
     rm -rf shs-* 
     if [ ${OFI} = builtin ]; then
