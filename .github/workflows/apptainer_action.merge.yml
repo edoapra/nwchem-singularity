@@ -45,7 +45,7 @@ jobs:
               fc: gfortran
               branch: master
               armci_network: MPI-PR
-              folder: nwchem-dev.ompi5x
+              folder: nwchem-dev.merge
               cuda-cc: 80
               
     env:
@@ -56,9 +56,9 @@ jobs:
     - name: nwchem version tag
       run: |
         if [[ ${{ matrix.branch }} ==  master ]]; then
-          echo "nwversion=dev" >> $GITHUB_ENV
+          echo "nwversion=mdev" >> $GITHUB_ENV
         else
-          echo "nwversion=720" >> $GITHUB_ENV
+          echo "nwversion=m720" >> $GITHUB_ENV
         fi
         if [[ ${{ matrix.armci_network }} !=  MPI-PR ]]; then
           net_tag=$(echo ${{ matrix.armci_network }} | tr '[:upper:]' '[:lower:]')
