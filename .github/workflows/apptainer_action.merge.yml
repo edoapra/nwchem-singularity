@@ -19,6 +19,7 @@ jobs:
               ompi: 5.0.9
               use_sysv: N
               ucx: 1.14.1
+              ofi: N
               fc: gfortran
               branch: master
               armci_network: MPI-PR
@@ -28,6 +29,7 @@ jobs:
               mpich: 3.4.2
               use_sysv: N
               ofi: builtin
+              ucx: N
               fc: gfortran
               branch: master
               armci_network: MPI-PR
@@ -37,6 +39,7 @@ jobs:
               ompi: 4.1.8
               use_sysv: N
               ucx: 1.15.0
+              ofi: N
               fc: gfortran
               branch: master
               armci_network: MPI-PR
@@ -46,6 +49,7 @@ jobs:
               ompi: 4.1.8
               use_sysv: N
               ucx: 1.15.0
+              ofi: N
               fc: gfortran
               branch: master
               armci_network: MPI-PR
@@ -89,10 +93,8 @@ jobs:
           echo "armci_network=sysv." >> $GITHUB_ENV
           fi
         fi
-        echo UCX is ${UCX}
-        VAR_LEN=${#UCX}
-        if [[ $VAR_LEN > 1 ]]; then
-          echo "UCX var_len is" $VAR_LEN
+        if [[ $UCX != "N" ]]; then
+          echo UCX is set as ${UCX}
           if [[ ${{ matrix.ucx }} !=  1.14.1 ]]; then
             echo "ucx_version=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
           fi
@@ -102,10 +104,7 @@ jobs:
             echo "ucxncuda=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
           fi
         fi
-        echo OFI is ${OFI}
-        VAR_LEN=${#OFI}
-        if [[ $VAR_LEN > 1 ]]; then
-          echo "OFI var_len is" $VAR_LEN
+        if [[ $OFI != "N" ]]; then
           echo OFI is set as ${OFI}
           if [[ ${{ matrix.ofi }} !=  "builtin" ]]; then
             echo "ofi_version=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
