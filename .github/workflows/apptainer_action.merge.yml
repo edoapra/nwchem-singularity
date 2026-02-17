@@ -241,4 +241,4 @@ jobs:
         export NWCHEM_EXECUTABLE="singularity exec ${{ env.tag }}:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
-     shell: bash
+      shell: bash
