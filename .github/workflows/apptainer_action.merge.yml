@@ -91,20 +91,22 @@ jobs:
         fi
         echo UCX is ${UCX}
         VAR_LEN=${#UCX}
-        if [[ $VAR_LEN > 1 ]]; then 
-        if [[ ${{ matrix.ucx }} !=  1.14.1 ]]; then
-          echo "ucx_version=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
-        fi
-        if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
-          echo "ucxncuda=.ucx${{ matrix.ucx }}.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
-        else
-          echo "ucxncuda=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
-        fi
+        if [[ $VAR_LEN > 1 ]]; then
+          echo "UCX var_len is" $VAR_LEN
+          if [[ ${{ matrix.ucx }} !=  1.14.1 ]]; then
+            echo "ucx_version=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
+          fi
+          if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
+            echo "ucxncuda=.ucx${{ matrix.ucx }}.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
+          else
+            echo "ucxncuda=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
+          fi
         fi
         echo OFI is ${OFI}
         VAR_LEN=${#OFI}
-        if [[ $VAR_LEN > 1 ]]; then 
-        echo OFI is set as ${OFI}
+        if [[ $VAR_LEN > 1 ]]; then
+          echo "OFI var_len is" $VAR_LEN
+          echo OFI is set as ${OFI}
           if [[ ${{ matrix.ofi }} !=  "builtin" ]]; then
             echo "ofi_version=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
             if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
