@@ -5,6 +5,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 
 %setup
     set -ex
+    env
     ls -la  ${GITHUB_WORKSPACE} 
      export CACHEDIR=${GITHUB_WORKSPACE}/../../../cache
      rm -f ${SINGULARITY_ROOTFS}/*.txt || true
