@@ -1,0 +1,220 @@
+name: nwchem_apptainer_merge
+
+on:
+  schedule:
+    - cron: '0 0 * * SUN'
+  repository_dispatch:
+    types: [backend_automation]
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build_image:
+    runs-on: ubuntu-22.04
+    strategy:
+        fail-fast: true
+        matrix:
+          folder:
+            - nwchem-dev.merge
+          ompi:
+            - 5.0.9
+          ucx:
+            - 1.14.1
+          fc:
+            - gfortran
+          branch:
+            - master
+          use_sysv:
+            - N
+          cuda-cc:
+            - cpu
+          armci_network:
+            - MPI-PR
+          include:
+            - ompi: 4.1.8
+              use_sysv: N
+              ucx: 1.15.0
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.merge
+              cuda-cc: cpu
+            - ompi: 4.1.8
+              use_sysv: N
+              ucx: 1.15.0
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.ompi5x
+              cuda-cc: 80
+              
+    env:
+        FC: ${{ matrix.fc }}
+        OMPI: ${{ matrix.ompi }}
+        CUDA_CC: ${{ matrix.cuda-cc }}
+    steps:
+    - name: nwchem version tag
+      run: |
+        if [[ ${{ matrix.branch }} ==  master ]]; then
+          echo "nwversion=dev" >> $GITHUB_ENV
+        else
+          echo "nwversion=720" >> $GITHUB_ENV
+        fi
+        if [[ ${{ matrix.armci_network }} !=  MPI-PR ]]; then
+          net_tag=$(echo ${{ matrix.armci_network }} | tr '[:upper:]' '[:lower:]')
+          if [[ ${{ matrix.use_sysv }} =  Y ]]; then
+          echo "armci_network="${net_tag}".sysv." >> $GITHUB_ENV
+          else
+          echo "armci_network="${net_tag}"." >> $GITHUB_ENV
+          fi
+        else
+          if [[ ${{ matrix.use_sysv }} =  Y ]]; then
+          echo "armci_network=sysv." >> $GITHUB_ENV
+          fi
+        fi
+        if [[ ${{ matrix.ucx }} !=  1.14.1 ]]; then
+          echo "ucx_version=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
+        fi
+        if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
+          echo "cuda-cc=.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
+          echo "ucxncuda=.ucx${{ matrix.ucx }}.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
+        else
+          echo "ucxncuda=.ucx${{ matrix.ucx }}" >> $GITHUB_ENV
+        fi
+    - name: tags
+      run: |
+        if [[ ${{ matrix.fc }} == "gfortran" ]]; then
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucxncuda }}" >> $GITHUB_ENV
+        else
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}ompi${{ matrix.ompi }}${{ env.ucxncuda }}.${{ matrix.fc }}" >> $GITHUB_ENV
+        fi
+        echo "cache_tag=${{ matrix.folder}}-${{ matrix.ompi}}${{ env.ucxncuda }}-${{ env.nwversion}}-nwchemcache-${{ matrix.fc}}-v001" >> $GITHUB_ENV
+    - name: echo-tags
+      run: |
+        echo ' the apptainer tag is ' "${{ env.tag }}"
+        echo ' the cache tag is ' "${{ env.cache_tag }}"
+    - name: Checkout nwchem-singularity source
+      uses: actions/checkout@v6
+      with:
+        repository: edoapra/nwchem-singularity
+        clean: false
+#        path: nwchem-singularity
+    - name: pkg cleanup
+      uses: edoapra/ubuntu-pkg-cleanup@main
+    - name: Setup cache
+      id: setup-cache
+      uses: actions/cache@v5
+      with:
+        path: |
+          ~/cache
+        key: "${{ env.cache_tag }}"
+    - name: fetch cache
+      if: steps.setup-cache.outputs.cache-hit == 'true'
+      run: |
+        ls -lart ~/cache
+        if [[ -f ~/cache/ompi/lib/libmpi.so ]]; then \
+        echo "ompi cache present" ; \
+        fi
+        if [[ -f ~/cache/libext/lib/libnwc_openblas.a ]]; then \
+        echo "libext cache present" ; \
+        fi
+        if [[ -f ~/cache/simint.l5_p5_d1.install/lib/libnwc_simint.a ]]; then \
+        echo "simint cache present" ; \
+        fi
+        if [[ -f ~/cache/ubuntu_jammy.sif ]]; then \
+        cp ~/cache/ubuntu_jammy.sif ${{ matrix.folder }}/. ; \
+        fi
+    - name: Install apptainer
+      env:
+        APP_VER: 1.2.3
+      run: |
+        sudo apt-get install -y  libfuse2 libseccomp2 zlib1g uidmap squashfs-tools squashfuse fuse2fs fuse-overlayfs fakeroot
+        wget -q  https://github.com/apptainer/apptainer/releases/download/v${APP_VER}/apptainer_${APP_VER}_amd64.deb 
+        sudo dpkg -i apptainer_${APP_VER}_amd64.deb
+        which apptainer
+        apptainer version
+    - name: create sif from docker
+      if: steps.setup-cache.outputs.cache-hit != 'true'
+      run: |
+          cd ${{ matrix.folder }}
+          apptainer pull docker://ubuntu:jammy
+    - name: Checkout nwchem source
+      uses: actions/checkout@v6
+      with:
+        repository: nwchemgit/nwchem
+        ref: ${{ matrix.branch}}
+        clean: false
+        fetch-depth: 0
+        path: nwchem
+    - name: build an apptainer container
+      run: |
+        cd ${{ matrix.folder }}
+        USE_SYSV=${{ matrix.use_sysv }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+    - name: store cache
+      run: |
+        mkdir -p ~/cache || true
+        cd ${{ matrix.folder }}
+        apptainer exec ${{ matrix.folder }}.simg cp -r /opt/ompi ~/cache
+        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
+        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
+        cp ubuntu_jammy.sif ~/cache/.
+        echo "cache stored"
+        ls -l ~/cache
+    - name: check if the nwchem binary is present
+      run: |
+        cd ${{ matrix.folder }}
+        apptainer exec ${{ matrix.folder }}.simg ldd /nwchem/bin/LINUX64/nwchem
+    - name: builddate
+      id: build-date
+      run: |
+        echo "date=$(TZ=America/Los_Angeles date +%Y%m%d_%H%M%S)" >> $GITHUB_ENV
+    - name: push to ghcr.io
+      run: |
+        echo ${{ secrets.GITHUB_TOKEN }} | apptainer remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
+        apptainer remote list
+        tries=0 ; until [ "$tries" -ge 5 ] ; do \
+        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:${{ env.date }} && break ; \
+        tries=$((tries+1)) ; echo push1 attempt no.  $tries    ; sleep 30 ; done
+        tries=0 ; until [ "$tries" -ge 5 ] ; do \
+        apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:latest && break ; \
+        tries=$((tries+1)) ; echo push2 attempt no.  $tries    ; sleep 30 ; done
+    - name: test image with apptainer
+      run: |
+        pwd
+        ls -la
+        apptainer pull -F ${{ env.tag }}:${{ env.date }}
+        cd nwchem/QA
+        export UCX_TLS=tcp,self
+        export UCX_POSIX_USE_PROC_LINK=n
+        export APPTAINERENV_OMPI_MCA_btl_vader_single_copy_mechanism=none
+        export OMPI_MCA_btl_vader_single_copy_mechanism=none 
+        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -x OMPI_MCA_btl_vader_single_copy_mechanism=none -n"
+        sudo apt-get install -y openmpi-bin openmpi-common libopenmpi-dev
+        which mpirun
+        ldd `which mpirun`
+        export NWCHEM_EXECUTABLE="apptainer exec ${{ env.tag }}:latest nwchem"
+        ./runtests.mpi.unix procs 2 dft_he2+
+        ./runtests.mpi.unix procs 2 h2o_opt
+    - name: Install Singularity CE
+      env:
+        SG_VER: 4.0.0
+      run: |
+        sudo apt-get purge -y apptainer
+        sudo apt-get update && sudo apt-get install -y \
+        squashfs-tools pkg-config cryptsetup-bin libseccomp2 runc libglib2.0-0 || true
+        wget -q https://github.com/sylabs/singularity/releases/download/v${SG_VER}/singularity-ce_${SG_VER}-focal_amd64.deb
+        sudo dpkg -i singularity-ce_${SG_VER}-focal_amd64.deb
+        which singularity
+        singularity version
+    - name: test image with singularity
+      run: |
+        singularity pull -F ${{ env.tag }}:${{ env.date }}
+        cd nwchem/QA
+        export UCX_TLS=tcp,self
+        export UCX_POSIX_USE_PROC_LINK=n
+        export PATH=/opt/ompi/bin:$PATH
+        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
+        export LD_LIBRARY_PATH=/opt/ompi/lib:$LD_LIBRARY_PATH
+        export NWCHEM_EXECUTABLE="singularity exec ${{ env.tag }}:latest nwchem"
+        ./runtests.mpi.unix procs 2 dft_he2+
+        ./runtests.mpi.unix procs 2 h2o_opt
