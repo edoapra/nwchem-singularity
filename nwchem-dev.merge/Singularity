@@ -260,7 +260,8 @@ if [ $UCX != "N" ]; then
     echo ' /opt/mpi/bin/ucx_info -v ' `/opt/mpi/bin/ucx_info -v|| true` 
     echo ' ucx Transports' `/opt/mpi/bin/ucx_info  -d |grep Transport |cut -c 19- || true` 
 fi
-
+export ORGPWD=$(pwd)
+echp ORGPWD is $ORGPWD
 if [ $OFI != "N" ]; then
     cd / ; ls -lrta  
     mkdir -p $MPI_DIR  
@@ -378,11 +379,12 @@ if [ -n "${MPICH+1}" ]; then
 	tail -300 config.log
 	make FC=$FC -j 6 || { echo "MPICH Compilation Failure"; exit 1; }    
 	make install|| { echo "MPICH Installation Failure"; exit 1; }
+	cd .. ; rm -rf *tar*gz mpich*
     else
 	echo using cached MPICH installation
     fi
 fi
-	
+cd $ORGPWD
 
  if [ ! -f $MPI_DIR/bin/mpif90 ]; then echo mpif90\ not\ found ; exit 1 ; fi 
  echo '********'  
