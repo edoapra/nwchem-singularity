@@ -118,11 +118,11 @@ jobs:
           echo OFI is set as ${OFI}
           if [[ ${{ matrix.ofi }} !=  "builtin" ]]; then
             echo "ofi_version=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
-            if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
+          fi
+          if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
               echo "ofincuda=.ofi${{ matrix.ofi }}.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
-            else
+          else
               echo "ofincuda=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
-            fi
           fi
         fi
         set +ex
