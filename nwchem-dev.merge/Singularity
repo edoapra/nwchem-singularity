@@ -34,7 +34,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
      ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libnwc_simint.a || true
      ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ||true
      ls -la  ${CACHEDIR}/pmix || true
-     bash -c "if [ ! -n "${GITHUB_WORKSPACE}" ]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/contrib; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/contrib/getmem.nwchem ${SINGULARITY_ROOTFS}/nwchem/contrib/. ;rsync -a ${GITHUB_WORKSPACE}/nwchem/travis ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/.git ${SINGULARITY_ROOTFS}/nwchem/. ; fi"
+     bash -c "if [ ! -z "${GITHUB_WORKSPACE}" ]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/contrib; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/contrib/getmem.nwchem ${SINGULARITY_ROOTFS}/nwchem/contrib/. ;rsync -a ${GITHUB_WORKSPACE}/nwchem/travis ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/.git ${SINGULARITY_ROOTFS}/nwchem/. ; fi"
      if [ $MPI_IMPL = "ompi" ]; then
 	 bash -c "if [[  -f ${CACHEDIR}/mpi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/mpi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"
      fi
@@ -130,11 +130,12 @@ set -ex
      echo cat ucx `cat ./ucx.txt`
      export `cat ./ucx.txt`
      echo UCX is $UCX
-     echo @@@@@@@@@
-     export UCXVTAG=v$UCX 
-     echo standard UCXVTAG is $UCXVTAG 
-     if [ $UCX = 1.20.0 ]; then export UCXVTAG=$UCX ; fi 
-     echo UCX is $UCX UCXVTAG is $UCXVTAG 
+     if [ $UCX != "N" ]; then
+	 export UCXVTAG=v$UCX 
+	 echo standard UCXVTAG is $UCXVTAG 
+	 if [ $UCX = 1.20.0 ]; then export UCXVTAG=$UCX ; fi 
+	 echo UCX is $UCX UCXVTAG is $UCXVTAG
+     fi
  elif [  -f ./ofi.txt ]; then
       export `cat ./ofi.txt`
       echo OFI is $OFI
@@ -231,7 +232,7 @@ echo "looking for libcuda.so" $(find $CUDA_ROOT -name libcuda.so)
  apt-get clean
 fi
      
-if [ -n "${UCX+1}" ]; then
+if [ $UCX != "N" ]; then
     echo check ucx install 
     echo 'ls -l /opt/ompi/lib/libuct.so' $(ls -l /opt/ompi/lib/libuct.so) || true 
     if [ ! -f /opt/ompi/lib/libuct.so ]; then  
@@ -260,7 +261,7 @@ if [ -n "${UCX+1}" ]; then
     echo ' ucx Transports' `/opt/mpi/bin/ucx_info  -d |grep Transport |cut -c 19- || true` 
 fi
 
-if [ -n "${OFI+1}" ]; then
+if [ $OFI != "N" ]; then
     cd / ; ls -lrta  
     mkdir -p $MPI_DIR  
     cd $MPI_DIR
