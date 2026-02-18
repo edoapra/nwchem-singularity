@@ -133,7 +133,7 @@ set -ex
      if [ $UCX != "N" ]; then
 	 export UCXVTAG=v$UCX 
 	 echo standard UCXVTAG is $UCXVTAG 
-	 if [ $UCX = 1.20.0 ]; then export UCXVTAG=$UCX ; fi 
+#	 if [ $UCX = 1.20.0 ]; then export UCXVTAG=$UCX ; fi
 	 echo UCX is $UCX UCXVTAG is $UCXVTAG
      fi
  elif [  -f ./ofi.txt ]; then
