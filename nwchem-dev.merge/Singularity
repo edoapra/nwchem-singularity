@@ -135,15 +135,23 @@ set -ex
 	 echo standard UCXVTAG is $UCXVTAG 
 #	 if [ $UCX = 1.20.0 ]; then export UCXVTAG=$UCX ; fi
 	 echo UCX is $UCX UCXVTAG is $UCXVTAG
+         export ucx_or_ofi="--enable-mca-no-build=btl-uct --with-ucx="${MPI_DIR}
      fi
  elif [  -f ./ofi.txt ]; then
       export `cat ./ofi.txt`
       echo OFI is $OFI
- else
+      export ucx_or_ofi="--with-ofi="${MPI_DIR}
+else
      echo neither UCX nor OFI defined
      echo exiting
      exit 1
  fi
+ if [ $UCX != "N" ] ||  [ $OFI != "N" ]; then
+     echo both UCX and OFI are set
+     echo exiting
+     exit 1
+ fi
+echo ucx_or_ofi is $ucx_or_ofi
  export `cat ./armci_network.txt`
  export `cat ./cuda_cc.txt` 
  export `cat ./branch.txt`
@@ -308,15 +316,8 @@ if [ $OFI != "N" ]; then
     cd .. 
     rm -rf libfabr* 
 fi
-set -ex
-if [ $UCX != "N" ]; then
-  export ucx_or_ofi="--enable-mca-no-build=btl-uct --with-ucx="${MPI_DIR}
-fi
-if [ $OFI != "N" ]; then
-  export ucx_or_ofi="--with-ofi="${MPI_DIR}
-fi
 echo ucx_or_ofi is $ucx_or_ofi
-set +ex
+
 if [ -n "${OMPI+1}" ]; then
     echo check ompi install 
     echo 'ls -l /opt/mpi/lib/libmpi.so' $(ls -l /opt/mpi/lib/libmpi.so) || true 
