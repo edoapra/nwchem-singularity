@@ -308,12 +308,15 @@ if [ $OFI != "N" ]; then
     cd .. 
     rm -rf libfabr* 
 fi
+set -ex
 if [ $UCX != "N" ]; then
-  export ucx_or_ofi="--enable-mca-no-build=btl-uct --with-ucx="
+  export ucx_or_ofi="--enable-mca-no-build=btl-uct --with-ucx="${MPI_DIR}
 fi
 if [ $OFI != "N" ]; then
-  export ucx_or_ofi="--with-ofi="
+  export ucx_or_ofi="--with-ofi="${MPI_DIR}
 fi
+echo ucx_or_ofi is $ucx_or_ofi
+set +ex
 if [ -n "${OMPI+1}" ]; then
     echo check ompi install 
     echo 'ls -l /opt/mpi/lib/libmpi.so' $(ls -l /opt/mpi/lib/libmpi.so) || true 
@@ -321,7 +324,7 @@ if [ -n "${OMPI+1}" ]; then
 	wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v$ompi_major.$ompi_minor/openmpi-$OMPI.tar.gz  -O - | tar xzf -
 	cd $ompi_prefix                                                       
 	./configure  --prefix=${MPI_DIR} \
-	$ucx_or_ofi${MPI_DIR}   \
+	$ucx_or_ofi   \
 		     $ompi_options \
 		     --enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
 		     --without-sge --without-alps --without-lustre --disable-memchecker \
