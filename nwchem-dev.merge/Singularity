@@ -18,7 +18,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
      cat ${SINGULARITY_ROOTFS}/ucx.txt
      echo OFI is ${OFI}
      bash -c "if [[  -z ${OFI} ]]; then  echo 'OFI=1.19.0' >> ${SINGULARITY_ROOTFS}/ofi.txt; else echo 'OFI=${OFI} ' >> ${SINGULARITY_ROOTFS}/ofi.txt ; fi"
-     cat ${SINGULARITY_ROOTFS}/ofi.tx
+     cat ${SINGULARITY_ROOTFS}/ofi.txt
      ls -lrt ${SINGULARITY_ROOTFS}/*txt
      bash -c "if [[ -z '${MPICH_DEVICE}' ]]; then echo 'MPICH_DEVICE=ch4:ofi '  >> ${SINGULARITY_ROOTFS}/mpich_device.txt; else echo 'MPICH_DEVICE=${MPICH_DEVICE} ' >> ${SINGULARITY_ROOTFS}/mpich_device.txt ; fi"
      bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"
