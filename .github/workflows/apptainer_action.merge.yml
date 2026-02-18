@@ -129,7 +129,7 @@ jobs:
     - name: github action tag
       run: |
         if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}${{ matrix.mpi_impl }}${{ matrix.ompi }}${{ matrix.mpich }}${{ env.ucxncuda }}" >> $GITHUB_ENV
+          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}${{ matrix.mpi_impl }}${{ matrix.ompi }}${{ matrix.mpich }}${{ env.ucxncuda }}${{ env.ofincuda }}" >> $GITHUB_ENV
         else
           echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}${{ matrix.mpi_impl }}${{ matrix.ompi }}${{ matrix.mpich }}${{ env.ucxncuda }}${{ env.ofincuda }}.${{ matrix.fc }}" >> $GITHUB_ENV
         fi
