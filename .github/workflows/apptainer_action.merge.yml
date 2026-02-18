@@ -120,9 +120,9 @@ jobs:
             echo "ofi_version=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
           fi
           if [[ ${{ matrix.cuda-cc }} !=  "cpu" ]]; then
-              echo "ofincuda=.ofi${{ matrix.ofi }}.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
+              echo "ofincuda=.ofi${{ env.ofi_version }}.cuda-cc${{ matrix.cuda-cc }}" >> $GITHUB_ENV
           else
-              echo "ofincuda=.ofi${{ matrix.ofi }}" >> $GITHUB_ENV
+              echo "ofincuda=.ofi${{ env.ofi_version }}" >> $GITHUB_ENV
           fi
         fi
         set +ex
