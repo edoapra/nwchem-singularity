@@ -65,6 +65,16 @@ jobs:
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: 80
+            - mpi_impl: ompi
+              ompi: 4.1.8
+              use_sysv: N
+              ucx: 1.15.0
+              ofi: N
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.merge
+              cuda-cc: 90
               
     env:
         FC: ${{ matrix.fc }}
