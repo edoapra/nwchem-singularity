@@ -261,7 +261,7 @@ if [ $UCX != "N" ]; then
     echo ' ucx Transports' `/opt/mpi/bin/ucx_info  -d |grep Transport |cut -c 19- || true` 
 fi
 export ORGPWD=$(pwd)
-echp ORGPWD is $ORGPWD
+echo ORGPWD is $ORGPWD
 if [ $OFI != "N" ]; then
     cd / ; ls -lrta  
     mkdir -p $MPI_DIR  
