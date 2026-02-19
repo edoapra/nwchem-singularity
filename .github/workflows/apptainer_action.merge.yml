@@ -76,7 +76,27 @@ jobs:
               folder: nwchem-dev.merge
               cuda-cc: cpu
             - mpi_impl: mpich
+              mpich: 5.0.0
+              use_sysv: N
+              ofi: builtin
+              ucx: N
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.merge
+              cuda-cc: cpu
+            - mpi_impl: mpich
               mpich: 4.3.2
+              use_sysv: N
+              ofi: 2.3.1
+              ucx: N
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.merge
+              cuda-cc: cpu
+            - mpi_impl: mpich
+              mpich: 5.0.0
               use_sysv: N
               ofi: 2.3.1
               ucx: N
@@ -176,16 +196,16 @@ jobs:
           fi
         fi
         set +ex
-    - name: github action tag
-      run: |
-        if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}${{ matrix.mpi_impl }}${{ matrix.ompi }}${{ matrix.mpich }}${{ env.ucxncuda }}${{ env.ofincuda }}" >> $GITHUB_ENV
-        else
-          echo "tag=oras://ghcr.io/${{ github.repository }}/nwchem-${{ env.nwversion}}.${{ env.armci_network}}${{ matrix.mpi_impl }}${{ matrix.ompi }}${{ matrix.mpich }}${{ env.ucxncuda }}${{ env.ofincuda }}.${{ matrix.fc }}" >> $GITHUB_ENV
-        fi
     - name: cache tag
       run: |
-        echo "cache_tag=${{ env.tag }}-v001" >> $GITHUB_ENV
+        if [[ ${{ matrix.fc }} == "gfortran" ]]; then
+          echo "cache_tag=nwchem-${{ env.nwversion}}.${{ env.armci_network}}${{ matrix.mpi_impl }}${{ matrix.ompi }}${{ matrix.mpich }}${{ env.ucxncuda }}${{ env.ofincuda }}" >> $GITHUB_ENV
+        else
+          echo "cache_tag=nwchem-${{ env.nwversion}}.${{ env.armci_network}}${{ matrix.mpi_impl }}${{ matrix.ompi }}${{ matrix.mpich }}${{ env.ucxncuda }}${{ env.ofincuda }}.${{ matrix.fc }}" >> $GITHUB_ENV
+        fi
+    - name: github action tag
+      run: |
+        echo "tag=oras://ghcr.io/${{ github.repository }}/${{ env.cache_tag }}" >> $GITHUB_ENV
     - name: echo-tags
       run: |
         echo ' the apptainer tag is ' "${{ env.tag }}"
