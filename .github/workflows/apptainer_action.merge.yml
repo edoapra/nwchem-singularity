@@ -254,7 +254,7 @@ jobs:
       run: |
         mkdir -p ~/cache || true
         cd ${{ matrix.folder }}
-        apptainer exec ${{ matrix.folder }}.simg cp -r /opt/mpi ~/cache
+        apptainer exec ${{ matrix.folder }}.simg rsync --exclude=.git -av  /opt/mpi ~/cache/.
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
         cp ubuntu_jammy.sif ~/cache/.

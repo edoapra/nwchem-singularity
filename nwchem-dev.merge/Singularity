@@ -286,11 +286,15 @@ if [ $OFI != "N" ]; then
 	cd / ; ls -lrta  
 	mkdir -p $MPI_DIR  
 	cd $MPI_DIR
-	export SHSTAG=release/shs-12.0
-	git clone https://github.com/HewlettPackard/shs-cassini-headers 
-	git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-cxi-driver 
-	cd $ORGPWD 
-	git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-libcxi 
+	export SHSTAG=release/shs-12.0.2
+	wget --progress=dot:giga https://github.com/HewlettPackard/shs-cassini-headers/archive/refs/heads/main.tar.gz -O - | tar xzf -
+	mv shs-cassini-headers* shs-cassini-headers
+	git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-cxi-driver
+	wget https://github.com/HewlettPackard/shs-cxi-driver/archive/refs/tags/${SHSTAG}.tar.gz -O - |tar xzf -
+	mv shs-cxi-driver* shs-cxi-driver
+	cd $ORGPWD
+	wget --progress=dot:giga https://github.com/HewlettPackard/shs-libcxi/archive/refs/tags/release/${SHSTAG}.tar.gz -O - | tar xzf -
+	mv shs-libcxi-* shs-libcxi
 	cd shs-libcxi 
 	sh autogen.sh 
 	./configure --prefix=$MPI_DIR 
@@ -309,8 +313,7 @@ if [ $OFI != "N" ]; then
 	else
 	    if [ ${OFI} = git ]; then
 		export COMMIT=c3420a7402a10f5fe3f475ac5eb39b3f2837f8d1
-		curl -L https://github.com/ofiwg/libfabric/archive/$COMMIT.tar.gz -o libfabric-$COMMIT.tar.gz  
-		tar xzf libfabric-$COMMIT.tar.gz  
+		wget  --progress=dot:giga https://github.com/ofiwg/libfabric/archive/$COMMIT.tar.gz -O - | tar --no-same-owner xzf -
 		ls -lrt 
 		mv libfabric-$COMMIT libfabric-git 
 		cd libfabric-git && sh autogen.sh;
