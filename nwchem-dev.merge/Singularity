@@ -146,7 +146,7 @@ else
      echo exiting
      exit 1
  fi
- if [ $UCX != "N" ] ||  [ $OFI != "N" ]; then
+ if [ $UCX != "N" ] &&  [ $OFI != "N" ]; then
      echo both UCX and OFI are set
      echo exiting
      exit 1
