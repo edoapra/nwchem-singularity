@@ -312,9 +312,9 @@ if [ $OFI != "N" ]; then
 	../configure --prefix=$MPI_DIR $libfabric_options || { echo "OFI configuration Failure"; exit 1; }
 	make -j4 || { echo "OFI Compilation Failure"; exit 1; }
 	make install || { echo "OFI Installation Failure"; exit 1; }
-	export mpich_options=$mpich_options\ --with-libfabric=$MPICH_DIR
+	export mpich_options=$mpich_options\ --with-libfabric=$MPI_DIR
 	echo mpich_options are $mpich_options
-	if [ ! -f $MPICH_DIR/bin/fi_info ]; then echo fi_info\ not\ found ; exit 1 ; fi 
+	if [ ! -f $MPI_DIR/bin/fi_info ]; then echo fi_info\ not\ found ; exit 1 ; fi 
     fi 
     cd .. 
     rm -rf libfabr* 
@@ -357,7 +357,7 @@ if [ -n "${MPICH+1}" ]; then
 	rm xpmem.tar.gz 
 	cd Cray-HPE-xpmem* 
 	sh autogen.sh 
-	./configure --prefix=$MPICH_DIR --disable-kernel-module  || { echo "XPMEM Configuration Failure"; exit 1; }
+	./configure --prefix=$MPI_DIR --disable-kernel-module  || { echo "XPMEM Configuration Failure"; exit 1; }
 	make -j3 || { echo "XPMEM Compilation Failure"; exit 1; }
 	make install || { echo "XPMEM Installation Failure"; exit 1; }
 	cd .. 
@@ -378,13 +378,13 @@ if [ -n "${MPICH+1}" ]; then
 	    wget https://raw.githubusercontent.com/pmodels/mpich/refs/tags/v4.3.2/src/pm/hydra/lib/tools/bootstrap/external/slurm_query_node_list.c 
 	    mv slurm_query_node_list.c src/pm/hydra/tools/bootstrap/external/slurm_query_node_list.c
 	fi 
-	./configure  --prefix=$MPICH_DIR   \
+	./configure  --prefix=$MPI_DIR   \
 	$mpich_options \
 	    --with-device=$MPICH_DEVICE  \
 	    --enable-fortran=all \
 	    --disable-opencl --enable-silent-rules \
 	    --disable-cuda \
-	    --with-xpmem=$MPICH_DIR \
+	    --with-xpmem=$MPI_DIR \
 	    FFLAGS=' -fallow-argument-mismatch ' \
 	    FCFLAGS=' -fallow-argument-mismatch ' \
 	    FC=$FC || { echo "MPICH Configuration Failure"; exit 1; }
