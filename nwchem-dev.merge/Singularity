@@ -42,7 +42,6 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 	 bash -c "if [[  -f ${CACHEDIR}/mpi/lib/libmpi.a ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/mpich ${SINGULARITY_ROOTFS}/opt/. ; echo mpich cache fetched ;fi"
      fi
      bash -c "if [[  -f ${CACHEDIR}/libext/lib/libnwc_openblas.a ]]; then rsync -a ${CACHEDIR}/libext/* ${SINGULARITY_ROOTFS}/nwchem/src/libext/. ; echo libext cache fetched ;fi"
-     bash -c "if [[  -f ${CACHEDIR}/pmix/etc/pmix-mca-params.conf ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/pmix ${SINGULARITY_ROOTFS}/opt/. ; echo pmix cache fetched ;fi"
      bash -c "if [[  -f ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint.l5_p5_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
      set +ex
 ##%files
@@ -124,7 +123,7 @@ set -ex
 	 export mpich_options=' '
      fi 
      if [ $MPICH = aurora ]; then
-	 export mpich_options=$mpich_options' --disable-maintainer-mode --with-pm=no --enable-romio --with-slurm=no --with-pmi=pmix --with-pmix=/opt/pmix '
+	 export mpich_options=$mpich_options' --disable-maintainer-mode --with-pm=no --enable-romio --with-slurm=no --with-pmi=pmix --with-pmix=/opt/mpi '
      fi
      echo mpich_options are $mpich_options
      ompi_major=-1
@@ -392,7 +391,7 @@ if [ -n "${MPICH+1}" ]; then
 #	if [ $MPICH = aurora ]; then
 #	fi 
 	if [ $mpich_major = '4' ]; then
-	 export mpich_options=$mpich_options' --with-pmi=pmix --with-pmix=${MPI_DIR} '
+	 export mpich_options=$mpich_options' --with-pmix='${MPI_DIR} 
 	fi
 	echo ' mpich_options is set to' $mpich_options 
 	wget  --progress=dot:giga https://www.mpich.org/static/downloads/${MPICH_VERSION}/mpich-${MPICH_VERSION}.tar.gz  -O - | tar xzf -   
