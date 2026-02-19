@@ -289,10 +289,11 @@ if [ $OFI != "N" ]; then
 	export SHSTAG=release/shs-12.0.2
 	wget --progress=dot:giga https://github.com/HewlettPackard/shs-cassini-headers/archive/refs/heads/main.tar.gz -O - | tar xzf -
 	mv shs-cassini-headers* shs-cassini-headers
+#	git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-cxi-driver
 	wget https://github.com/HewlettPackard/shs-cxi-driver/archive/refs/tags/${SHSTAG}.tar.gz -O - |tar xzf -
 	mv shs-cxi-driver* shs-cxi-driver
 	cd $ORGPWD
-	wget --progress=dot:giga https://github.com/HewlettPackard/shs-libcxi/archive/refs/tags/release/${SHSTAG}.tar.gz -O - | tar xzf -
+	wget --progress=dot:giga https://github.com/HewlettPackard/shs-libcxi/archive/refs/tags/${SHSTAG}.tar.gz -O - | tar xzf -
 	mv shs-libcxi-* shs-libcxi
 	cd shs-libcxi 
 	sh autogen.sh 
