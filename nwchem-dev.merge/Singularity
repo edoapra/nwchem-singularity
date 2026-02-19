@@ -242,6 +242,8 @@ echo "looking for libcuda.so" $(find $CUDA_ROOT -name libcuda.so)
  apt-get clean
 fi
      
+export ORGPWD=$(pwd)
+echo ORGPWD is $ORGPWD
 if [ $UCX != "N" ]; then
     echo check ucx install 
     echo 'ls -l /opt/ompi/lib/libuct.so' $(ls -l /opt/ompi/lib/libuct.so) || true 
@@ -261,7 +263,7 @@ if [ $UCX != "N" ]; then
 	make -j4 || { echo "UCX Compilation Failure"; exit 1; }
 	make install || { echo "UCX Installation Failure"; exit 1; }
 	if [ ! -f $MPI_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi 
-	cd ../..
+	cd $ORGPWD
     else
 	echo "using UCX cached installtation"
     fi
@@ -270,8 +272,6 @@ if [ $UCX != "N" ]; then
     echo ' /opt/mpi/bin/ucx_info -v ' `/opt/mpi/bin/ucx_info -v|| true` 
     echo ' ucx Transports' `/opt/mpi/bin/ucx_info  -d |grep Transport |cut -c 19- || true` 
 fi
-export ORGPWD=$(pwd)
-echo ORGPWD is $ORGPWD
 if [ $OFI != "N" ]; then
     cd / ; ls -lrta  
     mkdir -p $MPI_DIR  
@@ -280,7 +280,7 @@ if [ $OFI != "N" ]; then
     export SHSTAG=release/shs-12.0
     git clone https://github.com/HewlettPackard/shs-cassini-headers 
     git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-cxi-driver 
-    cd / 
+    cd $ORGPWD 
     git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-libcxi 
     cd shs-libcxi 
     sh autogen.sh 
@@ -289,7 +289,8 @@ if [ $OFI != "N" ]; then
     make CFLAGS=-I$MPI_DIR/shs-cassini-headers/include/\ -I$MPI_DIR/shs-cxi-driver/include/ install-dist_cxi_yamlDATA install-man install-pkgconfigDATA install-pkgincludeHEADERS  install-exec   
     export libfabric_options=--enable-cxi=$MPI_DIR\ --with-cassini-headers=$MPI_DIR/shs-cassini-headers\ --with-cxi-uapi-headers=$MPI_DIR/shs-cxi-driver
     echo 'libfabric_options are' $libfabric_options
-    rm -rf shs-* 
+    rm -rf shs-*
+    cd  $ORGPWD
     if [ ${OFI} = builtin ]; then
 	echo 'using builtin OFI - nothing to download'
     else
@@ -305,7 +306,7 @@ if [ $OFI != "N" ]; then
 	    wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/download/v$OFI/libfabric-$OFI.tar.bz2 -O - | tar --no-same-owner  -xjf -
 #	    export libfabric_options=' '
 	fi 
-	cd / ; echo 'pwd ' $(pwd) ;ls -lrta 
+	cd  $ORGPWD ; echo 'pwd ' $(pwd) ;ls -lrta 
 	cd libfabric-${OFI}
 	mkdir build && cd build 
 	../configure --prefix=$MPI_DIR $libfabric_options || { echo "OFI configuration Failure"; exit 1; }
