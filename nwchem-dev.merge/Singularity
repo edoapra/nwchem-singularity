@@ -50,6 +50,8 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 
 %post
 set -ex
+ export MPICH_AURORA="4.3.0" 
+ export PMIX_VERSION="5.0.10" 
  export `cat ./fc.txt`
  export `cat ./use_sysv.txt`
  if [ ! -f ./mpi_impl.txt ]; then
@@ -96,8 +98,6 @@ set -ex
      fi
      export MPICH_DIR=/opt/mpi
      export MPI_DIR=/opt/mpi
-     export MPICH_AURORA="4.3.0" 
-     export PMIX_VERSION="5.0.10" 
 
      if [ $MPICH = aurora ]; then
 	 export MPICH_VERSION=$MPICH_AURORA
