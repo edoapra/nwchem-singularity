@@ -96,6 +96,9 @@ set -ex
      fi
      export MPICH_DIR=/opt/mpi
      export MPI_DIR=/opt/mpi
+     export MPICH_AURORA="4.3.0" 
+     export PMIX_VERSION="5.0.10" 
+
      if [ $MPICH = aurora ]; then
 	 export MPICH_VERSION=$MPICH_AURORA
      else
@@ -277,61 +280,81 @@ if [ $UCX != "N" ]; then
     echo ' ucx Transports' `/opt/mpi/bin/ucx_info  -d |grep Transport |cut -c 19- || true` 
 fi
 if [ $OFI != "N" ]; then
-    cd / ; ls -lrta  
-    mkdir -p $MPI_DIR  
-    cd $MPI_DIR
     #install cxi
-    export SHSTAG=release/shs-12.0
-    git clone https://github.com/HewlettPackard/shs-cassini-headers 
-    git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-cxi-driver 
-    cd $ORGPWD 
-    git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-libcxi 
-    cd shs-libcxi 
-    sh autogen.sh 
-    ./configure --prefix=$MPI_DIR 
-    make CFLAGS=-I$MPI_DIR/shs-cassini-headers/include/\ -I$MPI_DIR/shs-cxi-driver/include/ pkg_CFLAGS=-Wall -i 
-    make CFLAGS=-I$MPI_DIR/shs-cassini-headers/include/\ -I$MPI_DIR/shs-cxi-driver/include/ install-dist_cxi_yamlDATA install-man install-pkgconfigDATA install-pkgincludeHEADERS  install-exec   
-    export libfabric_options=--enable-cxi=$MPI_DIR\ --with-cassini-headers=$MPI_DIR/shs-cassini-headers\ --with-cxi-uapi-headers=$MPI_DIR/shs-cxi-driver
-    echo 'libfabric_options are' $libfabric_options
-    rm -rf shs-*
+    echo 'ls -l /opt/ompi/shs-cassini-headers' $(ls -l /opt/ompi/shs-cassini-headers) || true 
+    if [ ! -f /opt/ompi/shs-cassini-headers ]; then  
+	cd / ; ls -lrta  
+	mkdir -p $MPI_DIR  
+	cd $MPI_DIR
+	export SHSTAG=release/shs-12.0
+	git clone https://github.com/HewlettPackard/shs-cassini-headers 
+	git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-cxi-driver 
+	cd $ORGPWD 
+	git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-libcxi 
+	cd shs-libcxi 
+	sh autogen.sh 
+	./configure --prefix=$MPI_DIR 
+	make CFLAGS=-I$MPI_DIR/shs-cassini-headers/include/\ -I$MPI_DIR/shs-cxi-driver/include/ pkg_CFLAGS=-Wall -i 
+	make CFLAGS=-I$MPI_DIR/shs-cassini-headers/include/\ -I$MPI_DIR/shs-cxi-driver/include/ install-dist_cxi_yamlDATA install-man install-pkgconfigDATA install-pkgincludeHEADERS  install-exec   
+	export libfabric_options=--enable-cxi=$MPI_DIR\ --with-cassini-headers=$MPI_DIR/shs-cassini-headers\ --with-cxi-uapi-headers=$MPI_DIR/shs-cxi-driver
+	echo 'libfabric_options are' $libfabric_options
+	rm -rf shs-*
+    fi
     cd  $ORGPWD
-    if [ ${OFI} = builtin ]; then
-	echo 'using builtin OFI - nothing to download'
-    else
-	if [ ${OFI} = git ]; then
-	    export COMMIT=c3420a7402a10f5fe3f475ac5eb39b3f2837f8d1
-	    curl -L https://github.com/ofiwg/libfabric/archive/$COMMIT.tar.gz -o libfabric-$COMMIT.tar.gz  
-	    tar xzf libfabric-$COMMIT.tar.gz  
-	    ls -lrt 
-	    mv libfabric-$COMMIT libfabric-git 
-	    cd libfabric-git && sh autogen.sh;
-	    apt-get install -y libconfig-dev libsensors-dev libuv1-dev libfuse-dev libyaml-dev libjson-c-dev libcurl4-openssl-dev  
+    #install OFI
+    echo 'ls -l /opt/ompi/lib/libfabrics.so' $(ls -l /opt/ompi/lib/libfabrics.so) || true 
+    if [ ! -f /opt/ompi/lib/libfabrics.so ]; then  
+	if [ ${OFI} = builtin ]; then
+	    echo 'using builtin OFI - nothing to download'
 	else
-	    wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/download/v$OFI/libfabric-$OFI.tar.bz2 -O - | tar --no-same-owner  -xjf -
-#	    export libfabric_options=' '
+	    if [ ${OFI} = git ]; then
+		export COMMIT=c3420a7402a10f5fe3f475ac5eb39b3f2837f8d1
+		curl -L https://github.com/ofiwg/libfabric/archive/$COMMIT.tar.gz -o libfabric-$COMMIT.tar.gz  
+		tar xzf libfabric-$COMMIT.tar.gz  
+		ls -lrt 
+		mv libfabric-$COMMIT libfabric-git 
+		cd libfabric-git && sh autogen.sh;
+		apt-get install -y libconfig-dev libsensors-dev libuv1-dev libfuse-dev libyaml-dev libjson-c-dev libcurl4-openssl-dev  
+	    else
+		wget --progress=dot:giga  https://github.com/ofiwg/libfabric/releases/download/v$OFI/libfabric-$OFI.tar.bz2 -O - | tar --no-same-owner  -xjf -
+		#	    export libfabric_options=' '
+	    fi 
+	    cd  $ORGPWD ; echo 'pwd ' $(pwd) ;ls -lrta 
+	    cd libfabric-${OFI}
+	    mkdir build && cd build 
+	    ../configure --prefix=$MPI_DIR $libfabric_options || { echo "OFI configuration Failure"; exit 1; }
+	    make -j4 || { echo "OFI Compilation Failure"; exit 1; }
+	    make install || { echo "OFI Installation Failure"; exit 1; }
+	    if [ ! -f $MPI_DIR/bin/fi_info ]; then echo fi_info\ not\ found ; exit 1 ; fi 
 	fi 
-	cd  $ORGPWD ; echo 'pwd ' $(pwd) ;ls -lrta 
-	cd libfabric-${OFI}
-	mkdir build && cd build 
-	../configure --prefix=$MPI_DIR $libfabric_options || { echo "OFI configuration Failure"; exit 1; }
-	make -j4 || { echo "OFI Compilation Failure"; exit 1; }
-	make install || { echo "OFI Installation Failure"; exit 1; }
-	if [ ! -f $MPI_DIR/bin/fi_info ]; then echo fi_info\ not\ found ; exit 1 ; fi 
-    fi 
-    cd .. 
-    rm -rf libfabr* 
+	cd .. 
+	rm -rf libfabr* 
+    fi
 fi
 echo ucx_or_ofi is $ucx_or_ofi
 cd $ORGPWD
+if [ ! -f /opt/mpi/lib/libpmix.so ]; then
+    wget https://github.com/openpmix/openpmix/releases/download/v${PMIX_VERSION}/pmix-${PMIX_VERSION}.tar.gz 
+    tar xzf pmix-${PMIX_VERSION}.tar.gz 
+    cd pmix-${PMIX_VERSION} 
+    ./configure --prefix=${MPI_DIR} || { echo "PMIX configuration Failure"; exit 1; }
+    make -j3 || { echo "PMIX Compilation Failure"; exit 1; }
+    make -j3 install || { echo "PMIX installation Failure"; exit 1; }
+    cd .. 
+    rm -rf pmix-*.*
+fi
 #installing xpmem
-wget --progress=dot:giga https://github.com/Cray-HPE/xpmem/tarball/master -O xpmem.tar.gz 
-tar xzf xpmem.tar.gz 
-rm xpmem.tar.gz 
-cd Cray-HPE-xpmem* 
-sh autogen.sh 
-./configure --prefix=$MPI_DIR --disable-kernel-module  || { echo "XPMEM Configuration Failure"; exit 1; }
-make -j3 || { echo "XPMEM Compilation Failure"; exit 1; }
-make install || { echo "XPMEM Installation Failure"; exit 1; }
+echo 'ls -l /opt/mpi/lib/libxpmem.so' $(ls -l /opt/mpi/lib/libxpmem.so) || true
+if [ ! -f /opt/mpi/lib/libxpmem.so ]; then
+    wget --progress=dot:giga https://github.com/Cray-HPE/xpmem/tarball/master -O xpmem.tar.gz 
+    tar xzf xpmem.tar.gz 
+    rm xpmem.tar.gz 
+    cd Cray-HPE-xpmem* 
+    sh autogen.sh 
+    ./configure --prefix=$MPI_DIR --disable-kernel-module  || { echo "XPMEM Configuration Failure"; exit 1; }
+    make -j3 || { echo "XPMEM Compilation Failure"; exit 1; }
+    make install || { echo "XPMEM Installation Failure"; exit 1; }
+fi
 cd $ORGPWD
 if [ -n "${OMPI+1}" ]; then
     echo check ompi install 
@@ -343,6 +366,7 @@ if [ -n "${OMPI+1}" ]; then
 	$ucx_or_ofi   \
 		     $ompi_options \
 		     --with-xpmem=$MPI_DIR \
+		     --with-pmix=$MPI_DIR \
 		     --enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
 		     --without-sge --without-lustre --disable-memchecker \
 		     --without-hcoll --disable-static  \
@@ -361,19 +385,14 @@ fi
 
 if [ -n "${MPICH+1}" ]; then
     echo check mpich install 
-    echo 'ls -l /opt/mpi/lib/libmpi.a' $(ls -l /opt/mpi/lib/libmpi.a) || true 
-    if [ ! -f /opt/mpi/lib/libmpi.a ]; then
+    echo 'ls -l /opt/mpi/lib/libmpich.so' $(ls -l /opt/mpi/lib/libmpich.so) || true 
+    if [ ! -f /opt/mpi/lib/libmpich.so ]; then
 	$FC -v
-	if [ $MPICH = aurora ]; then
-	    wget https://github.com/openpmix/openpmix/releases/download/v${PMIX_VERSION}/pmix-${PMIX_VERSION}.tar.gz 
-	    tar xzf pmix-${PMIX_VERSION}.tar.gz 
-	    cd pmix-${PMIX_VERSION} 
-	    ./configure --prefix=/opt/pmix || { echo "PMIX configuration Failure"; exit 1; }
-	    make -j3 || { echo "PMIX Compilation Failure"; exit 1; }
-	    make -j3 install || { echo "PMIX installation Failure"; exit 1; }
-	    cd .. 
-	    rm -rf pmix-*.*
-	fi 
+#	if [ $MPICH = aurora ]; then
+#	fi 
+	if [ $mpich_major = '4' ]; then
+	 export mpich_options=$mpich_options' --with-pmi=pmix --with-pmix=${MPI_DIR} '
+	fi
 	echo ' mpich_options is set to' $mpich_options 
 	wget  --progress=dot:giga https://www.mpich.org/static/downloads/${MPICH_VERSION}/mpich-${MPICH_VERSION}.tar.gz  -O - | tar xzf -   
 	cd $mpich_prefix
