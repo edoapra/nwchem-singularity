@@ -253,8 +253,8 @@ export ORGPWD=$(pwd)
 echo ORGPWD is $ORGPWD
 if [ $UCX != "N" ]; then
     echo check ucx install 
-    echo 'ls -l /opt/ompi/lib/libuct.so' $(ls -l /opt/ompi/lib/libuct.so) || true 
-    if [ ! -f /opt/ompi/lib/libuct.so ]; then  
+    echo 'ls -l /opt/mpi/lib/libuct.so' $(ls -l /opt/mpi/lib/libuct.so) || true 
+    if [ ! -f /opt/mpi/lib/libuct.so ]; then  
 	$FC -v 
 	wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/$UCXVTAG/ucx-$UCX.tar.gz -O - | tar xzf - 
 	cd ucx-$UCX 
@@ -281,8 +281,8 @@ if [ $UCX != "N" ]; then
 fi
 if [ $OFI != "N" ]; then
     #install cxi
-    echo 'ls -l /opt/ompi/shs-cassini-headers' $(ls -l /opt/ompi/shs-cassini-headers) || true 
-    if [ ! -f /opt/ompi/shs-cassini-headers ]; then  
+    echo 'ls -l /opt/mpi/shs-cassini-headers' $(ls -l /opt/mpi/shs-cassini-headers) || true 
+    if [ ! -f /opt/mpi/shs-cassini-headers ]; then  
 	cd / ; ls -lrta  
 	mkdir -p $MPI_DIR  
 	cd $MPI_DIR
@@ -302,8 +302,8 @@ if [ $OFI != "N" ]; then
     fi
     cd  $ORGPWD
     #install OFI
-    echo 'ls -l /opt/ompi/lib/libfabrics.so' $(ls -l /opt/ompi/lib/libfabrics.so) || true 
-    if [ ! -f /opt/ompi/lib/libfabrics.so ]; then  
+    echo 'ls -l /opt/mpi/lib/libfabrics.so' $(ls -l /opt/mpi/lib/libfabrics.so) || true 
+    if [ ! -f /opt/mpi/lib/libfabrics.so ]; then  
 	if [ ${OFI} = builtin ]; then
 	    echo 'using builtin OFI - nothing to download'
 	else
