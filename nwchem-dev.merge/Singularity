@@ -60,7 +60,7 @@ set -ex
      echo MPI_IMPL is $MPI_IMPL
  fi
  if [ $MPI_IMPL = "ompi" ]; then
-     if [ ! -f ./ompi.txt]; then
+     if [ ! -f ./ompi.txt ]; then
 	 echo OMPI not defined
 	 exit 1
      else
@@ -137,11 +137,13 @@ set -ex
 	 echo UCX is $UCX UCXVTAG is $UCXVTAG
          export ucx_or_ofi="--enable-mca-no-build=btl-uct --with-ucx="${MPI_DIR}
      fi
- elif [  -f ./ofi.txt ]; then
+ fi
+ if [  -f ./ofi.txt ]; then
       export `cat ./ofi.txt`
       echo OFI is $OFI
       export ucx_or_ofi="--with-ofi="${MPI_DIR}
-else
+ fi
+ if [ $UCX = "N" ] &&  [ $OFI = "N" ]; then
      echo neither UCX nor OFI defined
      echo exiting
      exit 1
@@ -264,7 +266,7 @@ if [ $UCX != "N" ]; then
 	echo "using UCX cached installtation"
     fi
     echo ' check ucx' 
-    if [ ! -f $MPI_DIR//bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi 
+    if [ ! -f $MPI_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi 
     echo ' /opt/mpi/bin/ucx_info -v ' `/opt/mpi/bin/ucx_info -v|| true` 
     echo ' ucx Transports' `/opt/mpi/bin/ucx_info  -d |grep Transport |cut -c 19- || true` 
 fi
