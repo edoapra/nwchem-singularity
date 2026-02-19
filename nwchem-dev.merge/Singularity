@@ -141,7 +141,9 @@ set -ex
  if [  -f ./ofi.txt ]; then
       export `cat ./ofi.txt`
       echo OFI is $OFI
-      export ucx_or_ofi="--with-ofi="${MPI_DIR}
+      if [ $OFI != "N" ]; then
+	  export ucx_or_ofi="--with-ofi="${MPI_DIR}
+      fi
  fi
  if [ $UCX = "N" ] &&  [ $OFI = "N" ]; then
      echo neither UCX nor OFI defined
@@ -331,7 +333,7 @@ if [ -n "${OMPI+1}" ]; then
 	$ucx_or_ofi   \
 		     $ompi_options \
 		     --enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
-		     --without-sge --without-alps --without-lustre --disable-memchecker \
+		     --without-sge --without-lustre --disable-memchecker \
 		     --without-hcoll --disable-static  \
 		     --disable-mpi-java --enable-dlopen --without-cuda  \
 		     FC=$FC || { echo "OMPI config Failure"; exit 1; }
