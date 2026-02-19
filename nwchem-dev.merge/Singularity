@@ -123,6 +123,7 @@ set -ex
      if [ $MPICH = aurora ]; then
 	 export mpich_options=$mpich_options' --disable-maintainer-mode --with-pm=no --enable-romio --with-slurm=no --with-pmi=pmix --with-pmix=/opt/pmix '
      fi
+     echo mpich_options are $mpich_options
      ompi_major=-1
      ompi_minor=-1
  fi
@@ -227,7 +228,8 @@ export CUDA_VERSION_MAJOR=12 ; export CUDA_VERSION_MINOR=4
   curl -LJO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin 
   mv cuda-*.pin /etc/apt/preferences.d/cuda-repository-pin-600 
   apt-get  update 
- apt-get  -y install cuda-nvcc-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-cudart-dev-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-libraries-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-libraries-dev-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} libcublas-dev-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-libraries-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-nvml-dev-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} 
+  apt-get  -y install cuda-nvcc-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-cudart-dev-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-libraries-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-libraries-dev-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} libcublas-dev-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-libraries-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} cuda-nvml-dev-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR} \
+ libnccl-dev
 #figure out CUDA_RUNTIME
 export CUDA_ROOT=/usr/local/cuda-${CUDA_VERSION_MAJOR}.${CUDA_VERSION_MINOR}
 export PATH=${CUDA_ROOT}/bin:$PATH
@@ -314,15 +316,13 @@ if [ $OFI != "N" ]; then
 	../configure --prefix=$MPI_DIR $libfabric_options || { echo "OFI configuration Failure"; exit 1; }
 	make -j4 || { echo "OFI Compilation Failure"; exit 1; }
 	make install || { echo "OFI Installation Failure"; exit 1; }
-	export mpich_options=$mpich_options\ --with-libfabric=$MPI_DIR
-	echo mpich_options are $mpich_options
 	if [ ! -f $MPI_DIR/bin/fi_info ]; then echo fi_info\ not\ found ; exit 1 ; fi 
     fi 
     cd .. 
     rm -rf libfabr* 
 fi
 echo ucx_or_ofi is $ucx_or_ofi
-
+cd $ORGPWD
 if [ -n "${OMPI+1}" ]; then
     echo check ompi install 
     echo 'ls -l /opt/mpi/lib/libmpi.so' $(ls -l /opt/mpi/lib/libmpi.so) || true 
@@ -381,6 +381,7 @@ if [ -n "${MPICH+1}" ]; then
 	    mv slurm_query_node_list.c src/pm/hydra/tools/bootstrap/external/slurm_query_node_list.c
 	fi 
 	./configure  --prefix=$MPI_DIR   \
+	$ucx_or_ofi   \
 	$mpich_options \
 	    --with-device=$MPICH_DEVICE  \
 	    --enable-fortran=all \
