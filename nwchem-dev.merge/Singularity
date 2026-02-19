@@ -197,6 +197,7 @@ export PATH=$MPI_DIR/bin:/opt/intel/oneapi/compiler/latest/bin:/opt/intel/oneapi
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers  \
  libhwloc-dev libfuse3-dev\
  libconfig-dev libsensors-dev libuv1-dev libfuse-dev libyaml-dev libjson-c-dev libcurl4-openssl-dev  \
+ libevdev-dev libevent-dev \
  pkg-config gawk  software-properties-common 
  if [ $ompi_major = '4' ] || [ $mpich_major = '3' ] || [ $mpich_major = '4' ]; then
     apt-get -y install -y libpmi2-0-dev libpmi0-dev
