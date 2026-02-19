@@ -281,8 +281,8 @@ if [ $UCX != "N" ]; then
 fi
 if [ $OFI != "N" ]; then
     #install cxi
-    echo 'ls -l /opt/mpi/shs-cassini-headers' $(ls -l /opt/mpi/shs-cassini-headers) || true 
-    if [ ! -f /opt/mpi/shs-cassini-headers ]; then  
+    echo 'ls -l /opt/mpi/shs-cassini-headers/cray-cassini-headers-public.spec' $(ls -l /opt/mpi/shs-cassini-headers/cray-cassini-headers-public.spec) || true 
+    if [ ! -f /opt/mpi/shs-cassini-headers/cray-cassini-headers-public.spec ]; then  
 	cd / ; ls -lrta  
 	mkdir -p $MPI_DIR  
 	cd $MPI_DIR
