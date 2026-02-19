@@ -323,6 +323,16 @@ if [ $OFI != "N" ]; then
 fi
 echo ucx_or_ofi is $ucx_or_ofi
 cd $ORGPWD
+#installing xpmem
+wget --progress=dot:giga https://github.com/Cray-HPE/xpmem/tarball/master -O xpmem.tar.gz 
+tar xzf xpmem.tar.gz 
+rm xpmem.tar.gz 
+cd Cray-HPE-xpmem* 
+sh autogen.sh 
+./configure --prefix=$MPI_DIR --disable-kernel-module  || { echo "XPMEM Configuration Failure"; exit 1; }
+make -j3 || { echo "XPMEM Compilation Failure"; exit 1; }
+make install || { echo "XPMEM Installation Failure"; exit 1; }
+cd $ORGPWD
 if [ -n "${OMPI+1}" ]; then
     echo check ompi install 
     echo 'ls -l /opt/mpi/lib/libmpi.so' $(ls -l /opt/mpi/lib/libmpi.so) || true 
@@ -332,6 +342,7 @@ if [ -n "${OMPI+1}" ]; then
 	./configure  --prefix=${MPI_DIR} \
 	$ucx_or_ofi   \
 		     $ompi_options \
+		     --with-xpmem=$MPI_DIR \
 		     --enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
 		     --without-sge --without-lustre --disable-memchecker \
 		     --without-hcoll --disable-static  \
@@ -353,16 +364,6 @@ if [ -n "${MPICH+1}" ]; then
     echo 'ls -l /opt/mpi/lib/libmpi.a' $(ls -l /opt/mpi/lib/libmpi.a) || true 
     if [ ! -f /opt/mpi/lib/libmpi.a ]; then
 	$FC -v
-	#installing xpmem
-	wget --progress=dot:giga https://github.com/Cray-HPE/xpmem/tarball/master -O xpmem.tar.gz 
-	tar xzf xpmem.tar.gz 
-	rm xpmem.tar.gz 
-	cd Cray-HPE-xpmem* 
-	sh autogen.sh 
-	./configure --prefix=$MPI_DIR --disable-kernel-module  || { echo "XPMEM Configuration Failure"; exit 1; }
-	make -j3 || { echo "XPMEM Compilation Failure"; exit 1; }
-	make install || { echo "XPMEM Installation Failure"; exit 1; }
-	cd .. 
 	if [ $MPICH = aurora ]; then
 	    wget https://github.com/openpmix/openpmix/releases/download/v${PMIX_VERSION}/pmix-${PMIX_VERSION}.tar.gz 
 	    tar xzf pmix-${PMIX_VERSION}.tar.gz 
