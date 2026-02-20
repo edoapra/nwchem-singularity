@@ -167,7 +167,7 @@ set -ex
 	  if [ $MPI_IMPL = "mpich" ]; then
 	      export pmix_options="--with-pmi=pmix"
 	  fi
-	  export pmix_options=${pmix_options}" --with-pmix="${MPI_DIR}
+	  export pmix_options="${pmix_options} --with-pmix=${MPI_DIR}"
       fi
  fi
 echo ucx_or_ofi is $ucx_or_ofi
