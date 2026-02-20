@@ -108,7 +108,7 @@ jobs:
               use_sysv: N
               ofi: 2.3.1
               ucx: N
-              pmix: N
+              pmix: 4.2.9
               fc: gfortran
               branch: master
               armci_network: MPI-PR
@@ -319,17 +319,21 @@ jobs:
         cd nwchem/QA
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
-        if [[ $MPI_IMPL == ompi ]]; then
+        if [[ $MPI_IMPL == ompi ]] || [[ $PMIX =! N ]]; then
         export APPTAINERENV_OMPI_MCA_btl_vader_single_copy_mechanism=none
         export OMPI_MCA_btl_vader_single_copy_mechanism=none 
         export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -x OMPI_MCA_btl_vader_single_copy_mechanism=none -n"
-        sudo apt-get install -y openmpi-bin openmpi-common libopenmpi-dev
         fi
         if [[ $MPI_IMPL == mpich ]]; then
         sudo apt-get install -y libmpich-dev mpich
+        export MPIRUN_PATH=/usr/bin/mpirun.mpich
         fi
-        which mpirun
-        mpirun -h
+        if [[ $MPI_IMPL == ompi ]] || [[ $PMIX =! N ]]; then
+        sudo apt-get install -y openmpi-bin openmpi-common libopenmpi-dev
+        export MPIRUN_PATH=/usr/bin/mpirun.openmpi
+        fi
+        echo MPIRUN_PATH
+        $MPIRUN_PATH -h
         ldd `which mpirun` || true
         export NWCHEM_EXECUTABLE="apptainer exec ${{ env.tag }}:latest nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
@@ -354,6 +358,12 @@ jobs:
         export PATH=/opt/mpi/bin:$PATH
         if [[ $MPI_IMPL == ompi ]]; then
         export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -n"
+        fi
+        if [[ $MPI_IMPL == mpich ]]; then
+        export MPIRUN_PATH=/usr/bin/mpirun.mpich
+        fi
+        if [[ $MPI_IMPL == ompi ]] || [[ $PMIX =! N ]]; then
+        export MPIRUN_PATH=/usr/bin/mpirun.openmpi
         fi
         export LD_LIBRARY_PATH=/opt/mpi/lib:$LD_LIBRARY_PATH
         export NWCHEM_EXECUTABLE="singularity exec ${{ env.tag }}:latest nwchem"
