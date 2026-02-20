@@ -19,6 +19,8 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
      echo OFI is ${OFI}
      bash -c "if [[  -z ${OFI} ]]; then  echo 'OFI=1.19.0' >> ${SINGULARITY_ROOTFS}/ofi.txt; else echo 'OFI=${OFI} ' >> ${SINGULARITY_ROOTFS}/ofi.txt ; fi"
      cat ${SINGULARITY_ROOTFS}/ofi.txt
+     bash -c "if [[  -z ${PMIX} ]]; then  echo 'PMIX=N' >> ${SINGULARITY_ROOTFS}/pmix.txt; else echo 'PMIX=${PMIX} ' >> ${SINGULARITY_ROOTFS}/pmix.txt ; fi"
+     cat ${SINGULARITY_ROOTFS}/pmix.txt
      ls -lrt ${SINGULARITY_ROOTFS}/*txt
      bash -c "if [[ -z '${MPICH_DEVICE}' ]]; then echo 'MPICH_DEVICE=ch4:ofi '  >> ${SINGULARITY_ROOTFS}/mpich_device.txt; else echo 'MPICH_DEVICE=${MPICH_DEVICE} ' >> ${SINGULARITY_ROOTFS}/mpich_device.txt ; fi"
      bash -c "if [[ -z '${ARMCI_NETWORK}' ]]; then echo 'ARMCI_NETWORK=MPI-PR ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; else echo 'ARMCI_NETWORK is ${ARMCI_NETWORK}'; echo 'ARMCI_NETWORK=${ARMCI_NETWORK} ' >> ${SINGULARITY_ROOTFS}/armci_network.txt ; fi"
@@ -50,7 +52,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 %post
 set -ex
  export MPICH_AURORA="4.3.0" 
- export PMIX="4.2.9" 
+# export PMIX="4.2.9" 
  export `cat ./fc.txt`
  export `cat ./use_sysv.txt`
  if [ ! -f ./mpi_impl.txt ]; then
@@ -157,6 +159,16 @@ set -ex
      echo both UCX and OFI are set
      echo exiting
      exit 1
+ fi
+ if [  -f ./pmix.txt ]; then
+      export `cat ./pmix.txt`
+      echo PMIX is $PMIX
+      if [ $MPI_IMPL = "mpich" ]; then
+	  export pmix_options="--with-pmi=pmix"
+      fi
+      if [ $PMIX != "N" ]; then
+	  export pmix_options=${pmix_options}" --with-pmix="${MPI_DIR}
+      fi
  fi
 echo ucx_or_ofi is $ucx_or_ofi
  export `cat ./armci_network.txt`
@@ -336,15 +348,17 @@ if [ $OFI != "N" ]; then
 fi
 echo ucx_or_ofi is $ucx_or_ofi
 cd $ORGPWD
-if [ ! -f /opt/mpi/lib/libpmix.so ]; then
-    wget https://github.com/openpmix/openpmix/releases/download/v${PMIX}/pmix-${PMIX}.tar.gz 
-    tar xzf pmix-${PMIX}.tar.gz 
-    cd pmix-${PMIX} 
-    ./configure --prefix=${MPI_DIR} || { echo "PMIX configuration Failure"; exit 1; }
-    make -j3 || { echo "PMIX Compilation Failure"; exit 1; }
-    make -j3 install || { echo "PMIX installation Failure"; exit 1; }
-    cd .. 
-    rm -rf pmix-*.*
+if [ $PMIX != "N" ]; then
+    if [ ! -f /opt/mpi/lib/libpmix.so ]; then
+	wget https://github.com/openpmix/openpmix/releases/download/v${PMIX}/pmix-${PMIX}.tar.gz 
+	tar xzf pmix-${PMIX}.tar.gz 
+	cd pmix-${PMIX} 
+	./configure --prefix=${MPI_DIR} || { echo "PMIX configuration Failure"; exit 1; }
+	make -j3 || { echo "PMIX Compilation Failure"; exit 1; }
+	make -j3 install || { echo "PMIX installation Failure"; exit 1; }
+	cd .. 
+	rm -rf pmix-*.*
+    fi
 fi
 #installing xpmem
 echo 'ls -l /opt/mpi/lib/libxpmem.so' $(ls -l /opt/mpi/lib/libxpmem.so) || true
@@ -369,7 +383,7 @@ if [ -n "${OMPI+1}" ]; then
 	$ucx_or_ofi   \
 		     $ompi_options \
 		     --with-xpmem=$MPI_DIR \
-		     --with-pmix=$MPI_DIR \
+		     $pmix_otions \
 		     --enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
 		     --without-sge --without-lustre --disable-memchecker \
 		     --without-hcoll --disable-static  \
@@ -393,8 +407,8 @@ if [ -n "${MPICH+1}" ]; then
 	$FC -v
 #	if [ $MPICH = aurora ]; then
 #	fi 
-	if [ $mpich_major = '4' ]; then
-	 export mpich_options=$mpich_options' --with-pmix='${MPI_DIR} 
+	if [ $mpich_major = '4' ] || [ $mpich_major = '5' ]; then
+	 export mpich_options=$mpich_options $pmix_options
 	fi
 	echo ' mpich_options is set to' $mpich_options 
 	wget  --progress=dot:giga https://www.mpich.org/static/downloads/${MPICH_VERSION}/mpich-${MPICH_VERSION}.tar.gz  -O - | tar xzf -   

@@ -19,6 +19,7 @@ jobs:
               ompi: 5.0.9
               use_sysv: N
               ucx: 1.14.1
+              pmix: 4.2.9
               ofi: N
               fc: gfortran
               branch: master
@@ -29,6 +30,7 @@ jobs:
               ompi: 5.0.9
               use_sysv: N
               ucx: 1.19.1
+              pmix: 4.2.9
               ofi: N
               fc: gfortran
               branch: master
@@ -39,6 +41,7 @@ jobs:
               ompi: 5.0.9
               use_sysv: N
               ucx: N
+              pmix: 4.2.9
               ofi: 2.3.1
               fc: gfortran
               branch: master
@@ -50,6 +53,7 @@ jobs:
               use_sysv: N
               ofi: builtin
               ucx: N
+              pmix: N
               fc: gfortran
               branch: master
               armci_network: MPI-PR
@@ -60,6 +64,7 @@ jobs:
               use_sysv: N
               ofi: builtin
               ucx: N
+              pmix: N
               fc: gfortran
               branch: master
               armci_network: MPI-PR
@@ -70,6 +75,7 @@ jobs:
               use_sysv: N
               ofi: builtin
               ucx: N
+              pmix: N
               fc: gfortran
               branch: master
               armci_network: MPI-PR
@@ -80,6 +86,7 @@ jobs:
               use_sysv: N
               ofi: builtin
               ucx: N
+              pmix: N
               fc: gfortran
               branch: master
               armci_network: MPI-PR
@@ -90,6 +97,7 @@ jobs:
               use_sysv: N
               ofi: 2.3.1
               ucx: N
+              pmix: N
               fc: gfortran
               branch: master
               armci_network: MPI-PR
@@ -100,6 +108,7 @@ jobs:
               use_sysv: N
               ofi: 2.3.1
               ucx: N
+              pmix: N
               fc: gfortran
               branch: master
               armci_network: MPI-PR
@@ -109,6 +118,7 @@ jobs:
               ompi: 4.1.8
               use_sysv: N
               ucx: 1.15.0
+              pmix: 4.2.9
               ofi: N
               fc: gfortran
               branch: master
@@ -119,6 +129,7 @@ jobs:
               ompi: 4.1.8
               use_sysv: N
               ucx: 1.15.0
+              pmix: 4.2.9
               ofi: N
               fc: gfortran
               branch: master
@@ -129,6 +140,7 @@ jobs:
               ompi: 4.1.8
               use_sysv: N
               ucx: 1.15.0
+              pmix: 4.2.9
               ofi: N
               fc: gfortran
               branch: master
@@ -144,6 +156,7 @@ jobs:
         MPICH_DEVICE: ${{ matrix.mpich_device }}
         UCX: ${{ matrix.ucx }}
         OFI: ${{ matrix.ofi }}
+        PMIX: ${{ matrix.pmix }}
         CUDA_CC: ${{ matrix.cuda-cc }}
         BRANCH: ${{ matrix.branch }}
         ARMCI_NETWORK: ${{ matrix.armci_network }}
@@ -267,7 +280,7 @@ jobs:
       run: |
         cd ${{ matrix.folder }}
         USE_SYSV=${{ matrix.use_sysv }} \
-        MPI_IMPL=${{ matrix.mpi_impl }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} OFI=${{ matrix.ofi }} \
+        MPI_IMPL=${{ matrix.mpi_impl }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} OFI=${{ matrix.ofi }} PMIX=${{ matrix.pmix }}\
         FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} \
         apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: store cache
