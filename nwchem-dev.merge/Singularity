@@ -171,8 +171,7 @@ set -ex
       fi
  fi
 echo ucx_or_ofi is $ucx_or_ofi
- export `cat ./armci_n
-etwork.txt`
+ export `cat ./armci_network.txt`
  export `cat ./cuda_cc.txt` 
  export `cat ./branch.txt`
  export `cat ./myusername.txt`
