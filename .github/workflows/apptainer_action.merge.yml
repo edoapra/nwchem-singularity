@@ -362,7 +362,7 @@ jobs:
         if [[ $MPI_IMPL == mpich ]]; then
         export MPIRUN_PATH=/usr/bin/mpirun.mpich
         fi
-        if [[ $MPI_IMPL == ompi ]] || [[ $PMIX =! N ]]; then
+        if [[ $MPI_IMPL == ompi ]] || [[ $PMIX != N ]]; then
         export MPIRUN_PATH=/usr/bin/mpirun.openmpi
         fi
         export LD_LIBRARY_PATH=/opt/mpi/lib:$LD_LIBRARY_PATH
