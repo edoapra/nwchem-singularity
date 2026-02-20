@@ -50,7 +50,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 %post
 set -ex
  export MPICH_AURORA="4.3.0" 
- export PMIX_VERSION="4.2.9" 
+ export PMIX="4.2.9" 
  export `cat ./fc.txt`
  export `cat ./use_sysv.txt`
  if [ ! -f ./mpi_impl.txt ]; then
@@ -337,9 +337,9 @@ fi
 echo ucx_or_ofi is $ucx_or_ofi
 cd $ORGPWD
 if [ ! -f /opt/mpi/lib/libpmix.so ]; then
-    wget https://github.com/openpmix/openpmix/releases/download/v${PMIX_VERSION}/pmix-${PMIX_VERSION}.tar.gz 
-    tar xzf pmix-${PMIX_VERSION}.tar.gz 
-    cd pmix-${PMIX_VERSION} 
+    wget https://github.com/openpmix/openpmix/releases/download/v${PMIX}/pmix-${PMIX}.tar.gz 
+    tar xzf pmix-${PMIX}.tar.gz 
+    cd pmix-${PMIX} 
     ./configure --prefix=${MPI_DIR} || { echo "PMIX configuration Failure"; exit 1; }
     make -j3 || { echo "PMIX Compilation Failure"; exit 1; }
     make -j3 install || { echo "PMIX installation Failure"; exit 1; }
