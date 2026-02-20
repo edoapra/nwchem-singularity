@@ -251,8 +251,8 @@ jobs:
         if [[ -f ~/cache/simint.l5_p5_d1.install/lib/libnwc_simint.a ]]; then \
         echo "simint cache present" ; \
         fi
-        if [[ -f ~/cache/ubuntu_jammy.sif ]]; then \
-        cp ~/cache/ubuntu_jammy.sif ${{ matrix.folder }}/. ; \
+        if [[ -f ~/cache/ubuntu_noble.sif ]]; then \
+        cp ~/cache/ubuntu_noble.sif ${{ matrix.folder }}/. ; \
         fi
     - name: Install apptainer
       env:
@@ -267,7 +267,7 @@ jobs:
       if: steps.setup-cache.outputs.cache-hit != 'true'
       run: |
           cd ${{ matrix.folder }}
-          apptainer pull docker://ubuntu:jammy
+          apptainer pull docker://ubuntu:noble
     - name: Checkout nwchem source
       uses: actions/checkout@v6
       with:
@@ -290,7 +290,7 @@ jobs:
         apptainer exec ${{ matrix.folder }}.simg rsync --exclude=.git -av  /opt/mpi ~/cache/.
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
-        cp ubuntu_jammy.sif ~/cache/.
+        cp ubuntu_noble.sif ~/cache/.
         echo "cache stored"
         ls -l ~/cache
     - name: check if the nwchem binary is present

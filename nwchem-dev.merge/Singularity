@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: ubuntu_jammy.sif
+From: ubuntu_noble.sif
 %labels
 MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
 
