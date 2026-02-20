@@ -163,10 +163,10 @@ set -ex
  if [  -f ./pmix.txt ]; then
       export `cat ./pmix.txt`
       echo PMIX is $PMIX
-      if [ $MPI_IMPL = "mpich" ]; then
-	  export pmix_options="--with-pmi=pmix"
-      fi
       if [ $PMIX != "N" ]; then
+	  if [ $MPI_IMPL = "mpich" ]; then
+	      export pmix_options="--with-pmi=pmix"
+	  fi
 	  export pmix_options=${pmix_options}" --with-pmix="${MPI_DIR}
       fi
  fi
