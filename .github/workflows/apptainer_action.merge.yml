@@ -280,7 +280,7 @@ jobs:
       run: |
         cd ${{ matrix.folder }}
         USE_SYSV=${{ matrix.use_sysv }} \
-        MPI_IMPL=${{ matrix.mpi_impl }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} OFI=${{ matrix.ofi }} PMIX=${{ matrix.pmix }}\
+        MPI_IMPL=${{ matrix.mpi_impl }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} OFI=${{ matrix.ofi }} PMIX=${{ matrix.pmix }} \
         FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} \
         apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: store cache
