@@ -230,7 +230,7 @@ fi
 
 if [ $CUDA_CC != "cpu" ]; then
 export ELPA_NVIDIA=1
-export CUDA_VERSION_MAJOR=12 ; export CUDA_VERSION_MINOR=4
+export CUDA_VERSION_MAJOR=12 ; export CUDA_VERSION_MINOR=6
  curl -LJO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-archive-keyring.gpg
   cp cuda-archive-keyring.gpg /usr/share/keyrings/cuda-archive-keyring.gpg
   echo 'deb [signed-by=/usr/share/keyrings/cuda-archive-keyring.gpg] https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/ /' |  tee /etc/apt/sources.list.d/cuda-ubuntu2404-x86_64.list
