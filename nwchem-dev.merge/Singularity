@@ -212,9 +212,9 @@ export PATH=$MPI_DIR/bin:/opt/intel/oneapi/compiler/latest/bin:/opt/intel/oneapi
  libconfig-dev libsensors-dev libuv1-dev libfuse-dev libyaml-dev libjson-c-dev libcurl4-openssl-dev  \
  libevdev-dev libevent-dev lmod \
  pkg-config gawk  software-properties-common 
-# if [ $ompi_major = '4' ] || [ $mpich_major = '3' ] || [ $mpich_major = '4' ]; then
-#    apt-get -y install -y libpmi2-0-dev libpmi0-dev
-#fi 
+ if [ $ompi_major = '4' ] || [ $mpich_major = '3' ] || [ $mpich_major = '4' ]; then
+    apt-get -y install -y libpmi2-0-dev 
+fi 
 # if [ $mpich_major = '5' ] || [ $ompi_major = '5' ]; then
 #    apt-get -y install -y libpmix-bin libpmix-dev libpmix2
 #fi 
@@ -449,10 +449,10 @@ cd $ORGPWD
  export LD_LIBRARY_PATH=$MPI_DIR/lib:$LD_LIBRARY_PATH
  echo ARMCI_NETWORK is $ARMCI_NETWORK
  export NWCHEM_TARGET=LINUX64
+ export USE_TBLITE=1 
  export NWCHEM_MODULES="all python gwmol xtb"
  #export NWCHEM_MODULES="nwdft driver stepper vib"
  export USE_OPENMP=1 
- export USE_TBLITE=1 
  if [ "$FC" = "gfortran" ]; then 
    export BUILD_PLUMED=1;    export PYTHON_BIN=python3;   export BUILD_ELPA=1
 fi	   
