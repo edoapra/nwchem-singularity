@@ -259,7 +259,7 @@ jobs:
         if [[ -f ~/cache/libext/lib/libnwc_openblas.a ]]; then \
         echo "libext cache present" ; \
         fi
-        if [[ -f ~/cache/simint.l5_p5_d1.install/lib/libnwc_simint.a ]]; then \
+        if [[ -f ~/cache/simint_install/lib/libnwc_simint.a ]]; then \
         echo "simint cache present" ; \
         fi
         if [[ -f ~/cache/ubuntu_noble.sif ]]; then \
@@ -300,7 +300,7 @@ jobs:
         cd ${{ matrix.folder }}
         apptainer exec ${{ matrix.folder }}.simg rsync --exclude=.git -av  /opt/mpi ~/cache/.
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
-        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install ~/cache/. ||true
+        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint_install ~/cache/. ||true
         cp ubuntu_noble.sif ~/cache/.
         echo "cache stored"
         ls -l ~/cache

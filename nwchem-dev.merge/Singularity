@@ -33,12 +33,12 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
      ls -la  ${CACHEDIR}/ || true
      ls -la  ${CACHEDIR}/mpi || true
      ls -la  ${CACHEDIR}/mpi/lib || true
-     ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libnwc_simint.a || true
-     ls -la  ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ||true
+     ls -la  ${CACHEDIR}/simint_install/lib/libnwc_simint.a || true
+     ls -la  ${CACHEDIR}/simint_install/lib/libsimint.a ||true
      bash -c "if [ ! -z "${GITHUB_WORKSPACE}" ]; then mkdir -p ${SINGULARITY_ROOTFS}/nwchem/contrib; rsync -a ${GITHUB_WORKSPACE}/nwchem/src ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/contrib/getmem.nwchem ${SINGULARITY_ROOTFS}/nwchem/contrib/. ;rsync -a ${GITHUB_WORKSPACE}/nwchem/travis ${SINGULARITY_ROOTFS}/nwchem/. ; rsync -a ${GITHUB_WORKSPACE}/nwchem/.git ${SINGULARITY_ROOTFS}/nwchem/. ; fi"
      bash -c "if [[  -f ${CACHEDIR}/mpi/lib/libmpi.so ]]; then mkdir -p ${SINGULARITY_ROOTFS}/opt ;rsync -a ${CACHEDIR}/mpi ${SINGULARITY_ROOTFS}/opt/. ; echo ompi/ucx cache fetched ;fi"
      bash -c "if [[  -f ${CACHEDIR}/libext/lib/libnwc_openblas.a ]]; then rsync -a ${CACHEDIR}/libext/* ${SINGULARITY_ROOTFS}/nwchem/src/libext/. ; echo libext cache fetched ;fi"
-     bash -c "if [[  -f ${CACHEDIR}/simint.l5_p5_d1.install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint.l5_p5_d1.install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint.l5_p5_d1.install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
+     bash -c "if [[  -f ${CACHEDIR}/simint_install/lib/libsimint.a ]]; then rsync -av ${CACHEDIR}/simint_install ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/. ; ln -sf ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install  ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/simint_install;  ls -l ${SINGULARITY_ROOTFS}/nwchem/src/NWints/simint/libsimint_source/; echo simint cache fetched ;fi"
      set +ex
 ##%files
 ##    ${GITHUB_WORKSPACE}/nwchem nwchem
@@ -132,16 +132,24 @@ set -ex
      if [ $UCX != "N" ]; then
 	 export UCXVTAG=v$UCX 
 	 echo standard UCXVTAG is $UCXVTAG 
-#	 if [ $UCX = 1.20.0 ]; then export UCXVTAG=$UCX ; fi
 	 echo UCX is $UCX UCXVTAG is $UCXVTAG
-         export ucx_or_ofi="--enable-mca-no-build=btl-uct --with-ucx="${MPI_DIR}
+	 if [ $MPI_IMPL = "ompi" ]; then
+             export ucx_or_ofi=" --enable-mca-no-build=btl-uct "
+	 fi
+         export ucx_or_ofi="$ucx_or_ofi --with-ucx="${MPI_DIR}
      fi
  fi
  if [  -f ./ofi.txt ]; then
       export `cat ./ofi.txt`
       echo OFI is $OFI
       if [ $OFI != "N" ]; then
-	  export ucx_or_ofi="--with-ofi="${MPI_DIR}
+	  if [ $MPI_IMPL = "mpich" ]; then
+	      if [ $OFI != "builtin" ]; then
+		  export ucx_or_ofi="--with-libfabric="${MPI_DIR}
+	      fi
+	  else
+	      export ucx_or_ofi="--with-ofi="${MPI_DIR}
+	  fi
       fi
  fi
  if [ $UCX = "N" ] &&  [ $OFI = "N" ]; then
@@ -204,12 +212,12 @@ export PATH=$MPI_DIR/bin:/opt/intel/oneapi/compiler/latest/bin:/opt/intel/oneapi
  libconfig-dev libsensors-dev libuv1-dev libfuse-dev libyaml-dev libjson-c-dev libcurl4-openssl-dev  \
  libevdev-dev libevent-dev lmod \
  pkg-config gawk  software-properties-common 
- if [ $ompi_major = '4' ] || [ $mpich_major = '3' ] || [ $mpich_major = '4' ]; then
-    apt-get -y install -y libpmi2-0-dev libpmi0-dev
-fi 
- if [ $mpich_major = '5' ] || [ $ompi_major = '5' ]; then
-    apt-get -y install -y libpmix-bin libpmix-dev libpmix2
-fi 
+# if [ $ompi_major = '4' ] || [ $mpich_major = '3' ] || [ $mpich_major = '4' ]; then
+#    apt-get -y install -y libpmi2-0-dev libpmi0-dev
+#fi 
+# if [ $mpich_major = '5' ] || [ $ompi_major = '5' ]; then
+#    apt-get -y install -y libpmix-bin libpmix-dev libpmix2
+#fi 
  export GCC_VERSION=11 
  add-apt-repository -y ppa:ubuntu-toolchain-r/test && apt-get update 
  apt-get install -q=2 -y  gcc-"$GCC_VERSION"  g++-"$GCC_VERSION" gfortran-"$GCC_VERSION" libgfortran-"$GCC_VERSION"-dev bzip2 gnupg2
@@ -402,7 +410,9 @@ if [ -n "${MPICH+1}" ]; then
 #	if [ $MPICH = aurora ]; then
 #	fi 
 	if [ $mpich_major = '4' ] || [ $mpich_major = '5' ]; then
-	 export mpich_options="$mpich_options $pmix_options"
+	   export mpich_options="$mpich_options $pmix_options --with-hwloc=/usr "
+	else
+	   export mpich_options="$mpich_options --with-hwloc-prefix=/usr "
 	fi
 	echo ' mpich_options is set to' $mpich_options 
 	wget  --progress=dot:giga https://www.mpich.org/static/downloads/${MPICH_VERSION}/mpich-${MPICH_VERSION}.tar.gz  -O - | tar xzf -   
@@ -440,6 +450,7 @@ cd $ORGPWD
  echo ARMCI_NETWORK is $ARMCI_NETWORK
  export NWCHEM_TARGET=LINUX64
  export NWCHEM_MODULES="all python gwmol xtb"
+ #export NWCHEM_MODULES="nwdft driver stepper vib"
  export USE_OPENMP=1 
  export USE_TBLITE=1 
  if [ "$FC" = "gfortran" ]; then 
@@ -477,8 +488,6 @@ export GENERATOR_PROCESSES=2
  patch -p1 < largebasis.patch 
  wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/okeep.patch 
  patch -p1 < okeep.patch 
- wget https://github.com/nwchemgit/nwchem/commit/6bd7f90f40faa1d7558787c1134fe6b1b1d22daf.patch -O elpanv.patch 
- patch -p1 < elpanv.patch || true 
  export NWCHEM_TOP=`pwd` 
  echo 'ls -lrta ' $(ls -lrta) 
  echo 'pwd ' $(pwd) 
