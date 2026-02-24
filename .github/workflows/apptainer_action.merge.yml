@@ -40,6 +40,17 @@ jobs:
             - mpi_impl: ompi
               ompi: 5.0.9
               use_sysv: N
+              ucx: 1.19.1
+              pmix: 4.2.9
+              ofi: N
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.merge
+              cuda-cc: 80
+            - mpi_impl: ompi
+              ompi: 5.0.9
+              use_sysv: N
               ucx: N
               pmix: 4.2.9
               ofi: 2.3.1
@@ -300,7 +311,7 @@ jobs:
         cd ${{ matrix.folder }}
         apptainer exec ${{ matrix.folder }}.simg rsync --exclude=.git -av  /opt/mpi ~/cache/.
         apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/libext ~/cache/. ||true
-        apptainer exec ${{ matrix.folder }}.simg cp -rv /nwchem/src/NWints/simint/libsimint_source/simint_install ~/cache/. ||true
+        apptainer exec ${{ matrix.folder }}.simg rsync -av -L /nwchem/src/NWints/simint/libsimint_source/simint_install ~/cache/. ||true
         cp ubuntu_noble.sif ~/cache/.
         echo "cache stored"
         ls -l ~/cache
