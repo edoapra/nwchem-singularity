@@ -294,30 +294,30 @@ if [ $UCX != "N" ]; then
     echo ' ucx Transports' `/opt/mpi/bin/ucx_info  -d |grep Transport |cut -c 19- || true` 
 fi
 if [ $OFI != "N" ]; then
-    #install cxi
-    echo 'ls -l /opt/mpi/shs-cassini-headers/cray-cassini-headers-public.spec' $(ls -l /opt/mpi/shs-cassini-headers/cray-cassini-headers-public.spec) || true 
-    if [ ! -f /opt/mpi/shs-cassini-headers/cray-cassini-headers-public.spec ]; then  
-	cd / ; ls -lrta  
-	mkdir -p $MPI_DIR  
-	cd $MPI_DIR
-	export SHSTAG=release/shs-12.0.2
-	wget --progress=dot:giga https://github.com/HewlettPackard/shs-cassini-headers/archive/refs/heads/main.tar.gz -O - | tar xzf -
-	mv shs-cassini-headers* shs-cassini-headers
-#	git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-cxi-driver
-	wget https://github.com/HewlettPackard/shs-cxi-driver/archive/refs/tags/${SHSTAG}.tar.gz -O - |tar xzf -
-	mv shs-cxi-driver* shs-cxi-driver
-	cd $ORGPWD
-	wget --progress=dot:giga https://github.com/HewlettPackard/shs-libcxi/archive/refs/tags/${SHSTAG}.tar.gz -O - | tar xzf -
-	mv shs-libcxi-* shs-libcxi
-	cd shs-libcxi 
-	sh autogen.sh 
-	./configure --prefix=$MPI_DIR 
-	make CFLAGS=-I$MPI_DIR/shs-cassini-headers/include/\ -I$MPI_DIR/shs-cxi-driver/include/ pkg_CFLAGS=-Wall -i 
-	make CFLAGS=-I$MPI_DIR/shs-cassini-headers/include/\ -I$MPI_DIR/shs-cxi-driver/include/ install-dist_cxi_yamlDATA install-man install-pkgconfigDATA install-pkgincludeHEADERS  install-exec   
-	export libfabric_options=--enable-cxi=$MPI_DIR\ --with-cassini-headers=$MPI_DIR/shs-cassini-headers\ --with-cxi-uapi-headers=$MPI_DIR/shs-cxi-driver
-	echo 'libfabric_options are' $libfabric_options
-	rm -rf shs-*
-    fi
+#    #install cxi
+#    echo 'ls -l /opt/mpi/shs-cassini-headers/cray-cassini-headers-public.spec' $(ls -l /opt/mpi/shs-cassini-headers/cray-cassini-headers-public.spec) || true 
+#    if [ ! -f /opt/mpi/shs-cassini-headers/cray-cassini-headers-public.spec ]; then  
+#	cd / ; ls -lrta  
+#	mkdir -p $MPI_DIR  
+#	cd $MPI_DIR
+#	export SHSTAG=release/shs-12.0.2
+#	wget --progress=dot:giga https://github.com/HewlettPackard/shs-cassini-headers/archive/refs/heads/main.tar.gz -O - | tar xzf -
+#	mv shs-cassini-headers* shs-cassini-headers
+##	git clone --branch $SHSTAG https://github.com/HewlettPackard/shs-cxi-driver
+#	wget https://github.com/HewlettPackard/shs-cxi-driver/archive/refs/tags/${SHSTAG}.tar.gz -O - |tar xzf -
+#	mv shs-cxi-driver* shs-cxi-driver
+#	cd $ORGPWD
+#	wget --progress=dot:giga https://github.com/HewlettPackard/shs-libcxi/archive/refs/tags/${SHSTAG}.tar.gz -O - | tar xzf -
+#	mv shs-libcxi-* shs-libcxi
+#	cd shs-libcxi 
+#	sh autogen.sh 
+#	./configure --prefix=$MPI_DIR 
+#	make CFLAGS=-I$MPI_DIR/shs-cassini-headers/include/\ -I$MPI_DIR/shs-cxi-driver/include/ pkg_CFLAGS=-Wall -i 
+#	make CFLAGS=-I$MPI_DIR/shs-cassini-headers/include/\ -I$MPI_DIR/shs-cxi-driver/include/ install-dist_cxi_yamlDATA install-man install-pkgconfigDATA install-pkgincludeHEADERS  install-exec   
+#	export libfabric_options=--enable-cxi=$MPI_DIR\ --with-cassini-headers=$MPI_DIR/shs-cassini-headers\ --with-cxi-uapi-headers=$MPI_DIR/shs-cxi-driver
+#	echo 'libfabric_options are' $libfabric_options
+#	rm -rf shs-*
+#    fi
     cd  $ORGPWD
     #install OFI
     echo 'ls -l /opt/mpi/lib/libfabrics.so' $(ls -l /opt/mpi/lib/libfabrics.so) || true 
