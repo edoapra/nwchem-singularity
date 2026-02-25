@@ -257,7 +257,11 @@ CUDA_RUNTIME=$(nvcc --version |grep Cuda\ compilation | cut -d " " -f 5|sed -e s
 echo gpu archs available $(nvcc --list-gpu-arch)
 echo CUDA_RUNTIME is $CUDA_RUNTIME
 #need to add nvcc compiler flags option  -arch=sm_${CUDA_CC}
-export NVCC_APPEND_FLAGS=-arch=sm_${CUDA_CC}
+#export NVCC_APPEND_FLAGS=-arch=sm_${CUDA_CC}
+export TCE_CUDA=1
+export CUDA_LIBS="-L${CUDA_ROOT}/lib64 -lcudart"
+export CUDA_INCLUDE="-I. -I${CUDA_ROOT}/include" 
+
 echo "looking for libcuda.so" $(find $CUDA_ROOT -name libcuda.so)
  dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100 
  apt-get clean
