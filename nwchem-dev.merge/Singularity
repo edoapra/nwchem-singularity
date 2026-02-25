@@ -238,6 +238,7 @@ fi
 
 if [ $CUDA_CC != "cpu" ]; then
 export ELPA_NVIDIA=1
+export GPU_ARCH=sm_$CUDA_CC
 export CUDA_VERSION_MAJOR=12 ; export CUDA_VERSION_MINOR=6
  curl -LJO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-archive-keyring.gpg
   cp cuda-archive-keyring.gpg /usr/share/keyrings/cuda-archive-keyring.gpg
@@ -257,7 +258,7 @@ CUDA_RUNTIME=$(nvcc --version |grep Cuda\ compilation | cut -d " " -f 5|sed -e s
 echo gpu archs available $(nvcc --list-gpu-arch)
 echo CUDA_RUNTIME is $CUDA_RUNTIME
 #need to add nvcc compiler flags option  -arch=sm_${CUDA_CC}
-#export NVCC_APPEND_FLAGS=-arch=sm_${CUDA_CC}
+export NVCC_APPEND_FLAGS=-arch=sm_${CUDA_CC}
 export TCE_CUDA=1
 export CUDA_LIBS="-L${CUDA_ROOT}/lib64 -lcudart"
 export CUDA_INCLUDE="-I. -I${CUDA_ROOT}/include" 
