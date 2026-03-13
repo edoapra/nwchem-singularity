@@ -479,7 +479,8 @@ fi
  export SIMINT_MAXAM=7
 export GENERATOR_PROCESSES=2
  export SIMINT_VECTOR=AVX2
- export PYTHONVERSION=$(python -V| cut -d ' ' -f 2 |cut -d . -f 1-2) 
+ export PYTHONVERSION=$(python -V| cut -d ' ' -f 2 |cut -d . -f 1-2)
+ export SKIP_ECCE=Y
  /usr/bin/env|egrep BUILD_ 
  echo " ==========" 
  pwd 
