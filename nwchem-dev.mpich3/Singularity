@@ -112,6 +112,7 @@ fi \
  libhwloc-dev \
  pkg-config gawk  software-properties-common gdb\
   libevdev-dev libevent-dev \
+&& apt-get -y purge slurm-wlm-rsmi-plugin librocm-smi-dev librocm-smi64-1 \
 && if [ $mpich_major = '5' ]; then
     apt-get -y install -y libpmix-bin libpmix-dev libpmix2
 else
