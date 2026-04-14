@@ -220,20 +220,20 @@ jobs:
            export MPIRUN_PATH=`which mpirun.mpich`
         fi
         echo "MPIRUN_PATH is" $MPIRUN_PATH
-        mpirun --version || true
+        $MPIRUN_PATH --version || true
         ldd `which mpirun`
         export NWCHEM_EXECUTABLE="apptainer exec ${{ env.tag }}:${{ env.date }} nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
     - name: Install Singularity CE
       env:
-        SG_VER: 4.0.0
+        SG_VER: 4.4.1
       run: |
         sudo apt-get purge -y apptainer
         sudo apt-get update && sudo apt-get install -y \
         squashfs-tools pkg-config cryptsetup-bin libseccomp2 runc libglib2.0-0 || true
-        wget -q https://github.com/sylabs/singularity/releases/download/v${SG_VER}/singularity-ce_${SG_VER}-focal_amd64.deb
-        sudo dpkg -i singularity-ce_${SG_VER}-focal_amd64.deb
+        wget -q https://github.com/sylabs/singularity/releases/download/v${SG_VER}/singularity-ce_${SG_VER}-jammy_amd64.deb
+        sudo dpkg -i singularity-ce_${SG_VER}-jammy_amd64.deb
         which singularity
         singularity version
     - name: test image with singularity
