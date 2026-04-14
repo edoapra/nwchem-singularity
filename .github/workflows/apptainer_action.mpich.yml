@@ -204,7 +204,7 @@ jobs:
         sudo apt-get install -y libmpich-dev mpich
         which mpirun
         ldd `which mpirun`
-        apptainer exec ${{ env.tag }}:latest ldd /opt/nwchem/bin/nwchem
+        apptainer exec ${{ env.tag }}:${{ env.date }} ldd /opt/nwchem/bin/nwchem
     - name: test image with apptainer
       run: |
         pwd
@@ -222,7 +222,7 @@ jobs:
         echo "MPIRUN_PATH is" $MPIRUN_PATH
         mpirun --version || true
         ldd `which mpirun`
-        export NWCHEM_EXECUTABLE="apptainer exec ${{ env.tag }}:latest nwchem"
+        export NWCHEM_EXECUTABLE="apptainer exec ${{ env.tag }}:${{ env.date }} nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
     - name: Install Singularity CE
@@ -251,6 +251,6 @@ jobs:
         echo "MPIRUN_PATH is" $MPIRUN_PATH
         mpirun --version || true
         export LD_LIBRARY_PATH=/opt/ompi/lib:$LD_LIBRARY_PATH
-        export NWCHEM_EXECUTABLE="singularity exec ${{ env.tag }}:latest nwchem"
+        export NWCHEM_EXECUTABLE="singularity exec ${{ env.tag }}:${{ env.date }} nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
