@@ -254,8 +254,8 @@ jobs:
         export NWCHEM_EXECUTABLE="singularity exec ${{ env.tag }}:${{ env.date }} nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
-      - name: Check if QA testing has failed
-        if: ${{ failure()  }}
-        run: |
-          cat nwchem/QA/testoutputs/*out || true
-          cat nwchem/QA/testoutputs/*err || true
+    - name: Check if QA testing has failed
+      if: ${{ failure()  }}
+      run: |
+        cat nwchem/QA/testoutputs/*out || true
+        cat nwchem/QA/testoutputs/*err || true
