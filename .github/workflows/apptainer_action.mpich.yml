@@ -12,7 +12,7 @@ jobs:
   build_image:
     runs-on: ubuntu-22.04
     strategy:
-        fail-fast: true
+        fail-fast: false
         matrix:
           folder:
             - nwchem-dev.mpich3
@@ -249,8 +249,13 @@ jobs:
            export MPIRUN_PATH=`which mpirun.mpich`
         fi
         echo "MPIRUN_PATH is" $MPIRUN_PATH
-        mpirun --version || true
+        $MPIRUN_PATH --version || true
         export LD_LIBRARY_PATH=/opt/ompi/lib:$LD_LIBRARY_PATH
         export NWCHEM_EXECUTABLE="singularity exec ${{ env.tag }}:${{ env.date }} nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
+      - name: Check if QA testing has failed
+        if: ${{ failure()  }}
+        run: |
+          cat nwchem/QA/testoutputs/*out || true
+          cat nwchem/QA/testoutputs/*err || true
