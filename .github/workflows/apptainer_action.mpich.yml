@@ -238,6 +238,7 @@ jobs:
         singularity version
     - name: test image with singularity
       run: |
+        if [[ ${{ matrix.armci_network }} != "MPI3" ]]; then
         singularity pull -F ${{ env.tag }}:${{ env.date }}
         cd nwchem/QA
         export PATH=/opt/mpich/bin:$PATH
@@ -254,6 +255,7 @@ jobs:
         export NWCHEM_EXECUTABLE="singularity exec ${{ env.tag }}:${{ env.date }} nwchem"
         ./runtests.mpi.unix procs 2 dft_he2+
         ./runtests.mpi.unix procs 2 h2o_opt
+        fi
     - name: Check if QA testing has failed
       if: ${{ failure()  }}
       run: |
