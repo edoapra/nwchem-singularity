@@ -257,5 +257,5 @@ jobs:
     - name: Check if QA testing has failed
       if: ${{ failure()  }}
       run: |
-        cat nwchem/QA/testoutputs/*out || true
-        cat nwchem/QA/testoutputs/*err || true
+        cat nwchem/QA/testoutputs/dft_he2+.out || true
+        cat nwchem/QA/testoutputs/dft_he2+.err || true
