@@ -274,12 +274,7 @@ echo ORGPWD is $ORGPWD
 echo 'ls -l /opt/mpi/include/knem_io.h' $(ls -l /opt/mpi/include/knem_io.h) || true
 if [ ! -f /opt/mpi/include/knem_io.h ]; then
     export knem=1.1.4
-    export kernelv=$(dpkg-query -W linux-headers-generic|cut -f2 )
-    export k1=$(dpkg-query -W linux-headers-generic|cut -f2 | cut -d "." -f 1)
-    export k2=$(dpkg-query -W linux-headers-generic|cut -f2 | cut -d "." -f 2)
-    export k3=$(dpkg-query -W linux-headers-generic|cut -f2 | cut -d "." -f 3)
-    export k4=$(dpkg-query -W linux-headers-generic|cut -f2 | cut -d "." -f 4)
-    export ktag=$k1.$k2.$k3-$k4-generic 
+    export ktag=$(dpkg-query -s linux-headers-generic|egrep Dep|cut -d " " -f 2 | sed -e s'/linux-headers-//')
     echo ktag is $ktag
     ls /lib/modules/$ktag  || true
     wget https://gitlab.inria.fr/knem/knem/uploads//4a43e3eb860cda2bbd5bf5c7c04a24b6/knem-$knem.tar.gz -O - | tar xzf - 
