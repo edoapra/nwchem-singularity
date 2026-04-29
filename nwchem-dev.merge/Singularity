@@ -211,8 +211,8 @@ export PATH=$MPI_DIR/bin:/opt/intel/oneapi/compiler/latest/bin:/opt/intel/oneapi
  libhwloc-dev libfuse3-dev\
  libconfig-dev libsensors-dev libuv1-dev libfuse-dev libyaml-dev libjson-c-dev libcurl4-openssl-dev  \
  libevdev-dev libevent-dev lmod \
- pkg-config gawk  software-properties-common 
- if [ $ompi_major = '4' ] || [ $mpich_major = '3' ] || [ $mpich_major = '4' ]; then
+ pkg-config gawk  software-properties-common linux-headers-generic
+  if [ $ompi_major = '4' ] || [ $mpich_major = '3' ] || [ $mpich_major = '4' ]; then
     apt-get -y install -y libpmi2-0-dev 
 fi 
 # if [ $mpich_major = '5' ] || [ $ompi_major = '5' ]; then
@@ -270,6 +270,37 @@ fi
      
 export ORGPWD=$(pwd)
 echo ORGPWD is $ORGPWD
+#installing knem
+echo 'ls -l /opt/mpi/include/knem_io.h' $(ls -l /opt/mpi/include/knem_io.h) || true
+if [ ! -f /opt/mpi/include/knem_io.h ]; then
+    export knem=1.1.4
+    export kernelv=$(dpkg-query -W linux-headers-generic|cut -f2 )
+    export k1=$(dpkg-query -W linux-headers-generic|cut -f2 | cut -d "." -f 1)
+    export k2=$(dpkg-query -W linux-headers-generic|cut -f2 | cut -d "." -f 2)
+    export k3=$(dpkg-query -W linux-headers-generic|cut -f2 | cut -d "." -f 3)
+    export k4=$(dpkg-query -W linux-headers-generic|cut -f2 | cut -d "." -f 4)
+    export ktag=$k1.$k2.$k3-$k4-generic 
+    echo ktag is $ktag
+    ls /lib/modules/$ktag  || true
+    wget https://gitlab.inria.fr/knem/knem/uploads//4a43e3eb860cda2bbd5bf5c7c04a24b6/knem-$knem.tar.gz -O - | tar xzf - 
+    cd knem-$knem
+    echo 'ktag is $ktag'
+    ./configure --prefix=$OMPI_DIR --with-linux-build=/lib/modules/$ktag/build --with-linux-release=$ktag
+    make install-includeHEADERS || { echo "KNEM Installation h Failure"; exit 1; }
+    make install-pkgconfigDATA  || { echo "KNEM Installation p Failure"; exit 1; }
+fi
+#installing xpmem
+echo 'ls -l /opt/mpi/lib/libxpmem.so' $(ls -l /opt/mpi/lib/libxpmem.so) || true
+if [ ! -f /opt/mpi/lib/libxpmem.so ]; then
+    wget --progress=dot:giga https://github.com/Cray-HPE/xpmem/tarball/master -O xpmem.tar.gz 
+    tar xzf xpmem.tar.gz 
+    rm xpmem.tar.gz 
+    cd Cray-HPE-xpmem* 
+    sh autogen.sh 
+    ./configure --prefix=$MPI_DIR --disable-kernel-module  || { echo "XPMEM Configuration Failure"; exit 1; }
+    make -j3 || { echo "XPMEM Compilation Failure"; exit 1; }
+    make install || { echo "XPMEM Installation Failure"; exit 1; }
+fi
 if [ $UCX != "N" ]; then
     echo check ucx install 
     echo 'ls -l /opt/mpi/lib/libuct.so' $(ls -l /opt/mpi/lib/libuct.so) || true 
@@ -285,7 +316,7 @@ if [ $UCX != "N" ]; then
 	    patch -p0 < ./ucx1181_malloc.patch
 	fi 
 	mkdir build && cd build 
-	../configure --prefix=$MPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check || { echo "UCX config Failure"; exit 1; }
+	../configure --prefix=$MPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check --with-xpmem=$MPI_DIR --with-knem=$MPI_DIR || { echo "UCX config Failure"; exit 1; }
 	make -j4 || { echo "UCX Compilation Failure"; exit 1; }
 	make install || { echo "UCX Installation Failure"; exit 1; }
 	if [ ! -f $MPI_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi 
@@ -366,29 +397,6 @@ if [ $PMIX != "N" ]; then
 	cd .. 
 	rm -rf pmix-*.*
     fi
-fi
-#installing knem
-echo 'ls -l /opt/mpi/include/knem_io.h' $(ls -l /opt/mpi/include/knem_io.h) || true
-if [ ! -f /opt/mpi/include/knem_io.h ]; then
-    export knem=1.1.4
-    wget https://gitlab.inria.fr/knem/knem/uploads//4a43e3eb860cda2bbd5bf5c7c04a24b6/knem-$knem.tar.gz -O - | tar xzf - 
-    cd knem-$knem
-    echo 'ktag is $ktag'
-    ./configure --prefix=$OMPI_DIR --with-linux-build=/lib/modules/$ktag/build --with-linux-release=$ktag
-    make install-includeHEADERS || { echo "KNEM Installation h Failure"; exit 1; }
-    make install-pkgconfigDATA  || { echo "KNEM Installation p Failure"; exit 1; }
-fi
-#installing xpmem
-echo 'ls -l /opt/mpi/lib/libxpmem.so' $(ls -l /opt/mpi/lib/libxpmem.so) || true
-if [ ! -f /opt/mpi/lib/libxpmem.so ]; then
-    wget --progress=dot:giga https://github.com/Cray-HPE/xpmem/tarball/master -O xpmem.tar.gz 
-    tar xzf xpmem.tar.gz 
-    rm xpmem.tar.gz 
-    cd Cray-HPE-xpmem* 
-    sh autogen.sh 
-    ./configure --prefix=$MPI_DIR --disable-kernel-module  || { echo "XPMEM Configuration Failure"; exit 1; }
-    make -j3 || { echo "XPMEM Compilation Failure"; exit 1; }
-    make install || { echo "XPMEM Installation Failure"; exit 1; }
 fi
 cd $ORGPWD
 if [ -n "${OMPI+1}" ]; then
