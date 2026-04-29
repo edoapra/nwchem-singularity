@@ -367,6 +367,17 @@ if [ $PMIX != "N" ]; then
 	rm -rf pmix-*.*
     fi
 fi
+#installing knem
+echo 'ls -l /opt/mpi/include/knem_io.h' $(ls -l /opt/mpi/include/knem_io.h) || true
+if [ ! -f /opt/mpi/include/knem_io.h ]; then
+    export knem=1.1.4
+    wget https://gitlab.inria.fr/knem/knem/uploads//4a43e3eb860cda2bbd5bf5c7c04a24b6/knem-$knem.tar.gz -O - | tar xzf - 
+    cd knem-$knem
+    echo 'ktag is $ktag'
+    ./configure --prefix=$OMPI_DIR --with-linux-build=/lib/modules/$ktag/build --with-linux-release=$ktag
+    make install-includeHEADERS || { echo "KNEM Installation h Failure"; exit 1; }
+    make install-pkgconfigDATA  || { echo "KNEM Installation p Failure"; exit 1; }
+fi
 #installing xpmem
 echo 'ls -l /opt/mpi/lib/libxpmem.so' $(ls -l /opt/mpi/lib/libxpmem.so) || true
 if [ ! -f /opt/mpi/lib/libxpmem.so ]; then
@@ -390,13 +401,17 @@ if [ -n "${OMPI+1}" ]; then
 	$ucx_or_ofi   \
 		     $ompi_options \
 		     --with-xpmem=$MPI_DIR \
+		     --with-knem=$MPI_DIR \
 		     $pmix_otions \
 		     --enable-mpi1-compatibility --with-slurm --without-tm --without-lsf  \
 		     --without-sge --without-lustre --disable-memchecker \
 		     --without-hcoll --disable-static  \
 		     --disable-mpi-java --enable-dlopen --without-cuda  \
 		     FC=$FC || { echo "OMPI config Failure"; exit 1; }
-	head config.log 
+	head config.log
+	echo 'Checking xpmem .........' $(grep -i xpmem conf*) || true
+	echo 'Checking knem ..........' $(grep -i knem conf*)  || true
+
 	make FC=$FC -j 6  || { echo "OMPI Compilation Failure"; exit 1; }
 	make install      || { echo "OMPI Installation Failure"; exit 1; }
 	if [ ! -f $MPI_DIR/bin/mpif90 ]; then echo mpif90\ not\ found ; exit 1 ; fi 
