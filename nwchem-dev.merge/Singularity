@@ -64,8 +64,6 @@ set -ex
 	 export `cat ./ompi.txt`
 	 echo OMPI is $OMPI
      fi
-     export OMPI_DIR=/opt/mpi
-     export MPI_DIR=/opt/mpi
      export ompi_prefix=openmpi-$OMPI
      echo ompi_prefix is $ompi_prefix 
      export ompi_major=$(echo $OMPI | cut -d . -f1) 
@@ -119,12 +117,17 @@ set -ex
 	 export mpich_options=' '
      fi 
      if [ $MPICH = aurora ]; then
-	 export mpich_options=$mpich_options' --disable-maintainer-mode --with-pm=no --enable-romio --with-slurm=no --with-pmi=pmix --with-pmix=/opt/mpi '
+	 export mpich_options=$mpich_options' --disable-maintainer-mode --with-pm=no --with-slurm=no --with-pmi=pmix --with-pmix=/opt/mpi '
      fi
      echo mpich_options are $mpich_options
      ompi_major=-1
      ompi_minor=-1
  fi
+ if [  -f ./pmix.txt ]; then
+     echo cat pmix `cat ./pmix.txt`
+     export `cat ./pmix.txt`
+     echo PMIX is $PMIX
+ fi	  
  if [  -f ./ucx.txt ]; then
      echo cat ucx `cat ./ucx.txt`
      export `cat ./ucx.txt`
@@ -184,9 +187,12 @@ echo ucx_or_ofi is $ucx_or_ofi
  echo MPI_IMPL is $MPI_IMPL
  echo BRANCH is $BRANCH
 export DEBIAN_FRONTEND=noninteractive 
+
+export MPI_DIR=/opt/mpi
+export OMPI_DIR=/opt/mpi
 export PATH=$MPI_DIR/bin:/opt/intel/oneapi/compiler/latest/bin:/opt/intel/oneapi/compiler/latest/linux/bin/intel64:/root//apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
- export LD_LIBRARY_PATH=$MPI_DIR/lib:/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/lib:/opt/intel/oneapi/compiler/latest/linux/lib/x64:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
- export LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/opt/intel/oneapi/compiler/latest/linux/lib 
+export LD_LIBRARY_PATH=$MPI_DIR/lib:/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/lib:/opt/intel/oneapi/compiler/latest/linux/lib/x64:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
+export LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/opt/intel/oneapi/compiler/latest/linux/lib 
  pwd 
  apt-get -y update 
  apt-get -y install -y tzdata git moreutils curl wget rsync  sudo ca-certificates 
@@ -300,7 +306,7 @@ if [ $UCX != "N" ]; then
     echo check ucx install 
     echo 'ls -l /opt/mpi/lib/libuct.so' $(ls -l /opt/mpi/lib/libuct.so) || true 
     if [ ! -f /opt/mpi/lib/libuct.so ]; then  
-	$FC -v 
+	$FC --version 
 	wget --progress=dot:giga  https://github.com/openucx/ucx/releases/download/$UCXVTAG/ucx-$UCX.tar.gz -O - | tar xzf - 
 	cd ucx-$UCX 
 	wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch 
@@ -311,7 +317,7 @@ if [ $UCX != "N" ]; then
 	    patch -p0 < ./ucx1181_malloc.patch
 	fi 
 	mkdir build && cd build 
-	../configure --prefix=$MPI_DIR --disable-logging --disable-debug --disable-assertions --disable-params-check --with-xpmem=$MPI_DIR --with-knem=$MPI_DIR || { echo "UCX config Failure"; exit 1; }
+	../configure --prefix=$MPI_DIR  --disable-logging --disable-debug --disable-assertions --disable-params-check --with-xpmem=$MPI_DIR --with-knem=$MPI_DIR || { echo "UCX config Failure"; exit 1; }
 	make -j4 || { echo "UCX Compilation Failure"; exit 1; }
 	make install || { echo "UCX Installation Failure"; exit 1; }
 	if [ ! -f $MPI_DIR/bin/ucx_info ]; then echo ucx_info\ not\ found ; exit 1 ; fi 
@@ -400,6 +406,8 @@ if [ -n "${OMPI+1}" ]; then
     if [ ! -f /opt/mpi/lib/libmpi.so ]; then
 	wget  --progress=dot:giga https://download.open-mpi.org/release/open-mpi/v$ompi_major.$ompi_minor/openmpi-$OMPI.tar.gz  -O - | tar xzf -
 	cd $ompi_prefix                                                       
+	wget https://github.com/open-mpi/ompi/commit/ed05f15b1790899ce9c2f77782f7b67bfb396854.patch -O sshmem_base.patch 
+	if [ $OMPI = 4.1.8 ]; then patch -p1 < sshmem_base.patch ; fi 
 	./configure  --prefix=${MPI_DIR} \
 	$ucx_or_ofi   \
 		     $ompi_options \
@@ -422,6 +430,7 @@ if [ -n "${OMPI+1}" ]; then
 	cd .. ; rm -rf *tar*gz openmpi-* ucx-*
     else
 	echo using cached OMPI installation
+	echo 'mpif90 is $(ls -lrt $MPI_DIR/bin/mpif90)'
     fi
 fi
 
@@ -429,13 +438,15 @@ if [ -n "${MPICH+1}" ]; then
     echo check mpich install 
     echo 'ls -l /opt/mpi/lib/libmpich.so' $(ls -l /opt/mpi/lib/libmpich.so) || true 
     if [ ! -f /opt/mpi/lib/libmpich.so ]; then
-	$FC -v
+	$FC --version
 #	if [ $MPICH = aurora ]; then
 #	fi 
 	if [ $mpich_major = '4' ] || [ $mpich_major = '5' ]; then
-	   export mpich_options="$mpich_options $pmix_options --with-hwloc=/usr "
+	   export mpich_options="$mpich_options $pmix_options "
+	   #export mpich_options="$mpich_options $pmix_options --with-hwloc=/usr "
 	else
-	   export mpich_options="$mpich_options --with-hwloc-prefix=/usr "
+	   export mpich_options="$mpich_options "
+	   #export mpich_options="$mpich_options --with-hwloc-prefix=/usr "
 	fi
 	echo ' mpich_options is set to' $mpich_options 
 	wget  --progress=dot:giga https://www.mpich.org/static/downloads/${MPICH_VERSION}/mpich-${MPICH_VERSION}.tar.gz  -O - | tar xzf -   
@@ -447,13 +458,13 @@ if [ -n "${MPICH+1}" ]; then
 	./configure  --prefix=$MPI_DIR   \
 	$ucx_or_ofi   \
 	$mpich_options \
+	FFLAGS=$FFLAGS FCFLAGS=$FCFLAGS \
 	    --with-device=$MPICH_DEVICE  \
 	    --enable-fortran=all \
-	    --disable-opencl --enable-silent-rules \
-	    --disable-cuda \
+	    --enable-silent-rules \
+	    --without-ze  \
+	    --without-hip  \
 	    --with-xpmem=$MPI_DIR \
-	    FFLAGS=' -fallow-argument-mismatch ' \
-	    FCFLAGS=' -fallow-argument-mismatch ' \
 	    FC=$FC || { echo "MPICH Configuration Failure"; exit 1; }
 	head config.log 
 	tail -300 config.log
@@ -462,7 +473,10 @@ if [ -n "${MPICH+1}" ]; then
 	cd .. ; rm -rf *tar*gz mpich*
     else
 	echo using cached MPICH installation
+	echo 'mpif90 is $(ls -lrt $MPI_DIR/bin/mpif90)'
     fi
+    mpif90 -show || { echo "MPICH mpif90 missing"; exit 1; }
+    ldd /opt/mpi/lib/libmpifort.so
 fi
 cd $ORGPWD
 
