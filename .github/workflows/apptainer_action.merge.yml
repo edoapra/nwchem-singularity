@@ -114,6 +114,17 @@ jobs:
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
+            - mpi_impl: ompi
+              ompi: 5.0.9
+              use_sysv: N
+              ucx: N
+              pmix: 4.2.9
+              ofi: 2.5.1
+              fc: gfortran
+              branch: master
+              armci_network: MPI-PR
+              folder: nwchem-dev.merge
+              cuda-cc: cpu
             - mpi_impl: mpich
               mpich: 3.4.2
               use_sysv: N
@@ -370,7 +381,7 @@ jobs:
         USE_SYSV=${{ matrix.use_sysv }} \
         MPI_IMPL=${{ matrix.mpi_impl }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} OFI=${{ matrix.ofi }} PMIX=${{ matrix.pmix }} \
         FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} \
-        apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+        apptainer build --fakeroot ${{ matrix.folder }}.simg --mksquashfs-args="-comp zstd -Xcompression-level 15" Singularity
     - name: store cache
       run: |
         mkdir -p ~/cache || true
