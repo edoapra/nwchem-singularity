@@ -381,7 +381,7 @@ jobs:
         USE_SYSV=${{ matrix.use_sysv }} \
         MPI_IMPL=${{ matrix.mpi_impl }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} OFI=${{ matrix.ofi }} PMIX=${{ matrix.pmix }} \
         FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} \
-        apptainer build --fakeroot ${{ matrix.folder }}.simg --mksquashfs-args="-comp zstd -Xcompression-level 15" Singularity
+        apptainer build --fakeroot  --mksquashfs-args="-comp zstd -Xcompression-level 15" ${{ matrix.folder }}.simg Singularity
     - name: store cache
       run: |
         mkdir -p ~/cache || true
