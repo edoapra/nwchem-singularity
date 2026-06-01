@@ -381,7 +381,7 @@ jobs:
         USE_SYSV=${{ matrix.use_sysv }} \
         MPI_IMPL=${{ matrix.mpi_impl }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} OFI=${{ matrix.ofi }} PMIX=${{ matrix.pmix }} \
         FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} \
-        apptainer build --fakeroot  --mksquashfs-args="-comp zstd -Xcompression-level 15" ${{ matrix.folder }}.simg Singularity
+        apptainer build --fakeroot  --mksquashfs-args="-comp xz" ${{ matrix.folder }}.simg Singularity
     - name: store cache
       run: |
         mkdir -p ~/cache || true
@@ -441,7 +441,7 @@ jobs:
         ./runtests.mpi.unix procs 2 h2o_opt
     - name: Install Singularity CE
       env:
-        SG_VER: 4.0.0
+        SG_VER: 4.4.1
       run: |
         sudo apt-get purge -y apptainer
         sudo apt-get update && sudo apt-get install -y \
