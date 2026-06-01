@@ -446,8 +446,8 @@ jobs:
         sudo apt-get purge -y apptainer
         sudo apt-get update && sudo apt-get install -y \
         squashfs-tools pkg-config cryptsetup-bin libseccomp2 runc libglib2.0-0 || true
-        wget -q https://github.com/sylabs/singularity/releases/download/v${SG_VER}/singularity-ce_${SG_VER}-focal_amd64.deb
-        sudo dpkg -i singularity-ce_${SG_VER}-focal_amd64.deb
+        wget  https://github.com/sylabs/singularity/releases/download/v${SG_VER}/singularity-ce_${SG_VER}-jammy_amd64.deb
+        sudo dpkg -i singularity-ce*deb
         which singularity
         singularity version
     - name: test image with singularity
