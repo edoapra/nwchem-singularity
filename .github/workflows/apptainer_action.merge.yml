@@ -423,7 +423,8 @@ jobs:
         export APPTAINERENV_OMPI_MCA_btl_vader_single_copy_mechanism=${OMPI_MCA_btl_vader_single_copy_mechanism}
         export OMPI_MCA_smsc=^xpmem
         export APPTAINERENV_OMPI_MCA_smsc=${OMPI_MCA_smsc}
-        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -x OMPI_MCA_btl_vader_single_copy_mechanism=none -x OMPI_MCA_smsc=^xpmem -n"
+        export OMPI_MCA_osc=^ucx
+        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -x OMPI_MCA_btl_vader_single_copy_mechanism=none -x OMPI_MCA_smsc=^xpmem -x OMPI_MCA_osc=^ucx -n"
         fi
         if [[ $MPI_IMPL == mpich ]]; then
         sudo apt-get install -y libmpich-dev mpich
@@ -456,9 +457,10 @@ jobs:
         cd nwchem/QA
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
+        export OMPI_MCA_osc=^ucx
         export PATH=/opt/mpi/bin:$PATH
         if [[ $MPI_IMPL == ompi ]]; then
-        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -x OMPI_MCA_smsc=^xpmem -n "
+        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -x OMPI_MCA_smsc=^xpmem -x OMPI_MCA_osc=^ucx -n "
         fi
         if [[ $MPI_IMPL == mpich ]]; then
         export MPIRUN_PATH=/usr/bin/mpirun.mpich
