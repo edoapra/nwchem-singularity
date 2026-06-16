@@ -208,10 +208,10 @@ export LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/comp
  ls -lart /opt 
  echo " ==========" 
  pwd 
- apt-get -y install -y   tar libnl-3-200 libnl-route-3-200 libgomp1 libnuma1 \
+ apt-get -y install -y   tar libnl-3-200 libnl-route-3-200 libgomp1  \
  g++ gfortran   make ssh patch   unzip perl-base file \
  python3 python3-dev python-is-python3 cmake  unzip zip perl automake libtool autoconf flex  \
- libnuma-dev libslurm-dev \
+ libnuma1 libnuma-dev libuuid1 uuid-dev libslurm-dev \
  libnl-3-dev  libnl-route-3-dev udev \
  librdmacm-dev librdmacm1 rdma-core libibverbs-dev  ibverbs-providers  \
  libhwloc-dev libfuse3-dev\
