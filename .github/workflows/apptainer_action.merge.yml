@@ -430,7 +430,7 @@ jobs:
         sudo apt-get install -y libmpich-dev mpich
         export MPIRUN_PATH=/usr/bin/mpirun.mpich
         fi
-        mpich_major=$(echo  $mpich | cut -d . -f 1)
+        mpich_major=$(echo $MPICH | cut -d . -f 1)
         if [[ $MPI_IMPL == ompi ]] || [[ $PMIX != N ]] || [[ $mpich_major -ge 5 ]]; then
         sudo apt-get install -y openmpi-bin openmpi-common libopenmpi-dev
         export MPIRUN_PATH=/usr/bin/mpirun.openmpi
@@ -466,7 +466,7 @@ jobs:
         if [[ $MPI_IMPL == mpich ]]; then
         export MPIRUN_PATH=/usr/bin/mpirun.mpich
         fi
-        mpich_major=$(echo  $mpich | cut -d . -f 1)
+        mpich_major=$(echo  $MPICH | cut -d . -f 1)
         if [[ $MPI_IMPL == ompi ]] || [[ $PMIX != N ]] || [[ $mpich_major -ge 5 ]]; then
         export MPIRUN_PATH=/usr/bin/mpirun.openmpi
         fi
