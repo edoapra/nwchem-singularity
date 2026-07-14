@@ -378,6 +378,13 @@ jobs:
     - name: build an apptainer container
       run: |
         cd ${{ matrix.folder }}
+                export UCX_TLS=tcp,self
+        export UCX_POSIX_USE_PROC_LINK=n
+        if [[ $MPI_IMPL == ompi ]] || [[ $PMIX != N ]]; then
+        OMPI_MCA_btl_vader_single_copy_mechanism=none \
+        OMPI_MCA_smsc=^xpmem \
+        OMPI_MCA_osc=^ucx \
+        UCX_POSIX_USE_PROC_LINK=n UCX_TLS=tcp,self \
         USE_SYSV=${{ matrix.use_sysv }} \
         MPI_IMPL=${{ matrix.mpi_impl }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} OFI=${{ matrix.ofi }} PMIX=${{ matrix.pmix }} \
         FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} \
