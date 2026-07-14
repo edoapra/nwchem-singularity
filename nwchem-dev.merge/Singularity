@@ -193,7 +193,7 @@ export OMPI_DIR=/opt/mpi
 export PATH=$MPI_DIR/bin:/opt/intel/oneapi/compiler/latest/bin:/opt/intel/oneapi/compiler/latest/linux/bin/intel64:/root//apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
 export LD_LIBRARY_PATH=$MPI_DIR/lib:/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/lib:/opt/intel/oneapi/compiler/latest/linux/lib/x64:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
 export LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/opt/intel/oneapi/compiler/latest/linux/lib
-export FI_PROVIDER=shm # to fix Unable to create UD QP on mana_0 PSM3 err=23
+#export FI_PROVIDER=shm # to fix Unable to create UD QP on mana_0 PSM3 err=23
 FI_LOG_LEVEL=info
  pwd 
  apt-get -y update 
@@ -533,7 +533,9 @@ export GENERATOR_PROCESSES=2
  wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/largebasis.patch 
  patch -p1 < largebasis.patch 
  wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/okeep.patch 
- patch -p1 < okeep.patch 
+ patch -p1 < okeep.patch
+ https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.merge/elpa_nothreadingcheck.patch
+ patch -p1 < elpa_nothreadingcheck.patch
  export NWCHEM_TOP=`pwd` 
  echo 'ls -lrta ' $(ls -lrta) 
  echo 'pwd ' $(pwd) 

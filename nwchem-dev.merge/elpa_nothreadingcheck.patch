@@ -1,0 +1,12 @@
+diff --git a/src/libext/elpa/build_elpa.sh b/src/libext/elpa/build_elpa.sh
+index 782278d2aa..5dc5665e3c 100755
+--- a/src/libext/elpa/build_elpa.sh
++++ b/src/libext/elpa/build_elpa.sh
+@@ -320,6 +320,7 @@ echo FC is $MPIF90 CC is $MPICC CXX is $MPICXX
+   FCFLAGS="$MYFCFLAGS" \
+   LDFLAGS="$MYLDFLAGS" \
+   --enable-option-checking=fatal \
++  --without-threading-support-check-during-build --without-threading-support-check-during-build \
+  --disable-dependency-tracking \
+  --disable-shared --enable-static  \
+  --disable-c-tests \
