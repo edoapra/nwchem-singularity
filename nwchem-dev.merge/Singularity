@@ -192,7 +192,8 @@ export MPI_DIR=/opt/mpi
 export OMPI_DIR=/opt/mpi
 export PATH=$MPI_DIR/bin:/opt/intel/oneapi/compiler/latest/bin:/opt/intel/oneapi/compiler/latest/linux/bin/intel64:/root//apps/oneapi/compiler/latest/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
 export LD_LIBRARY_PATH=$MPI_DIR/lib:/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/lib:/opt/intel/oneapi/compiler/latest/linux/lib/x64:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin 
-export LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/opt/intel/oneapi/compiler/latest/linux/lib 
+export LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/opt/intel/oneapi/compiler/latest/linux/lib
+export FI_PROVIDER_PATH# to fix Unable to create UD QP on mana_0 PSM3 err=23
  pwd 
  apt-get -y update 
  apt-get -y install -y tzdata git moreutils curl wget rsync  sudo ca-certificates 
