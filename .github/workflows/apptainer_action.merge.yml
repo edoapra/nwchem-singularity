@@ -378,9 +378,6 @@ jobs:
     - name: build an apptainer container
       run: |
         cd ${{ matrix.folder }}
-                export UCX_TLS=tcp,self
-        export UCX_POSIX_USE_PROC_LINK=n
-        if [[ $MPI_IMPL == ompi ]] || [[ $PMIX != N ]]; then
         OMPI_MCA_btl_vader_single_copy_mechanism=none \
         OMPI_MCA_smsc=^xpmem \
         OMPI_MCA_osc=^ucx \
