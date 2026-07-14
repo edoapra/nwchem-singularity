@@ -221,9 +221,9 @@ export LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/comp
   if [ $ompi_major = '4' ] || [ $mpich_major = '3' ] || [ $mpich_major = '4' ]; then
     apt-get -y install -y libpmi2-0-dev 
 fi 
-# if [ $mpich_major = '5' ] || [ $ompi_major = '5' ]; then
-#    apt-get -y install -y libpmix-bin libpmix-dev libpmix2
-#fi 
+ if [ $mpich_major = '5' ] || [ $ompi_major = '5' ]; then
+    apt-get -y install -y libpmix-bin libpmix-dev libpmix2
+fi 
  export GCC_VERSION=11 
  add-apt-repository -y ppa:ubuntu-toolchain-r/test && apt-get update 
  apt-get install -q=2 -y  gcc-"$GCC_VERSION"  g++-"$GCC_VERSION" gfortran-"$GCC_VERSION" libgfortran-"$GCC_VERSION"-dev bzip2 gnupg2

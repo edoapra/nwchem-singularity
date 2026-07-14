@@ -148,44 +148,44 @@ jobs:
               folder: nwchem-dev.merge
               cuda-cc: cpu
             - mpi_impl: mpich
-              mpich: 5.0.0
+              mpich: 5.0.1
               use_sysv: N
               ofi: builtin
               ucx: N
-              pmix: N
+              pmix: 5.0.11
               fc: gfortran
               branch: master
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
             - mpi_impl: mpich
-              mpich: 5.0.0
+              mpich: 5.0.1
               use_sysv: N
               ofi: builtin
               ucx: N
-              pmix: N
+              pmix: 4.2.9
               fc: gfortran
               branch: master
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: 80
             - mpi_impl: mpich
-              mpich: 5.0.0
+              mpich: 5.0.1
               use_sysv: N
               ofi: 1.21.1
               ucx: N
-              pmix: N
+              pmix: 4.2.9
               fc: gfortran
               branch: master
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: 80
             - mpi_impl: mpich
-              mpich: 5.0.0
+              mpich: 5.0.1
               use_sysv: N
               ofi: 1.21.1
               ucx: N
-              pmix: N
+              pmix: 4.2.9
               fc: gfortran
               branch: master
               armci_network: MPI-PR
@@ -203,7 +203,7 @@ jobs:
               folder: nwchem-dev.merge
               cuda-cc: cpu
             - mpi_impl: mpich
-              mpich: 5.0.0
+              mpich: 5.0.1
               use_sysv: N
               ofi: 2.3.1
               ucx: N
@@ -436,7 +436,7 @@ jobs:
         export MPIRUN_PATH=/usr/bin/mpirun.mpich
         fi
         mpich_major=$(echo $MPICH | cut -d . -f 1)
-        if [[ $MPI_IMPL == ompi ]] || [[ $PMIX != N ]] || [[ $mpich_major -ge 5 ]]; then
+        if [[ $MPI_IMPL == ompi ]] || [[ $PMIX != N ]]; then
         sudo apt-get install -y openmpi-bin openmpi-common libopenmpi-dev
         export MPIRUN_PATH=/usr/bin/mpirun.openmpi
         fi
@@ -472,7 +472,7 @@ jobs:
         export MPIRUN_PATH=/usr/bin/mpirun.mpich
         fi
         mpich_major=$(echo  $MPICH | cut -d . -f 1)
-        if [[ $MPI_IMPL == ompi ]] || [[ $PMIX != N ]] || [[ $mpich_major -ge 5 ]]; then
+        if [[ $MPI_IMPL == ompi ]] || [[ $PMIX != N ]]; then
         export MPIRUN_PATH=/usr/bin/mpirun.openmpi
         fi
         export LD_LIBRARY_PATH=/opt/mpi/lib:$LD_LIBRARY_PATH
