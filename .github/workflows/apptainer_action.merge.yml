@@ -378,6 +378,7 @@ jobs:
     - name: build an apptainer container
       run: |
         cd ${{ matrix.folder }}
+        FI_PROVIDER=tcp \
         OMPI_MCA_btl_vader_single_copy_mechanism=none \
         OMPI_MCA_smsc=^xpmem \
         OMPI_MCA_osc=^ucx \
