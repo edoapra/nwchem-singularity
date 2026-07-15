@@ -421,6 +421,8 @@ jobs:
         ls -la
         apptainer pull -F ${{ env.tag }}:${{ env.date }}
         cd nwchem/QA
+        export FI_PROVIDER=shm,tcp,sockets
+        export FI_LOG=info
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
         if [[ $MPI_IMPL == ompi ]] || [[ $PMIX != N ]]; then
