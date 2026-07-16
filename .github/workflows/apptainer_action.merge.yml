@@ -407,8 +407,8 @@ jobs:
         echo "date=$(TZ=America/Los_Angeles date +%Y%m%d_%H%M%S)" >> $GITHUB_ENV
     - name: push to ghcr.io
       run: |
-        echo ${{ secrets.GITHUB_TOKEN }} | apptainer remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
-        apptainer remote list
+        echo ${{ secrets.GITHUB_TOKEN }} | apptainer registry login -u ${{ github.actor }} --password-stdin oras://ghcr.io
+        apptainer registry list
         tries=0 ; until [ "$tries" -ge 5 ] ; do \
         apptainer push ${{ matrix.folder }}/${{ matrix.folder }}.simg ${{ env.tag }}:${{ env.date }} && break ; \
         tries=$((tries+1)) ; echo push1 attempt no.  $tries    ; sleep 30 ; done
@@ -467,10 +467,11 @@ jobs:
         export FI_LOG=info
         export UCX_TLS=tcp,self
         export UCX_POSIX_USE_PROC_LINK=n
+        export OMPI_MCA_btl_vader_single_copy_mechanism=none
         export OMPI_MCA_osc=^ucx
         export PATH=/opt/mpi/bin:$PATH
         if [[ $MPI_IMPL == ompi ]]; then
-        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -x OMPI_MCA_smsc=^xpmem -x OMPI_MCA_osc=^ucx -n "
+        export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -x OMPI_MCA_btl_vader_single_copy_mechanism=none -x OMPI_MCA_smsc=^xpmem -x OMPI_MCA_osc=^ucx -n"
         fi
         if [[ $MPI_IMPL == mpich ]]; then
         export MPIRUN_PATH=/usr/bin/mpirun.mpich
