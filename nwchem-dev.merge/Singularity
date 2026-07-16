@@ -224,7 +224,9 @@ FI_LOG_LEVEL=info
     apt-get -y install -y libpmi2-0-dev 
 fi 
  if [ $mpich_major = '5' ] || [ $ompi_major = '5' ]; then
-    apt-get -y install -y libpmix-bin libpmix-dev libpmix2
+    if [ $PMIX != "N" ]; then
+       apt-get -y install -y libpmix-bin libpmix-dev libpmix2
+    fi
 fi 
  export GCC_VERSION=11 
  add-apt-repository -y ppa:ubuntu-toolchain-r/test && apt-get update 
