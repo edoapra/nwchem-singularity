@@ -284,6 +284,8 @@ fi	   \
 && patch -p1 < largebasis.patch \
 && wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/okeep.patch \
 && patch -p1 < okeep.patch \
+&& wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.merge/elpa_nothreadingcheck.patch\
+&& patch -p1 < elpa_nothreadingcheck.patch \
 && export NWCHEM_TOP=`pwd` \
 && echo 'ls -lrta ' $(ls -lrta) \
 && echo 'pwd ' $(pwd) \
