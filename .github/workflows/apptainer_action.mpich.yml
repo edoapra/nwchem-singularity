@@ -214,6 +214,8 @@ jobs:
         export MPIRUN_NPOPT=" -np"
         set -x
         sudo apt-get install -y openmpi-bin libmpich-dev mpich
+        export FI_PROVIDER=shm,tcp,sockets
+        export FI_LOG=info
         if [[ ${{ matrix.mpich }} == aurora ]]; then
            export MPIRUN_PATH=`which mpirun.openmpi`
         else
@@ -244,6 +246,8 @@ jobs:
         export PATH=/opt/mpich/bin:$PATH
         export MPIRUN_NPOPT=" -np"
         set -x
+        export FI_PROVIDER=shm,tcp,sockets
+        export FI_LOG=info
         if [[ ${{ matrix.mpich }} == aurora ]]; then
            export MPIRUN_PATH=`which mpirun.openmpi`
         else
