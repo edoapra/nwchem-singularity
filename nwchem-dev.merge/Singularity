@@ -457,6 +457,9 @@ if [ -n "${MPICH+1}" ]; then
 	cd $mpich_prefix
 	if [ "$mpich_major" -eq 3 ] || [ "$mpich_major" -eq 4 -a "$mpich_minor" -lt 3 ]; then
 	    wget https://raw.githubusercontent.com/pmodels/mpich/refs/tags/v4.3.2/src/pm/hydra/lib/tools/bootstrap/external/slurm_query_node_list.c 
+	if [ "$mpich_major" -eq 4 "$mpich_minor" -gt 0 ]; then
+	    mv slurm_query_node_list.c src/pm/hydra/lib/tools/bootstrap/external/slurm_query_node_list.c
+	else
 	    mv slurm_query_node_list.c src/pm/hydra/tools/bootstrap/external/slurm_query_node_list.c
 	fi 
 	FC_short=$(basename -- $FC | cut -d \- -f 1 | sed 's/[0-9]*//g')
