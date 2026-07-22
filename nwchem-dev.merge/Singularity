@@ -195,8 +195,21 @@ export LD_LIBRARY_PATH=$MPI_DIR/lib:/opt/intel/oneapi/compiler/latest/lib:/opt/i
 export LIBRARY_PATH=/opt/intel/oneapi/compiler/latest/lib:/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/opt/intel/oneapi/compiler/latest/linux/lib
 #export FI_PROVIDER=shm # to fix Unable to create UD QP on mana_0 PSM3 err=23
 FI_LOG_LEVEL=info
- pwd 
+ pwd
+# :wget https://github.com/moparisthebest/static-curl/releases/download/v8.1.2/curl-amd64 -O /usr/bin/curl
  apt-get -y update 
+apt-get -y install -y wget curl
+wget https://raw.githubusercontent.com/vegardit/fast-apt-mirror.sh/refs/heads/dev/fast-apt-mirror.sh
+bash fast-apt-mirror.sh current
+chmod +x fast-apt-mirror.sh
+./fast-apt-mirror.sh|| true
+./fast-apt-mirror.sh find --help|| true
+./fast-apt-mirror.sh set --help|| true
+newurl=$(./fast-apt-mirror.sh find)
+echo newurl $newurl "###"
+./fast-apt-mirror.sh find --apply
+#./fast-apt-mirror.sh set $newurl
+apt-get -y update
  apt-get -y install -y tzdata git moreutils curl wget rsync  sudo ca-certificates 
  echo ca_certificate=/etc/ssl/certs/ca-certificates.crt >  ~/.wgetrc 
  echo        "cacert=/etc/ssl/certs/ca-certificates.crt" >> ~/.curlrc 
