@@ -6,6 +6,15 @@ on:
   repository_dispatch:
     types: [backend_automation]
   workflow_dispatch:
+    inputs:
+      repository_username:
+        type: string
+        required: false
+        default: 'nwchemgit'
+      branch:
+        type: string
+        required: false
+        default: 'master'
   workflow_call:
 
 jobs:
@@ -22,7 +31,7 @@ jobs:
               pmix: 4.2.9
               ofi: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -33,7 +42,7 @@ jobs:
               pmix: 4.2.9
               ofi: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -44,7 +53,7 @@ jobs:
               pmix: 4.2.9
               ofi: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -55,7 +64,7 @@ jobs:
               pmix: 4.2.9
               ofi: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -66,7 +75,7 @@ jobs:
               pmix: 4.2.9
               ofi: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -77,7 +86,7 @@ jobs:
               pmix: 4.2.9
               ofi: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -88,7 +97,7 @@ jobs:
               pmix: 4.2.9
               ofi: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -99,7 +108,7 @@ jobs:
               pmix: 4.2.9
               ofi: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: 80
@@ -110,7 +119,7 @@ jobs:
               pmix: 4.2.9
               ofi: 2.3.1
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -121,7 +130,7 @@ jobs:
               pmix: 4.2.9
               ofi: 2.5.1
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -132,7 +141,7 @@ jobs:
               ucx: N
               pmix: 4.2.9
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -143,7 +152,7 @@ jobs:
               ucx: N
               pmix: 4.2.9
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -154,7 +163,7 @@ jobs:
               ucx: N
               pmix: 4.2.9
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -165,7 +174,7 @@ jobs:
               ucx: N
               pmix: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -176,7 +185,7 @@ jobs:
               ucx: N
               pmix: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -187,7 +196,7 @@ jobs:
               ucx: N
               pmix: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -198,7 +207,7 @@ jobs:
               ucx: N
               pmix: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: 80
@@ -209,7 +218,7 @@ jobs:
               ucx: N
               pmix: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: 80
@@ -220,7 +229,7 @@ jobs:
               ucx: N
               pmix: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: 80
@@ -231,7 +240,7 @@ jobs:
               ucx: N
               pmix: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -242,7 +251,7 @@ jobs:
               ucx: N
               pmix: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -253,7 +262,7 @@ jobs:
               ucx: N
               pmix: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -264,7 +273,7 @@ jobs:
               ucx: N
               pmix: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -275,7 +284,7 @@ jobs:
               pmix: 4.2.9
               ofi: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
@@ -286,7 +295,7 @@ jobs:
               pmix: 4.2.9
               ofi: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: 80
@@ -297,7 +306,7 @@ jobs:
               pmix: 4.2.9
               ofi: N
               fc: gfortran
-              branch: master
+              branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: 90
@@ -315,6 +324,7 @@ jobs:
         BRANCH: ${{ matrix.branch }}
         ARMCI_NETWORK: ${{ matrix.armci_network }}
         USE_SYSV: ${{ matrix.use_sysv }}
+        MYUSERNAME: ${{ inputs.repository_username }}
     steps:
     - name: echo env
       run: |
@@ -325,8 +335,10 @@ jobs:
         set -ex
         if [[ ${{ matrix.branch }} ==  master ]]; then
           echo "nwversion=mdev" >> $GITHUB_ENV
-        else
+        elif [[ ${{ matrix.branch }} == 'hotfix/release-7-3-0' ]]; then
           echo "nwversion=m720" >> $GITHUB_ENV
+        else
+          echo "nwversion=${{ matrix.branch }}" >> $GITHUB_ENV
         fi
         if [[ ${{ matrix.armci_network }} !=  MPI-PR ]]; then
           net_tag=$(echo ${{ matrix.armci_network }} | tr '[:upper:]' '[:lower:]')
