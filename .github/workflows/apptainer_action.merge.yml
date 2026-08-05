@@ -335,11 +335,33 @@ jobs:
         OFI: ${{ matrix.ofi }}
         PMIX: ${{ matrix.pmix }}
         CUDA_CC: ${{ matrix.cuda-cc }}
-        BRANCH: ${{ matrix.branch }}
+        BRANCHM: ${{ matrix.branch }}
         ARMCI_NETWORK: ${{ matrix.armci_network }}
         USE_SYSV: ${{ matrix.use_sysv }}
-        MYUSERNAME: ${{ inputs.repository_username }}
+        MYUSERNAMEM: ${{ inputs.repository_username }}
     steps:
+    - name: check if branch is empty
+      run: |
+        if [ -n "${BRANCHM}" ]; then
+           export BRANCH=$BRANCHM
+           echo "BRANCH is set to matrix value " $BRANCH
+        else
+           echo "BRANCH is NOT set"
+           export BRANCH=master
+           echo "BRANCH is now set to " $BRANCH
+        fi
+        echo "branch=$BRANCH" >> $GITHUB_ENV
+    - name: check if myusername is empty
+      run: |
+        if [ -n "${MYUSERNAMEM}" ]; then
+           export MYUSERNAME=$MYUSERNAMEM
+           echo "MYUSERNAME is set to matrix value " $MYUSERNAME
+        else
+           echo "MYUSERNAME is NOT set"
+           export MYUSERNAME=nwchemgit
+           echo "MYUSERNAME is now set to " $MYUSERNAME
+        fi
+        echo "myusername=$MYUSERNAME" >> $GITHUB_ENV
     - name: echo env
       run: |
         env
@@ -347,12 +369,12 @@ jobs:
       shell: bash
       run: |
         set -ex
-        if [[ ${{ matrix.branch }} ==  master ]]; then
+        if [[ ${{ env.branch }} ==  master ]]; then
           echo "nwversion=mdev" >> $GITHUB_ENV
-        elif [[ ${{ matrix.branch }} == 'hotfix/release-7-3-0' ]]; then
+        elif [[ ${{ env.branch }} == 'hotfix/release-7-3-0' ]]; then
           echo "nwversion=m720" >> $GITHUB_ENV
         else
-          echo "nwversion=${{ matrix.branch }}" >> $GITHUB_ENV
+          echo "nwversion=${{ env.branch }}" >> $GITHUB_ENV
         fi
         if [[ ${{ matrix.armci_network }} !=  MPI-PR ]]; then
           net_tag=$(echo ${{ matrix.armci_network }} | tr '[:upper:]' '[:lower:]')
@@ -470,7 +492,7 @@ jobs:
         UCX_POSIX_USE_PROC_LINK=n UCX_TLS=tcp,self \
         USE_SYSV=${{ matrix.use_sysv }} \
         MPI_IMPL=${{ matrix.mpi_impl }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} OFI=${{ matrix.ofi }} PMIX=${{ matrix.pmix }} \
-        FC=${{ matrix.fc }} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} \
+        FC=${{ matrix.fc }} BRANCH=${{ env.branch }} MYUSERNAME=${{ env.myusername }} ARMCI_NETWORK=${{ matrix.armci_network}} \
         apptainer build --fakeroot   ${{ matrix.folder }}.simg Singularity
     - name: store cache
       run: |
