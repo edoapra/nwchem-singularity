@@ -328,7 +328,13 @@ if [ $UCX != "N" ]; then
 	cd ucx-$UCX 
 	wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi41x.ifx/ucx_malloc.patch 
 	wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.ompi5x/ucx1181_malloc.patch 
-	if [ $UCX = 1.14.1 ] || [ $UCX = 1.15.0 ] || [ $UCX = 1.16.0 ]; then
+        export ucx_v1=$(echo $UCX | cut -d . -f1) 
+        echo ucx_v1 is $ucx_v1
+        export ucx_v2=$(echo $UCX | cut -d . -f2) 
+        echo ucx_v2 is $ucx_v2
+        export ucx_v3=$(echo $UCX | cut -d . -f3) 
+        echo ucx_v3 is $ucx_v3
+	if [ $ucx_v1 = 1 ] && [ $ucx_v2 -lt 18 ]; then
 	    patch -p0 < ./ucx_malloc.patch
 	else
 	    patch -p0 < ./ucx1181_malloc.patch
