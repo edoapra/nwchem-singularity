@@ -30,7 +30,7 @@ MAINTAINER  Edoardo Apra <edoardo.apra@pnnl.gov>
      bash -c "if [[ -z '${MYUSERNAME}' ]]; then echo 'MYUSERNAME=nwchemgit ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; else echo 'MYUSERNAME is ${MYUSERNAME}'; echo 'MYUSERNAME=${MYUSERNAME} ' >> ${SINGULARITY_ROOTFS}/myusername.txt ; fi"
      ls -lrt ${SINGULARITY_ROOTFS}/*txt
      ls -lrt ${CACHEDIR} || true
-     ls -la  ${CACHEDIR}/ || true
+     ls -lrta  ${CACHEDIR}/ || true
      ls -la  ${CACHEDIR}/mpi || true
      ls -la  ${CACHEDIR}/mpi/lib || true
      ls -la  ${CACHEDIR}/simint_install/lib/libnwc_simint.a || true
