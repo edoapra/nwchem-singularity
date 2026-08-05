@@ -334,7 +334,7 @@ if [ $UCX != "N" ]; then
         echo ucx_v2 is $ucx_v2
         export ucx_v3=$(echo $UCX | cut -d . -f3) 
         echo ucx_v3 is $ucx_v3
-	if [ $ucx_v1 = 1 ] && [ $ucx_v2 -lt 18 ]; then
+	if [ $ucx_v1 = 1 ] && [ $ucx_v2 -lt 17 ]; then
 	    patch -p0 < ./ucx_malloc.patch
 	else
 	    patch -p0 < ./ucx1181_malloc.patch
