@@ -441,7 +441,7 @@ jobs:
     - name: Checkout nwchem source
       uses: actions/checkout@v7
       with:
-        repository: nwchemgit/nwchem
+        repository: ${{ inputs.repository_username }}/nwchem
         ref: ${{ matrix.branch}}
         clean: false
         fetch-depth: 0
