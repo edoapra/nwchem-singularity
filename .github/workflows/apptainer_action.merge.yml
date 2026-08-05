@@ -25,6 +25,17 @@ jobs:
         matrix:
           include:
             - mpi_impl: ompi
+              ompi: 4.1.4
+              use_sysv: N
+              ucx: 1.12.1
+              pmix: N
+              ofi: N
+              fc: gfortran
+              branch: ${{ inputs.branch }} 
+              armci_network: MPI-PR
+              folder: nwchem-dev.merge
+              cuda-cc: cpu
+            - mpi_impl: ompi
               ompi: 5.0.9
               use_sysv: N
               ucx: 1.14.1
