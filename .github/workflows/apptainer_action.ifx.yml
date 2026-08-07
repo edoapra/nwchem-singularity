@@ -6,7 +6,25 @@ on:
   repository_dispatch:
     types: [backend_automation]
   workflow_dispatch:
+    inputs:
+      repository_username:
+        type: string
+        required: false
+        default: 'nwchemgit'
+      branch:
+        type: string
+        required: false
+        default: 'master'
   workflow_call:
+    inputs:
+      repository_username:
+        type: string
+        required: false
+        default: 'nwchemgit'
+      branch:
+        type: string
+        required: false
+        default: 'master'
 
 jobs:
   build_image:
@@ -17,7 +35,7 @@ jobs:
           folder:
             - nwchem-dev.ompi41x.ifx
           branch:
-            - master
+            - ${{ inputs.branch }}
             - hotfix/release-7-3-0
           fc:
             - gfortran
@@ -27,7 +45,7 @@ jobs:
             - 7
           include:
             - folder: nwchem-dev.ompi41x.ifx
-              branch: master
+              branch: ${{ inputs.branch }}
               fc: ifx
               armci_network: MPI-PR
               simint_maxam: 5
@@ -39,6 +57,31 @@ jobs:
     env:
         FC: ${{ matrix.fc }}
     steps:
+    - name: check if branch is empty
+      run: |
+        if [ -n "${BRANCHM}" ]; then
+           export BRANCH=$BRANCHM
+           echo "BRANCH is set to matrix value " $BRANCH
+        else
+           echo "BRANCH is NOT set"
+           export BRANCH=master
+           echo "BRANCH is now set to " $BRANCH
+        fi
+        echo "branch=$BRANCH" >> $GITHUB_ENV
+    - name: check if myusername is empty
+      run: |
+        if [ -n "${MYUSERNAMEM}" ]; then
+           export MYUSERNAME=$MYUSERNAMEM
+           echo "MYUSERNAME is set to matrix value " $MYUSERNAME
+        else
+           echo "MYUSERNAME is NOT set"
+           export MYUSERNAME=nwchemgit
+           echo "MYUSERNAME is now set to " $MYUSERNAME
+        fi
+        echo "myusername=$MYUSERNAME" >> $GITHUB_ENV
+    - name: echo env
+      run: |
+        env
     - name: nwchem version tag
       run: |
         if [[ ${{ matrix.branch }} ==  master ]]; then
@@ -108,15 +151,15 @@ jobs:
     - name: Checkout nwchem source
       uses: actions/checkout@v7
       with:
-        repository: nwchemgit/nwchem
-        ref: ${{ matrix.branch}}
+        repository: ${{ env.myusername }}/nwchem
+        ref: ${{ env.branch}}
         clean: false
         fetch-depth: 0
         path: nwchem
     - name: build an apptainer container
       run: |
         cd ${{ matrix.folder }}
-        FC=${{ matrix.fc }} SIMINT_MAXAM=${{ matrix.simint_maxam}} BRANCH=${{ matrix.branch}} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
+        FC=${{ matrix.fc }} SIMINT_MAXAM=${{ matrix.simint_maxam}} BRANCH=${{ env.branch}} MYUSERNAME=${{ env.myusername }} ARMCI_NETWORK=${{ matrix.armci_network}} MPI_IMPL=ompi  apptainer build --fakeroot ${{ matrix.folder }}.simg  Singularity
     - name: check if the nwchem binary is present
       run: |
         cd ${{ matrix.folder }}

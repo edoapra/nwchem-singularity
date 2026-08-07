@@ -19,6 +19,15 @@ on:
         required: false
         default: 'master'
   workflow_call:
+    inputs:
+      repository_username:
+        type: string
+        required: false
+        default: 'nwchemgit'
+      branch:
+        type: string
+        required: false
+        default: 'master'
 
 jobs:
   build_image:
@@ -52,7 +61,7 @@ jobs:
             - mpi_impl: ompi
               ompi: 5.0.9
               use_sysv: N
-              ucx: 1.19.1
+              ucx: 1.22.0
               pmix: 4.2.9
               ofi: N
               fc: gfortran
@@ -63,7 +72,7 @@ jobs:
             - mpi_impl: ompi
               ompi: 5.0.9
               use_sysv: N
-              ucx: 1.20.0
+              ucx: 1.12.1
               pmix: 4.2.9
               ofi: N
               fc: gfortran
