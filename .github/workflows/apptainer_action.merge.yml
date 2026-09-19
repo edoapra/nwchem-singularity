@@ -322,6 +322,17 @@ jobs:
               armci_network: MPI-PR
               folder: nwchem-dev.merge
               cuda-cc: cpu
+            - mpi_impl: mpich
+              mpich: 5.0.1
+              use_sysv: N
+              ofi: 2.3.1
+              ucx: N
+              pmix: N
+              fc: gfortran
+              branch: ${{ inputs.branch }} 
+              armci_network: MPI3
+              folder: nwchem-dev.merge
+              cuda-cc: cpu
             - mpi_impl: ompi
               ompi: 4.1.8
               use_sysv: N
