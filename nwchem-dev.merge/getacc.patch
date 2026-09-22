@@ -1,0 +1,25 @@
+diff --git a/comex/src-mpi3/comex.c b/comex/src-mpi3/comex.c
+index a5418cf3..86386845 100644
+--- a/comex/src-mpi3/comex.c
++++ b/comex/src-mpi3/comex.c
+@@ -3070,11 +3070,20 @@ int comex_rmw(
+     } else if (op == COMEX_SWAP_LONG) {
+       long incr = *((long*)ploc);
+ #ifdef USE_MPI_REQUESTS
++//new      
++#if 1
++    MPI_Request request;
++    MPI_Rget_accumulate(&incr, 1, MPI_LONG, ploc, 1, MPI_LONG, lproc, (MPI_Aint) displ, 1, MPI_LONG, MPI_REPLACE, reg_win->win, &request);
++    ierr = MPI_Wait(&request, MPI_STATUS_IGNORE);
++    MPI_Win_flush(lproc, reg_win->win);
++      
++#else
+       ierr = MPI_Fetch_and_op(&incr,ploc,MPI_LONG,lproc,displ,
+           MPI_REPLACE,reg_win->win);
+       translate_mpi_error(ierr,"comex_rmw:MPI_Fetch_and_op");
+       ierr = MPI_Win_flush(lproc,reg_win->win);
+       translate_mpi_error(ierr,"comex_rmw:MPI_Win_flush");
++#endif
+ #else
+       ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
+       translate_mpi_error(ierr,"comex_rmw:MPI_Win_lock");
