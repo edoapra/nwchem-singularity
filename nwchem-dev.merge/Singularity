@@ -585,8 +585,10 @@ echo 'ls ~/' `ls -lrt ~/`
  make MAYBE_SYSVSHMEM=$M_S FC=$FC -j6 || { echo 'Compilation Failure'; exit 1; }
  #patch GA
  cd tools/ga-*
- wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.merge/getacc.patch
- patch -p1 < getacc.patch
+# wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.merge/getacc.patch
+# patch -p1 < getacc.patch
+ wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.merge/comex_mpi3.patch
+ patch -p1 < comex_mpi3.patch
  cd ../build
  make install
  cd ../..

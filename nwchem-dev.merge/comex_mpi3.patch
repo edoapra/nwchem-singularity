@@ -1,0 +1,81 @@
+diff --git a/comex/src-mpi3/comex.c b/comex/src-mpi3/comex.c
+index 2f119aa4..20e6de0c 100644
+--- a/comex/src-mpi3/comex.c
++++ b/comex/src-mpi3/comex.c
+@@ -39,6 +39,7 @@
+ 
+ 
+ #define USE_MPI_REQUESTS
++#define USE_MPI_WIN_ALLOC
+ /*
+ #define USE_MPI_FLUSH_LOCAL
+ #define USE_MPI_WIN_ALLOC
+@@ -1400,6 +1401,7 @@ void vector_to_struct_dtype(void* src_ptr, void *dst_ptr, comex_giov_t *iov,
+   for (i=0; i<iov_len; i++) {
+     nelems += iov[i].count;
+   }
++  if (nelems <= 0) {    return;  }
+   int *blocklengths;
+   MPI_Aint *displacements;
+   MPI_Datatype *types;
+@@ -3296,7 +3298,7 @@ int comex_malloc(void *ptrs[], size_t size, comex_group_t group)
+     int i, ierr;
+     int comm_rank = -1;
+     int comm_size = -1;
+-    int tsize;
++    MPI_Aint tsize;
+     reg_entry_t src;
+ 
+     igroup = comex_get_igroup_from_group(group);
+@@ -3332,13 +3334,23 @@ int comex_malloc(void *ptrs[], size_t size, comex_group_t group)
+       tsize = 8;
+     }
+ #ifdef USE_MPI_WIN_ALLOC
+-    MPI_Win_allocate(sizeof(char)*tsize,1,MPI_INFO_NULL,comm,&reg_entries[comm_rank].buf,
+-        &reg_entries[comm_rank].win);
++    MPI_Info win_hints = MPI_INFO_NULL;
++    if (tsize <= 16){
++      MPI_Info_create(&win_hints);
++      MPI_Info_set(win_hints, "accumulate_ops", "same_op_no_op");
++    }
++    MPI_Win_allocate(sizeof(char)*tsize,1,
++		     (win_hints == MPI_INFO_NULL) ? MPI_INFO_NULL : win_hints,
++		     comm,&reg_entries[comm_rank].buf,
++		     &reg_entries[comm_rank].win);
++    if (tsize <= 16) MPI_Info_free(&win_hints);
++    //    MPI_Win_create(reg_entries[comm_rank].buf,tsize,1,win_info,comm,
++    //    &reg_entries[comm_rank].win);
+ #else
+     MPI_Alloc_mem(tsize,MPI_INFO_NULL,&reg_entries[comm_rank].buf);
+-#endif
+     MPI_Win_create(reg_entries[comm_rank].buf,tsize,1,MPI_INFO_NULL,comm,
+         &reg_entries[comm_rank].win);
++#endif
+ 
+ #ifdef USE_MPI_REQUESTS
+     MPI_Win_lock_all(0,reg_entries[comm_rank].win);
+@@ -3366,6 +3378,7 @@ int comex_malloc(void *ptrs[], size_t size, comex_group_t group)
+           reg_entries[i].win, igroup);
+     }
+     comex_igroup_add_win(group,reg_entries[comm_rank].win);
++    free(reg_entries);
+ 
+     comex_wait_all(group);
+     /* MPI_Win_fence(0,reg_entries[comm_rank].win); */
+@@ -3468,6 +3481,7 @@ int comex_malloc_mem_dev(void *ptrs[], size_t size, comex_group_t group,
+           reg_entries[i].win, igroup);
+     }
+     comex_igroup_add_win(group,reg_entries[comm_rank].win);
++    free(reg_entries);
+ 
+     comex_wait_all(group);
+     /* MPI_Win_fence(0,reg_entries[comm_rank].win); */
+@@ -3512,7 +3526,7 @@ int comex_free(void *ptr, comex_group_t group)
+ #endif
+ 
+     /* allocate receive buffer for exchange of pointers */
+-    allgather_ptrs = (long **)malloc(sizeof(void *) * comm_size);
++    allgather_ptrs = (void **)malloc(sizeof(void *) * comm_size);
+     assert(allgather_ptrs);
+ 
+     /* exchange of pointers */
