@@ -1,0 +1,11 @@
+--- configure.org	2026-09-25 15:03:56.165733138 -0700
++++ configure	2025-05-08 10:02:29.000000000 -0700
+@@ -11475,7 +11475,7 @@
+   MPI_SPAWN) :
+     delay_tcgmsg_mpi_startup=1 ;; #(
+   MPI3) :
+-    delay_tcgmsg_mpi_startup=0 ;; #(
++    delay_tcgmsg_mpi_startup=1 ;; #(
+   OFA) :
+     delay_tcgmsg_mpi_startup=0 ;; #(
+   OFI) :

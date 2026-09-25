@@ -589,6 +589,8 @@ echo 'ls ~/' `ls -lrt ~/`
 # patch -p1 < getacc.patch
  wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.merge/comex_mpi3.patch
  patch -p1 < comex_mpi3.patch
+ wget https://raw.githubusercontent.com/edoapra/nwchem-singularity/master/nwchem-dev.merge/delay_tcg.patch
+ patch -p0 < delay_tcg.patch
  cd ../build
  make install
  cd ../..
