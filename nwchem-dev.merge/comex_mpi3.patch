@@ -1,8 +1,6 @@
-diff --git a/comex/src-mpi3/comex.c b/comex/src-mpi3/comex.c
-index 2f119aa4..20e6de0c 100644
---- a/comex/src-mpi3/comex.c
-+++ b/comex/src-mpi3/comex.c
-@@ -39,6 +39,7 @@
+--- comex/src-mpi3/comex.c.org	2026-09-25 18:52:48.959456153 -0700
++++ comex/src-mpi3/comex.c	2026-09-25 18:52:56.207204400 -0700
+@@ -39,10 +39,12 @@
  
  
  #define USE_MPI_REQUESTS
@@ -10,7 +8,78 @@ index 2f119aa4..20e6de0c 100644
  /*
  #define USE_MPI_FLUSH_LOCAL
  #define USE_MPI_WIN_ALLOC
-@@ -1400,6 +1401,7 @@ void vector_to_struct_dtype(void* src_ptr, void *dst_ptr, comex_giov_t *iov,
+ */
++#define USE_MPI_FLUSH_LOCAL
+ 
+ #ifdef USE_MPI_FLUSH_LOCAL
+ #define USE_MPI_REQUESTS
+@@ -94,11 +96,7 @@
+   MPI_Datatype src_type;
+   MPI_Datatype dst_type;
+   int active;
+-#ifdef USE_MPI_FLUSH_LOCAL
+   int remote_proc;
+-#else
+-  int remote_proc;
+-#endif
+ } nb_t;
+ 
+ static nb_t **nb_list = NULL;
+@@ -453,7 +451,7 @@
+ #endif
+ #endif
+ #else
+-    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
++    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,MPI_MODE_NOCHECK,reg_win->win);
+     translate_mpi_error(ierr,"comex_put:MPI_Win_lock");
+     ierr = MPI_Put(src, bytes, MPI_CHAR, lproc, displ, bytes, MPI_CHAR,
+         reg_win->win);
+@@ -514,7 +512,7 @@
+ #endif
+ #endif
+ #else
+-    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
++    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,MPI_MODE_NOCHECK,reg_win->win);
+     translate_mpi_error(ierr,"comex_get:MPI_Win_lock");
+     ierr = MPI_Get(dst, bytes, MPI_CHAR, lproc, displ, bytes, MPI_CHAR,
+         reg_win->win);
+@@ -655,7 +653,7 @@
+ #endif
+ #endif
+ #else
+-    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
++    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,MPI_MODE_NOCHECK,reg_win->win);
+     translate_mpi_error(ierr,"comex_acc:MPI_Win_lock");
+     ierr = MPI_Accumulate(tbuf,count,mpi_type,lproc,displ,count,
+         mpi_type,MPI_SUM,reg_win->win);
+@@ -853,7 +851,7 @@
+ #endif
+ #endif
+ #else
+-    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
++    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,MPI_MODE_NOCHECK,reg_win->win);
+     translate_mpi_error(ierr,"comex_puts:MPI_Win_lock");
+     ierr = MPI_Put(src_ptr, 1, src_type, lproc, displ, 1, dst_type,
+         reg_win->win);
+@@ -996,7 +994,7 @@
+ #endif
+ #endif
+ #else
+-    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
++    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,MPI_MODE_NOCHECK,reg_win->win);
+     translate_mpi_error(ierr,"comex_gets:MPI_Win_lock");
+     ierr = MPI_Get(dst_ptr, 1, dst_type, lproc, displ, 1, src_type,
+         reg_win->win);
+@@ -1335,7 +1333,7 @@
+ #endif
+ #endif
+ #else
+-    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
++    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,MPI_MODE_NOCHECK,reg_win->win);
+     translate_mpi_error(ierr,"comex_accs:MPI_Win_lock");
+     ierr = MPI_Accumulate(packbuf,1,src_type,lproc,displ,1,dst_type,
+         MPI_SUM,reg_win->win);
+@@ -1400,6 +1398,7 @@
    for (i=0; i<iov_len; i++) {
      nelems += iov[i].count;
    }
@@ -18,7 +87,70 @@ index 2f119aa4..20e6de0c 100644
    int *blocklengths;
    MPI_Aint *displacements;
    MPI_Datatype *types;
-@@ -3296,7 +3298,7 @@ int comex_malloc(void *ptrs[], size_t size, comex_group_t group)
+@@ -1505,7 +1504,7 @@
+ #endif
+ #endif
+ #else
+-    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
++    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,MPI_MODE_NOCHECK,reg_win->win);
+     translate_mpi_error(ierr,"comex_putv:MPI_Win_lock");
+     ierr = MPI_Put(src_ptr, 1, src_type, lproc, displ, 1, dst_type,
+         reg_win->win);
+@@ -1590,7 +1589,7 @@
+ #endif
+ #endif
+ #else
+-    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
++    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,MPI_MODE_NOCHECK,reg_win->win);
+     translate_mpi_error(ierr,"comex_getv:MPI_Win_lock");
+     ierr = MPI_Get(dst_ptr, 1, dst_type, lproc, displ, 1, src_type,
+         reg_win->win);
+@@ -1908,7 +1907,7 @@
+ #endif
+ #endif
+ #else
+-    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
++    ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,MPI_MODE_NOCHECK,reg_win->win);
+     translate_mpi_error(ierr,"comex_accv:MPI_Win_lock");
+     ierr = MPI_Accumulate(src_ptr,1,src_type,lproc,displ,1,dst_type,
+         MPI_SUM,reg_win->win);
+@@ -3025,7 +3024,7 @@
+       ierr = MPI_Win_flush(lproc,reg_win->win);
+       translate_mpi_error(ierr,"comex_rmw:MPI_Win_flush");
+ #else
+-      ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
++      ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,MPI_MODE_NOCHECK,reg_win->win);
+       translate_mpi_error(ierr,"comex_rmw:MPI_Win_lock");
+       ierr = MPI_Fetch_and_op(&incr,ploc,MPI_INT,lproc,displ,
+           MPI_SUM,reg_win->win);
+@@ -3042,7 +3041,7 @@
+       ierr = MPI_Win_flush(lproc,reg_win->win);
+       translate_mpi_error(ierr,"comex_rmw:MPI_Win_flush");
+ #else
+-      ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
++      ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,MPI_MODE_NOCHECK,reg_win->win);
+       translate_mpi_error(ierr,"comex_rmw:MPI_Win_lock");
+       ierr = MPI_Fetch_and_op(&incr,ploc,MPI_LONG,lproc,displ,
+           MPI_SUM,reg_win->win);
+@@ -3059,7 +3058,7 @@
+       ierr = MPI_Win_flush(lproc,reg_win->win);
+       translate_mpi_error(ierr,"comex_rmw:MPI_Win_flush");
+ #else
+-      ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
++      ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,MPI_MODE_NOCHECK,reg_win->win);
+       translate_mpi_error(ierr,"comex_rmw:MPI_Win_lock");
+       ierr = MPI_Fetch_and_op(&incr,ploc,MPI_INT,lproc,displ,
+           MPI_REPLACE,reg_win->win);
+@@ -3076,7 +3075,7 @@
+       ierr = MPI_Win_flush(lproc,reg_win->win);
+       translate_mpi_error(ierr,"comex_rmw:MPI_Win_flush");
+ #else
+-      ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,0,reg_win->win);
++      ierr = MPI_Win_lock(MPI_LOCK_SHARED,lproc,MPI_MODE_NOCHECK,reg_win->win);
+       translate_mpi_error(ierr,"comex_rmw:MPI_Win_lock");
+       ierr = MPI_Fetch_and_op(&incr,ploc,MPI_LONG,lproc,displ,
+           MPI_REPLACE,reg_win->win);
+@@ -3296,7 +3295,7 @@
      int i, ierr;
      int comm_rank = -1;
      int comm_size = -1;
@@ -27,7 +159,7 @@ index 2f119aa4..20e6de0c 100644
      reg_entry_t src;
  
      igroup = comex_get_igroup_from_group(group);
-@@ -3332,13 +3334,23 @@ int comex_malloc(void *ptrs[], size_t size, comex_group_t group)
+@@ -3332,16 +3331,26 @@
        tsize = 8;
      }
  #ifdef USE_MPI_WIN_ALLOC
@@ -53,8 +185,12 @@ index 2f119aa4..20e6de0c 100644
 +#endif
  
  #ifdef USE_MPI_REQUESTS
-     MPI_Win_lock_all(0,reg_entries[comm_rank].win);
-@@ -3366,6 +3378,7 @@ int comex_malloc(void *ptrs[], size_t size, comex_group_t group)
+-    MPI_Win_lock_all(0,reg_entries[comm_rank].win);
++    MPI_Win_lock_all(MPI_MODE_NOCHECK,reg_entries[comm_rank].win);
+     /* Use MPI_MODE_NOCHECK instead of 0 */
+ #endif
+ 
+@@ -3366,6 +3375,7 @@
            reg_entries[i].win, igroup);
      }
      comex_igroup_add_win(group,reg_entries[comm_rank].win);
@@ -62,7 +198,7 @@ index 2f119aa4..20e6de0c 100644
  
      comex_wait_all(group);
      /* MPI_Win_fence(0,reg_entries[comm_rank].win); */
-@@ -3468,6 +3481,7 @@ int comex_malloc_mem_dev(void *ptrs[], size_t size, comex_group_t group,
+@@ -3468,6 +3478,7 @@
            reg_entries[i].win, igroup);
      }
      comex_igroup_add_win(group,reg_entries[comm_rank].win);
@@ -70,7 +206,15 @@ index 2f119aa4..20e6de0c 100644
  
      comex_wait_all(group);
      /* MPI_Win_fence(0,reg_entries[comm_rank].win); */
-@@ -3512,7 +3526,7 @@ int comex_free(void *ptr, comex_group_t group)
+@@ -3494,7 +3505,6 @@
+ 
+     /* preconditions */
+     assert(ptr != NULL);
+-
+     igroup = comex_get_igroup_from_group(group);
+     comm = igroup->comm;
+     assert(comm != MPI_COMM_NULL);
+@@ -3512,7 +3522,7 @@
  #endif
  
      /* allocate receive buffer for exchange of pointers */
