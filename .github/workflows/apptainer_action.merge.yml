@@ -387,6 +387,18 @@ jobs:
               branch: ${{ inputs.branch }} 
               armci_network: MPI-PR
               folder: nwchem-dev.merge
+              cuda-cc: cpu
+              use_dftd4: Y
+            - mpi_impl: ompi
+              ompi: 4.1.8
+              use_sysv: N
+              ucx: 1.15.0
+              pmix: 4.2.9
+              ofi: N
+              fc: gfortran
+              branch: ${{ inputs.branch }} 
+              armci_network: MPI-PR
+              folder: nwchem-dev.merge
               cuda-cc: 80
             - mpi_impl: ompi
               ompi: 4.1.8
@@ -413,6 +425,7 @@ jobs:
         BRANCHM: ${{ matrix.branch }}
         ARMCI_NETWORK: ${{ matrix.armci_network }}
         USE_SYSV: ${{ matrix.use_sysv }}
+        USE_DFTD4: ${{ matrix.use_dftd4 }}
         MYUSERNAMEM: ${{ inputs.repository_username }}
     steps:
     - name: check if branch is empty
@@ -450,6 +463,9 @@ jobs:
           echo "nwversion=m720" >> $GITHUB_ENV
         else
           echo "nwversion=${{ env.branch }}" >> $GITHUB_ENV
+        fi
+        if [[ "${{ matrix.use_dftd4 }}" ==  "Y" ]]; then
+          echo "dftd4=dftd4." >> $GITHUB_ENV
         fi
         if [[ ${{ matrix.armci_network }} !=  MPI-PR ]]; then
           net_tag=$(echo ${{ matrix.armci_network }} | tr '[:upper:]' '[:lower:]')
@@ -492,11 +508,7 @@ jobs:
         set +ex
     - name: cache tag
       run: |
-        if [[ ${{ matrix.fc }} == "gfortran" ]]; then
-          echo "cache_tag=nwchem-${{ env.nwversion}}.${{ env.armci_network}}${{ matrix.mpi_impl }}${{ matrix.ompi }}${{ matrix.mpich }}${{ env.pmix }}${{ env.ucxncuda }}${{ env.ofincuda }}" >> $GITHUB_ENV
-        else
-          echo "cache_tag=nwchem-${{ env.nwversion}}.${{ env.armci_network}}${{ matrix.mpi_impl }}${{ matrix.ompi }}${{ matrix.mpich }}${{ env.ucxncuda }}${{ env.ofincuda }}.${{ matrix.fc }}" >> $GITHUB_ENV
-        fi
+        echo "cache_tag=nwchem-${{ env.nwversion}}.${{ env.dftd4 }}${{ env.armci_network}}${{ matrix.mpi_impl }}${{ matrix.ompi }}${{ matrix.mpich }}${{ env.pmix }}${{ env.ucxncuda }}${{ env.ofincuda }}" >> $GITHUB_ENV
     - name: github action tag
       run: |
         echo "tag=oras://ghcr.io/${{ github.repository }}/${{ env.cache_tag }}" >> $GITHUB_ENV
@@ -565,7 +577,7 @@ jobs:
         OMPI_MCA_smsc=^xpmem \
         OMPI_MCA_osc=^ucx \
         UCX_POSIX_USE_PROC_LINK=n UCX_TLS=tcp,self \
-        USE_SYSV=${{ matrix.use_sysv }} \
+        USE_SYSV=${{ matrix.use_sysv }} USE_DFTD4=${{ matrix.use_dftd4}} \
         MPI_IMPL=${{ matrix.mpi_impl }} OMPI=${{ matrix.ompi }} UCX=${{ matrix.ucx }} OFI=${{ matrix.ofi }} PMIX=${{ matrix.pmix }} \
         FC=${{ matrix.fc }} BRANCH=${{ env.branch }} MYUSERNAME=${{ env.myusername }} ARMCI_NETWORK=${{ matrix.armci_network}} \
         apptainer build --fakeroot   ${{ matrix.folder }}.simg Singularity
