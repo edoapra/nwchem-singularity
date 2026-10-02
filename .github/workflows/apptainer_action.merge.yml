@@ -551,6 +551,7 @@ jobs:
       env:
         APP_VER: 1.4.5
       run: |
+        sudo apt-get update
         sudo apt-get install -y  libfuse2 libseccomp2 zlib1g uidmap squashfs-tools squashfuse fuse2fs fuse-overlayfs fakeroot
         wget -q  https://github.com/apptainer/apptainer/releases/download/v${APP_VER}/apptainer_${APP_VER}_amd64.deb 
         sudo dpkg -i apptainer_${APP_VER}_amd64.deb
@@ -627,6 +628,10 @@ jobs:
         export OMPI_MCA_osc=^ucx
         export MPIRUN_NPOPT="-x UCX_POSIX_USE_PROC_LINK=n -x UCX_TLS=tcp,self -x OMPI_MCA_btl_vader_single_copy_mechanism=none -x OMPI_MCA_smsc=^xpmem -x OMPI_MCA_osc=^ucx -n"
         fi
+        wget https://raw.githubusercontent.com/vegardit/fast-apt-mirror.sh/refs/heads/dev/fast-apt-mirror.sh
+        chmod +x fast-apt-mirror.sh
+        ./fast-apt-mirror.sh find -v --apply
+        sudo apt-get update
         if [[ $MPI_IMPL == mpich ]]; then
         sudo apt-get install -y libmpich-dev mpich
         export MPIRUN_PATH=/usr/bin/mpirun.mpich
